@@ -1,0 +1,5 @@
+package must
+
+func Init() {
+
+}

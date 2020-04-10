@@ -1,32 +1,39 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
-	"time"
-
-	"github.com/garyburd/redigo/redis"
+	"os"
+	"os/signal"
+	"syscall"
+	"zhanyia/src/common"
+	"zhanyia/src/must"
 )
 
 func main() {
-	fmt.Println("Hello")
-	c := redis.Pool{
-		MaxIdle:     16,
-		IdleTimeout: 180 * time.Second,
-		Dial: func() (redis.Conn, error) {
-			return redis.Dial("tcp", "localhost:6379")
-		},
-		TestOnBorrow: func(c redis.Conn, t time.Time) error {
-			_, err := c.Do("PING")
-			return err
-		},
-	}
-	conn := c.Get()
-	defer conn.Close()
-	hashSlice, err := redis.Strings(conn.Do("keys", "*"))
+	// 创建must组件实例
+	must.Init()
+	common.AllGlobal["Mq"].(*must.Mq).BindReportQueue()
+
+	a := "HelloWord"
+	msg, err := json.Marshal(a)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("main Marshal has err", err)
 	}
-	for k, v := range hashSlice {
-		fmt.Println(k, v)
+
+	err = common.AllGlobal["Mq"].(*must.Mq).SendReport(msg)
+	if err != nil {
+		fmt.Println("main SendReport has err", err)
 	}
+
+	// 持久化
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan,
+		syscall.SIGINT,
+		syscall.SIGILL,
+		syscall.SIGFPE,
+		syscall.SIGSEGV,
+		syscall.SIGTERM,
+		syscall.SIGABRT)
+	<-signalChan
 }
