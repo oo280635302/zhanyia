@@ -1,0 +1,256 @@
+	
+	EFK日志系统安装和使用
+		简介：
+			EFK：指Elasticsearch（类数据库）+Filebeat（信息收集）+kibana（网页UI）三个软件共同组成的日志处理系统。
+			Elasticsearch是一个有优秀的搜索功能，数据分析的引擎，
+			Filebeat是轻量级安装和大批量的收集数据，
+			kibana是一个开源的分析和可视化平台的用于为Elasticsearch提供的软件。
+		对比ELK优缺点：
+			优势：
+			1、侵入低，无需修改程序目前任何代码和配置；
+				2、相对于Logstash来说性能高，Logstash对于IO占用很大。
+			缺点：	
+			F比L的格式化日志不方便，功能差。
+			PS：后期可考虑EFLK 4合一。
+
+
+	1.安装与部署
+			操作系统:linux,windows,mac等均可以使用。
+			以下都以linux为例：
+			E,F,K三个软件都可以去中文社区下载，但是版本需要一致！
+			下载地址：https://elasticsearch.cn/download/，目前最新版为7.4.2。
+			接下来的安装部署以6.2.4为例。
+
+		第一步安装java
+			-->安装JAVA8版本以上的系统<--
+			=>根据Linux自带的apt安装：
+				sudo apt install openjdk-11-jre-headless
+			或者
+				sudo apt install openjdk-8-jre-headless
+			*注意：此处建议11版本*
+			=>在java官方下载安装包64位tar.gz安装：
+			a.解压：
+				tar -zxvf jdk-8u151-linux-x64.tar.gz
+			b.修改环境变量：
+				sudo vim /etc/profile
+			添加：
+				set java environment
+				JAVA_HOME=......./java/jdk1.X.0_XXX       
+				JRE_HOME=....../java/jdk1.X.X_XXX/jre     
+				CLASS_PATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar:$JRE_HOME/lib
+				PATH=$PATH:$JAVA_HOME/bin:$JRE_HOME/bin
+				export JAVA_HOME JRE_HOME CLASS_PATH PATH
+			=>检查安装是否完成：
+				Java -version
+
+		第二步安装ElasticSearch
+			-->安装Elasticsearch<--
+			a.下载：
+				wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-6.2.4.tar.gz
+			b.解压：
+				tar -zxvf elasticsearch-6.2.4.tar.gz
+			c.修改配置文件，进入目录：
+				vi config/elasticsearch.yml
+			-添加配置，或者将对应的配置注释取消修改(删除前面的#就行)：
+				network.host: 0.0.0.0 
+				http.port: 9200
+			d.新建Elatic用户：
+			-原因：Elasticsearch不能用root用户打开,所以单独建个用户来启动它。
+				$ adduser elastic //（新建elastic用户）
+				#设置密码
+				$ passwd elastic
+				#需要输入2次密码
+				#授权
+				$ chmod -R 777 /usr/local/elasticsearch-6.2.4 //（目录位置）
+				#切换用户
+				$ su elastic	
+			e.启动Elasticsearch：
+				./bin/elasticsearch
+
+			以下为Elasticsearch目前发现的各类错误解决方法：
+				-1-
+				报错：
+					max file descriptors [65535] for elasticsearch process is too low, increase to at least [65536]
+				原因：
+					最大文件descriptors 太少了。
+				解决方法：
+					vi /etc/security/limits.conf
+					如果有 * soft nofile 65535 * hard nofile 65535 则将65535修改为65536，如果没有则在后面添加，注意此处的65535对应descriptors [65535]中的65535，修改后的值65536对应increase to at least [65536]。
+
+				-2-
+					报错：
+						max virtual memory areas vm.max_map_count [65530] is too low, increase to at least [262144]
+					原因：
+						vm.max_map_count 数量太少
+					解决方法：
+						切换到root用户
+						sudo passwd root		//第一次切换者需要用这步设置密码
+						su						//切换到root用户
+						vi /etc/sysctl.conf		
+						vm.max_map_count=262144		//添加到最后一行,后面数只要比262144大就行
+						sysctl -p					//一定要切换到root用户 不然这步会报错
+
+				-3-
+					报错：
+						Exception in thread "main" java.nio.file.AccessDeniedException:....
+					原因：
+						权限问题,Elasticsearch不能在root下启动。
+					解决方法：
+						sudo chown -R 用户名:用户名 文件（目录）名
+
+				-4-
+					报错：
+						OpenJDK 64-Bit Server VM warning: Option UseConcMarkSweepGC was deprecated in version 9.0 and will likely be removed in a future release.
+					原因：
+						UseConcMarkSweepGC 在9版本被放弃了
+					解决方法：
+						暂时能用，可以不用管。
+
+				-5-
+					报错：
+						错误: 找不到或无法加载主类 org.elasticsearch.tools.launchers.JavaVersionChec
+					原因：
+						该安装包在root目录下。
+					解决方法：
+						copy安装包到elastic的home下，然后去elastic的/home目录下执行。
+
+					.....更多错误及其解决方法敬请期待。
+
+			f.程序正常启动验证：
+
+				验证：
+					curl 127.0.0.1:9200
+				返回：
+					{{....}{....}}
+				类似如上的json字符串。
+				恭喜，Elasticsearch安装成功
+
+		第三步安装Kibana
+			-->安装Kibana<--
+			a.下载：
+				wget https://artifacts.elastic.co/downloads/kibana/kibana-6.2.4-linux-x86_64.tar.gz
+			b.解压：
+				tar -zxvf kibana-6.2.4-linux-x86_64.tar.gz
+			c.修改配置文件，进入目录：
+				vi config/kibana.yml
+				添加以下配置或者取消注释并修改：
+				elasticsearch.url: "http://localhost:9200"	//只本地默认localhost，如果需要外网访问0.0.0.0
+				server.host: "0.0.0.0"
+				kibana.index: ".kibana"
+			d.启动Kibana
+				./bin/kibana
+
+			出现以上信息：恭喜安装Kibana成功
+
+		第四步安装FileBeat
+			-->安装FileBeat<--
+			a.下载：
+				wget https://artifacts.elastic.co/downloads/beats/filebeat/filebeat-6.2.4-linux-x86_64.tar.gz
+			b.解压：
+				tar -zxvf filebeat-6.2.4-linux-x86_64.tar.gz
+			c.修改配置文件，进入目录：
+				vi filebeat.yml
+				添加以下配置或者取消注释并修改：
+				filebeat.inputs:- type: log
+					enabled: true
+					paths:
+					- /var/log/*.log	
+				//将会抓取该目录 .log 文件，可自定义设置这个来抓取想要的日志，注意不会抓取其子目录.log文件,
+				//也可以同时配置多个文件
+				setup.kibana:
+				host: "localhost:5601"
+				output.elasticsearch:
+				hosts: ["localhost:9200"]
+				//设置连接kibana和elasticsearch
+				注意：以两个空格为子级
+			d.在Elasticsearch中加载索引模板（自定义模块,暂未验证可用性）：
+				Filebeat自带有默认的模块fields.yml（主要区分yml配置文件和模块文件），如果用默认的请忽略这一步。
+				自定义模块：可以让你禁用自动加载的模块 或者 自动加载你的目标。
+				配置模块加载：
+				1.加载不同的模块：
+					setup.template.name: "你的模块名字"
+					setup.template.fields: "路径/XX.yml"
+				2.覆盖已存在的模块：
+					setup.template.overwrite: true
+				3.禁用自动加载模板：
+					setup.template.enabled: false
+				4.修改索引名称：
+					默认情况下，事件会写在filebeat-6.3.2-yyyy.MM.dd的索引，为了用一个不同的名字，你可以在Elasticsearch输出中设置index选项。例如：
+					output.elasticsearch.index: "索引名"
+					setup.template.name: "customname"	//模块名
+					setup.template.pattern: "customname-*"	//模块图案
+					setup.dashboards.index: "customname-*"		//kibana的仪表盘索引
+			e.设置kibana dashboard （使用过，但无法判断是否成功）
+				介绍：
+					这是kibana的仪表盘，可视化实例。Filebeat有附带有，需要配置后才能加载。
+				在图下位置修改：
+					无
+				执行setup命令：
+					./filebeat setup --dashboards
+			f.启动filebeat：
+				./filebeat -e -c filebeat.yml -d "publish"
+			//其中filebeat.yml为你的配置文件，大概可以配置多套配置文件。
+
+			如果启动后加载有大量的文件信息，恭喜filebeat安装成功！
+
+
+		filebeat各类报错情况：
+		-1-
+			报错：
+				2019-11-07T15:47:30.775+0800	ERROR	log/prospector.go:438	Harvester could not be started on new file: /var/log/vmware-network.log, Err: Error setting up harvester: Harvester setup failed. Unexpected file opening error: Failed opening /var/log/vmware-network.log: open /var/log/vmware-network.log: permission denied
+			原因：
+				为权限问题，无法读取某些.log文件。此处为无法读取vmware-network.log文件。
+			解决方法：
+				暂时不用管。
+
+		第五步验证
+		-->验证<--
+			打开浏览器访问：http://127.0.0.1:5601
+		出现：
+
+		设置：
+			Management 	-->	Index Patterns -->	Create Index Patterns --> 
+			在下面的框框里面输入你的索引名（filebeat-6.2.4-*）-->
+			Next step -->选择时间属性 @time-stamp 
+	
+		上述完成后，点击Discover:
+
+	出现上述类似画面，恭喜EFK日志系统安装完成！
+	2.使用
+		1）刷新率：
+
+			可以设置刷新率，默认关闭。
+
+		2）数据报告：
+		
+			每次有日志变动会出现一个波动与其详细信息。
+	 
+		3）各功能介绍：
+
+			1.discover
+				discover菜单界面主要用于通过搜索请求，过滤结果，查看文档数据。
+				可以查询探索请求的文档总数，获取字段的统计情况并通过柱状图进行展示。
+			2.Visualize
+				Visualize菜单界面主要用于将查询出的数据进行可视化展示，
+				且可以将其保存或者加载合并到Dashboard中，用于柱状图展示，可以点击加号进行添加。
+			3.Dashboard（暂时未使用）
+				在dashboard菜单界面中，可以自由排列一组已经保存的可视化数据集合。
+				添加完成后会显示在列表中。如果之前没有查看过仪表盘，则kibana会显示一个登陆页面，可以点击加号。
+			4.Timelion
+				Timelion是一个时间序列数据的可视化，可以结合在一个单一的可视化完全独立的数据源。
+				它是由一个简单的表达式语言驱动的，用来检索时间序列数据，进行计算，然后可视化结果。
+			5.Dev tools
+				Dev tools菜单界面使用户可以通过浏览器直接和elasticsearch进行交互，发送restful请求，
+				对elasticsearch进行增加，删除，修改，查看操作。
+			6.Management
+				配置。
+
+	3.参考
+		以下为网上的各类与EFK 相关资料的汇总。
+			1.安装部署：	https://blog.csdn.net/tanqian351/article/details/88711299
+			2.开始使用FileBeat：	https://www.cnblogs.com/cjsblog/p/9445792.html
+			3.开始使用Elasticsearch:	https://www.cnblogs.com/cjsblog/p/9439331.html
+			4.开始使用	Kibana:	https://www.cnblogs.com/cjsblog/p/9476813.html
+			5.Elasticsearch中文社区:	https://elasticsearch.cn/	
+			6.Elasticsearch 文档：	https://www.elastic.co/guide/index.html
+			7.Filebeat中文指南：	https://elkguide.elasticsearch.cn/beats/file.html

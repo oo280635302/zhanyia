@@ -1,0 +1,270 @@
+
+  1.docker简介
+	-场景：开发出来的软件给运维进行部署，环境配置,操作系统不同出现问题。
+	-docker可以将代码/配置/系统/环境整体打包给运维
+	-docker包括：	|运行文档		|打包做成镜像
+					|配置环境		|每个环境为一个容器
+					|运行环境		|
+					|运行依赖包		|
+					|操作系统发行版	|
+					|内		核		|
+	
+	-虚拟机与容器的区别：
+		虚拟机：真实模仿硬件，有内核
+		容器：没有硬件，没有内核
+			-更轻量：ubuntu镜像170M，宿主机可以部署100-1000个容器
+  1.Rancher简介：
+	Rancher是一个开源的企业级容器管理平台。
+	通过Rancher，企业再也不必自己使用一系列的开源软件去从头搭建容器服务平台。
+	Rancher提供了在生产环境中使用的管理Docker和Kubernetes的全栈化容器部署与管理平台。
+	说白了：就是用来管docker的
+
+  2.安装与部署
+	-ubuntu的docker安装
+		-早期型：
+			sudo apt-get install docker.io	安装
+			source /etc/bash_completion.d/docker.io	更新配置
+		-docker自己维护的版本:
+			curl -sSL https://get.docker.com/ubuntu/ | sudo sh
+			下载安装脚本,然后执行
+			...参考blog
+
+	-windows的docker安装
+		参考blog
+		
+  3.docker基本操作(container容器,image镜像)
+	-启动容器：
+		docker run IMAGE [命令] [参数]
+		IMAGE 使用的镜像系统
+	-启动交互式容器(类似于linux终端)：
+		docker -i -t IMAGE /bin/bash
+			-i 为容器始终打开标准输入,default:false
+			-t 为容器提供一个伪tty终端,default:false
+	-查看容器：
+		docker ps [-a] [-l]
+			-a 所有容器
+			-l 查看最新建的容器
+	-查看某个容器的详细信息
+		docker inspect [容器名字]
+	-自定义容器名：
+		docker run --name=自定义名 -i -t IMAGE /bin/bash
+	-重启启动停止的容器：
+		docker start -i 容器名
+	-删除停止的容器(不能删除运行的容器):
+		docker rm 容器名
+	-使用自带帮助文件，查看命令详细介绍
+		man docker-XX
+  
+  4.守护式容器	
+	-特点：
+		能够长期运行
+		没有交互式会话
+		适合运行应用程序和服务
+	-使用：
+		在启动交互式容器后ctrl+P ctrl+Q让容器后台运行
+	-后台运行的程序转换成交互式：
+		docker attach 容器名
+	-启动守护式容器：
+		docker run -d 镜像名 [命令] [参数]
+			-d 参数是以后台运行命令,命令结束会停止
+		可以用sh脚本写个循环：
+			docker run -d ubuntu /bin/sh -c "while true;do echo hello world;sleep 1;done"
+			-c 后面跟程序
+	-查看容器日志：
+		docker logs [-f] [-t] [--tail] 容器名
+			-f 是否跟踪日志,default=false
+			-t 是否返回时间戳,default=false
+			--tail 返回的日志数量,default=all
+		用这个命令可以查看容器的状态
+	-查看运行中容器的进程：
+		docker top 容器名
+	-在已经运行的容器中启动新进程：（也可以用这个命令让 后台——>交互式）
+		docker exec [-d] [-i] [-t] 容器名 [命令] [参数] 
+	-停止守护式容器：
+		docker stop 容器名	(类似于正常关机)
+		docker kill 容器名	(类似于自己拔电源)
+	
+	
+  5.容器中部署网站：
+	-设置容器的端口映射：
+		run [-P] [-p]
+			-P  将容器暴露的所有端口进行映射,default=false
+			-p	指定映射的端口
+				-随机宿主机端口,指定容器端口
+					docker run -p 80 -i -t ubuntu /bin/bash
+				-同时指定宿主机端口,指定容器端口
+					docker run -p 8080:80 -i -t ubuntu /bin/bash
+				-指定ip,指定容器端口
+					docker run -p 0.0.0.0:80 -i -t ubuntu /bin/bash
+				-指定ip,指定宿主机端口,指定容器端口
+					docker run -p 0.0.0.0:8080:80 -i -t ubuntu /bin/bash
+	-查看端口映射情况
+		docker port 容器名
+		
+	-Nginx部署流程
+		-创建映射80端口的交互式容器:
+			docker run -p 80 -i -t --name=web1 ubun /bin/bash 
+		-安装Nginx
+			apt-get install nginx1
+		-安装编辑Vim
+			apt-get install vim
+		-创建静态页面
+			mkdir -p /var/www/html
+			cd /var/www/html
+			vim index.html	创建网页
+			...写页面...					
+		-修改Nginx配置文件
+			whereis nginx	查看nginx的位置
+			vim /etc/nginx/sites-enabled/default 打开nginx配置文件default
+			修改root值为/var/www/html
+		-运行Nginx
+			nginx	运行nginx
+			ps -ef	查看nginx后台运行情况
+			ctrl+P ctrl+Q	退出交互式
+		-验证网站访问
+				docker port web1	返回映射的端口号,我这返回的32768
+				虚拟机浏览器查看：127.0.0.1:32768
+				Windows：192.168.81.135:32768
+			也可以，根据容器的端口进行访问：
+				docker inspect web1	返回172.17.0.2
+				虚拟机浏览器查看：172.17.0.2(默认了80端口)		
+			*这里需要容器后台挂起,且运行了nignx进程才能成功*
+	**注意事项**
+		当重启了容器后,映射的端口和容器ip都会发生变化
+
+  6.docker镜像：
+	-概念：联合加载技术层叠的只读文件系统,也是容器的基石。
+	-查看镜像存储的位置与存储驱动：
+		docker info
+		镜像存储在：/var/lib/docker
+	-查看镜像：
+		sudo ls -l /var/lib/docker/aufs
+	-列出镜像：
+		docker images [选项] [参数]
+			-a 			是否显示全部,default=false
+			-[..]		显示的过滤条件
+			--no-trunc	不使用截断的形式显示数据,default=false
+			-q			只显示镜像的唯一id
+	-镜像的仓库：
+		repository	仓库->镜像的集合,例：ubuntu是个仓库,其各个版本为镜像
+		registry	仓库->Docker镜像的存储服务
+		registry包含有repository的仓库,repository的仓库包含的是独立的镜像
+	-镜像的标签TAG:
+		仓库不同镜像以标签来区分
+		仓库名+标签名 = 镜像名
+		例：ubuntu + 18.0.4 = ubuntu18.0.4
+		如果创建容器时没有指定镜像名,而是仓库名,那他用的是标签名为lastest的镜像
+		例：docker -i -t ubuntu /bin/bash
+	-查看镜像的完整信息：
+		docker inspect [镜像名/仓库:标签]
+		例： docker inspect ubuntu:lastest
+	-删除镜像：
+		docker rmi [选项] IMAGE [IMAGE...]
+			-f 		强制删除
+			--no-proune		保留删除的镜像中被打标签的副镜像
+	-删除所有ubuntu镜像:
+		docker rmi $(docker images -q ubuntu)
+	-查找镜像:
+		-在dockerhub官网查看
+		-命令行：
+			docker search [选项] TERM
+				--automated		只显示自动化构建出的docker镜像,default=false
+				--no-trunc		不使用截断的形式显示数据,default=false
+				-s				限定显示结果的最低星级,default=0
+			-例：	
+				docker search -s 3 ubuntu
+	-获取镜像：
+		docker pull [选项] NAME [:TAG]
+			-a	匹配到的全部下载
+		-例：docker pull ubuntu:18.04
+	-更换获取镜像的镜像源:
+		1.修改： 
+			/etc/default/docker
+		2.添加：
+			DOCKER_OPTS ="--registry-mirror=http://MIRROR-ADDR"
+			镜像网站1：daocloud
+		3.重新启动docker：
+			sudo service docker restart
+	-将自己构建的镜像上传到Dockerhub:
+		doCker push NAME[:TAG]
+	-构建镜像：
+		-通过容器构建：
+			docker commit [选项] CONTAINER [REPOSITORY[:TAG]]
+				-a 	指定作者
+				-m 	镜像构建的信息
+				-p	不暂停正在执行的容器,default=暂停
+		-用过dockerfile文件构建：
+			docker build
+			具体百度
+
+  7.Docker的C/S模式
+	-C/S连接方式：
+		unix:///var/run/docker.sock 默认
+		tcp://host:port
+		fd://socketfd
+	-运行模式:
+	  user <---CLI/APP---> Docker client <---Socket---> Docker Server
+	  以上说明client可以远程访问server端
+ 
+  8.docker守护进程的配置和操作
+	-以守护模式运行Docker的程序
+		-docker -d [选项]
+			运行相关：
+			-D 	开启debug,default=false
+			-e	使用的驱动模式,default=native
+			-l	日志的级别	default=info
+			-g	写入文件的地址	default="/var/lib/docker"
+			-p	进程id	default=n"/var/run/docker.pid"
+			--icc	容器是否互相连接的,default=true
+			服务器连接相关：
+			-G	用户组,default="docker"
+			-H	连接socket的选项
+			--tls 安全相关
+			....很多
+	-docker启动配置文件：
+		/etc/default/docker
+	-查看守护进程的运行状态：
+		ps -ef | grep docker
+	-启动守护进程：
+		sudo service docker start
+	-停止守护进程：
+		sudo service docker stop
+	-重启守护进程：
+		sudo service docker restart
+
+  9.docker客户端与守护进程的远程访问
+	-先在启动配置文件设定Docker单独name
+		/etc/default/docker
+	-重启守护进程：
+		sudo service docker restart
+	-远程访问Docker的api
+		curl http://xxx.x.x.x:xxx/info
+	-也可以用Docker命令访问远程守护进程的info
+		docker -H tcp://xxx.x.x.x:xxx info
+	-也可以配置环境变量后不用输入-H..直接访问远程
+		export DOCKER_HOST="tcp://xxx.x.x.x:xxx"
+		docker info 
+	-当不用远程连接时：
+		export DOCKER_HOST=""
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

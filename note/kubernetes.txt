@@ -1,0 +1,129 @@
+  
+  1.kubernetes简介
+	-特点：
+		轻量级，消耗资源小
+		开源
+		弹性伸缩
+		负载均衡
+		
+  2.kubernetes组件
+	-must服务：
+		scheduler	调度器			分配任务的
+		apisever	服务器			操作访问的入口
+		replication controller	控制器	负责根据需求增加删除pod容器副本
+	-etcd：（持久化）
+		键值对数据库---可信赖的分布式键值存储服务
+		作用：为分布式集群存储关键数据,帮助分布式集群正常运转
+	-node节点：
+		pod			
+		kubelet		创建容器,位置Pod生命周期
+		kube proxy	投影pod端口映射,同时负责负载均衡
+		container	一个container == 一个docker
+		
+  3.pod
+	-概念：每个pod都有一个pause容器
+	-同一个pod里面的容器共享网络与存储卷，
+	 如在里面直接localhost就能访问另外一个容器的端口
+	 所以同pod不同容器端口不能相同	
+	-控制器管理：
+		-ReplicationController
+			控制副本数保持在用户定义的数量
+		-ReplicaSet
+			在ReplicationController基础上,支持集合式selector
+		-Deployment（前三一般用这个）
+			ReplicaSet的管理器，且多出一些功能（如：rolling-update）
+		-Horizontal Pod Autosacling
+			仅使用于Deployment与ReplicaSet
+			弹性扩展,可以设置当cpu利用率到达一定数额时,增加容器来分担利用率
+			可以设置：最多容器数,最少容器数,cpu
+		-StatefulSet有状态服务（有数据存储的服务）
+			稳定的持久化服务,即pod重新调度访问相同数据
+			稳定的网络标志,pod名和host名不变
+			有序部署,有序扩展,即根据顺序依次启动
+			有序删除,有序收回
+		-DaemonSet
+			确保node上运行一个pod副本, 
+		-Job
+			负责批处理任务
+			执行脚本任务,保证pod成功结束,即脚本执行成功
+		-CronJob
+			有时间管理的Job
+	-kubernetes服务发现
+		根据pod标签的标志来获取到我们所需要的服务
+		
+  4.kubernetes网络通讯方式
+	-k8s假定pod在扁平化的网络空间中
+		扁平网络空间：可以通过对方的ip直接达到。
+		GCE(google compute enginee)的云服务已经实现了
+		其他私有云搭建着：需要先构建扁平化的网络空间。
+	-同一个pod的容器通讯：localhost
+		即通过pause容器,localhost即可访问
+	-不同pod之间通讯：Overlay Network(全覆盖网络)
+		-在同一机器：
+			有docket0网桥直接转发至pod2
+		-不同机器：
+			将pod的ip与node的ip关联起来,通过关联互相访问	
+	-pod与service通讯：各节点的Iptables规则
+		使用LVS
+	-pod到外网通讯：
+		查找路由表,转发数据包到宿主机网卡,宿主机完成路由选择,通过动态数据包,将源ip换成宿主机网卡ip,然后发送请求
+	-外网访问Pod通讯：
+		将Service通过nodepod进行映射然后访问
+	-Flannel网络规划服务
+		让集群的不同节点主机创建的在全集群ip地址唯一
+	-Flanned远程端口访问方案
+		跨主机的扁平化网络根据多次ip封装解析做到跨主机访问	
+		etcd存储已分配的ip地址
+		监控etcd每个pod实际地址,并维护pod节点路由表
+		
+  5.kubernetes安装部署	
+	-centerOs 要安装7以上的
+	-查看ip地址配置详情
+		vi /etc/sysconfig/network-scripts/ifcfg-ens33
+	-yum 安装k8s 看网上教程
+	-升级系统内核到4.44
+	-设置docker开机自启动	
+		-systemctl start docker
+		-systemctl enable docker
+	-安装kubeadm
+	
+  6.kubernetes资源清单
+	-分类：
+		-名称空间级别：
+			概念：只有在该名称下 才能被调用
+			-工作负载型资源：
+				
+		-集群级别：
+			概念：不管哪里都可以被调用
+		-元数据型：
+			概念：通过某项的指标进行扩展
+	
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

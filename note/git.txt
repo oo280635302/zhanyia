@@ -1,0 +1,65 @@
+ 
+  1.使用
+	-git clone ....		克隆/下载仓库代码到本地
+		//git clone git@gitee.com:im/im.git
+		-gitee gitlab git ...的文件都可以下载
+	
+  2.配置文件信息
+	-克隆没有加密的仓库,可以不需要任何配置就可以下载
+	-但是有加密的仓库,就需要配置公钥和账号
+	-1):
+		-git config user.name "名字"
+		-git config user.email "邮箱"
+	-2):
+		-git config --list	查看配置信息
+	-3):
+		-ssh-keygen -t rsa -C "邮箱"	生成shh秘钥
+		*注意：
+			遇到：ssh-keygen command not found
+			-cd ~/.ssh	
+			-mkdir key_backup	
+			-cp id_rsa* key_backup	//报错不用管
+			-rm id_rsa*				//报错不用管
+			-再次执行生成shh秘钥
+	-4):
+		-windows系统：在C:\Users\XX\.ssh	找到id_rsa.pub
+		-linux系统：在~/.ssh				找到id_rsa.pub
+		-复制内容
+	-5):
+		-git或者gitee或者gitlab...官网 个人设置->安全设置->ssh公钥->添加公钥->粘贴到 公钥 处->确定
+	-6)：
+		-git clone 你的仓库吧！
+		
+  3.接收
+	git pull		从远程获取最新的版本到本地，并自动merge
+	git fetch		从远程获取最新版本到本地，不会自动merge
+	
+  4.提交
+	git push		将本地项目提交到远程仓库GitHub。
+	git commit		将本地修改过的文件提交到本地库
+	
+  5.追踪
+	git add			命令对当前目录下的文件添加跟踪
+
+  6.错误情况
+	warning: LF will be replaced by CRLF in xxx.
+	-输入：git config core.autocrlf false
+	
+  7.数据冲突：
+	git stash	备份当前的工作区的内容，从最近的一次提交中读取相关内容，让工作区保证和上次提交的内容一致
+	git pull	拉取服务器上的代码；
+	git stash pop 	从Git栈中读取最近一次保存的内容，恢复工作区的相关内容
+	git stash list  显示Git栈内的所有备份
+	git stash clear 清空Git栈
+	
+  8.忽略提交
+	.gitignore	创建该文件 配置忽略提交的文件
+	
+	
+	
+	
+	
+	
+	
+	
+	

@@ -1,0 +1,301 @@
+  
+  1.redis介绍
+	-nosql类型的数据库
+	-性能非常高
+	-分布式内存数据库,数据结构数据库
+	
+  2.redis核心
+	-默认端口号：6379
+	-核心组件：	解析指令,对数据做相应处理
+	-然后将数据保存在内存中，类型有：string,hash,list,set集合,zset集合
+		-hash 保存多对键值对的数据
+		-list 前后可以加数据的channel（形容）
+	-最后保存在文件里面：.dbf和.dbm
+	
+  3.基本操作
+	-安装好后,默认有16个数据库,0-15
+	1) string字符串
+		-添加(修改)key-value(set)
+			-set 键名 值
+			
+		-查看key-value
+			-get 键名
+		-删除指令：
+			-del 键名
+		-添加一个有时限的值,指定时间后删除
+			-setex 键名 时间(秒) 值
+		-一次性添加多个key-value
+			-mset 键1 值1 键2 值2...
+		-一次性获取多个Key-value
+			-mget 键1 键2...
+		-查看当前数据库有多少key-value
+			-dbsize
+		-DECR 键名			作用让键名对应的数字值-1
+			-当键名不存在时,会让其值变成-1
+			-无法对不是数字的值减,会报错
+		-INCR 键名			作用让键名对应的数字值+1
+			-当键名不存在时,会让其值先变成0 再+1
+			-无法对不是数字的值减,会报错
+		-EXISTS 键名		检查给定Key是否存在
+			-存在1，不存在0
+		-EXPIRE 键名 时间(s)	给指定键名生存时间,时间过后就会自动删除
+			-设置成功返回1,失败0
+		-EXPIREAT 键名 时间戳   在到达时间戳后自动删除
+			-设置成功返回1,失败0
+		-SETNX 创建一个key-value 设置成功返回1,失败0
+			-区别于set setnx在key存在的时候不会修改value
+			-作用于分布式锁
+			-防止死锁：
+				-set key value EX 时间 NX 设定时间后键过期,并且键存在不能对其操作
+		-INCRBY 键名 数字	让键名增加值+上数字
+			-同INCR相似,区别他可以设置增加的个数,而不是固定为1
+			-无法对不是数字的值减,会报错
+			-可以-->作用于分布式
+		
+	2) hash哈希
+		-添加hash
+			-hset 键名 字段名 值
+		-查看hash某个键名某字段
+			-hget 键名 字段名
+		-查看hash某键的所有字段
+			-hgetall 键名
+		-删除hash
+			-hdel 键名 字段名
+		-添加hash(多个字段)
+			-hmset 键名 字段1 值1 字段2 值2...
+		-获取hash(多字段)
+			-hmget 键名 字段1 字段2
+		-查看hash有多少个字段
+			-hlen 键名
+		-增加hash表的某个字段的值
+			-HINCRBY 键名 字段名 增加的数字
+			-类似于set的incrby
+		-删除一整个hash
+			-del hash键名
+		
+		
+	3) list列表
+		-从左添加list
+			-lpush 键名 值1 值2 值3 
+		-从右添加List
+			-rpush 键名 值1 值2 值3 
+		-从左查看list
+			-lrange 键名 开始索引 结束索引
+			*取得时候顺序相反
+		-从左删除一个数据	
+			-lpop 键名
+		-从右删除一个数据
+			-rpop 键名
+		-删除整个list列表
+			-del 键名
+		-返回当前整个list的长度,list不存在,返回0
+			-LLEN 键名
+		-弹出左一个元素,若没有元素,阻塞等待timeout秒
+			-BLPOP key timeout
+			-timeout = 0一直阻塞
+		-弹出右一个元素,若没有元素,阻塞等待timeout秒
+			-BRPOP key timeout
+			-timeout = 0一直阻塞
+			
+	4) set集合
+		-常用
+			-添加set元素
+				-sadd 键名 元素1 元素2...
+			-查看set所有元素
+				-smembers 键名
+			-查看set是否有对应元素
+				-sismembers 键名 元素名
+				-返回1存在,返回0不存在 
+			-删除Set指定元素
+				-srem 键名 元素1 元素2...
+				-成功返回1，不成功返回0
+			-获取指定key元素个数
+				-SCARD 键名
+			-判断元素是否存在于key中
+				-sismember 键名 元素名 
+			-集合key中随机选count个元素
+				-srandmember key [count]
+			-集合key中随机选count个元素,同时这些元素从key中删除
+				-spop key [count]
+		-运算
+			-sinter key [key]	交集运算
+			-sinterstore destination key [key] 交集运算结果放入destionation中
+			-sunion key [key]	并集运算
+			-sunionstore destination key [key] 并集运算结果放入destionation中
+			-sdiff key [key]	差集运算
+				-以第一个键为准,后面的键的值都会去掉与第一个键相同的值
+			-sidffstore destination key [key] 差集运算结果放入destionation中
+	
+	5) zset有序集合
+		-常用
+			-添加zset元素
+				-zadd 键名 分数名1 元素名1...
+			-删除zset元素
+				-zrem 键名 元素名...
+			-返回zset中key的member的分数
+				-zscore 键名 元素名
+			-给zset中key的member分数+个分数
+				-zincrby 键名 被加的分数 元素名
+			-返回zset中key的个数
+				-zcard key
+			-正序获取有序集合start到stop的元素
+				-zrange 键名 start stop [withscores]
+			-逆序获取有序集合start到stop的元素
+				-zrevrange 键名 start stop [withscores]
+		-运算
+			-zunionstore destkey 
+	6) 通用
+		-删除一整个键(任意类型)
+			del 键名
+		-查询一个键是否存在
+			exists 键名
+			
+	-切换数据库 
+		-select 库索引
+	-清空当前数据库
+		-flushdb
+	-清空所有数据库
+		-flushall
+	-将内存的数据保存到文件上
+		-SAVE			文件为：目录/dump.rdb
+ 
+  4.String字符串-介绍
+	-字符串最大value:512M
+	-string类型：二进制,可以保存任何二进制
+	-redis会对字符串转码保存
+  
+  5.hash哈希-介绍
+	-一个键值对的集合,类似于golang的map类型
+	-key值不能重复
+	
+ 
+  6.list列表-介绍	
+	-list本质是一个链表,
+	-list元素是有序的
+	-元素的值可以重复
+	-list数据都没有了对应的键消失
+
+  7.set集合(无序)-介绍
+	-元素是无序的
+	-元素的值不能重复
+	-添加时返回0，说明没有添加进去
+	
+  8.redis命令参考大全
+	url:http://redisdoc.com/
+	
+  9.redi密码的设置:
+	当没有密码的时候：
+		config get requirepass XXX（password）	设置密码
+	当有密码的时候：
+		需要先验证密码：
+			auth XXX
+		再设置密码：	
+			config get requirepass XXX（password）	设置密码
+	登录有密码的redis:
+		./src/redis-cli -p 6379 -a XXX
+	
+  10.事务
+	事务开始：
+		MULTI
+	事务执行,并恢复连接状态：
+		EXEC
+	事务丢弃：；
+		DISCARD
+		
+  11.keys
+	keys *		查询所有键
+	keys *XX*	查询指定键
+	
+  12.连接redis服务器
+	redis-cli -h 地址
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
