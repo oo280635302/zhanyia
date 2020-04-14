@@ -1,0 +1,811 @@
+
+
+  1.取模---队列---判断队列是否满
+	(tail+1)%maxsize = head
+	-上列总结是：两种情况的合：
+		1) tail在head 后面的情况队列满---> tail-head+1 = maxsize
+			-这个一种情况tail在数组最后,head在数组最前 
+			-总结下来 (tail + 1)%maxsize = 0 ,正好head= 0 
+			-满足了 tail+1 == maxsize的情况
+		2) tail在head 前面的情况队列满---> tail-head+1 = 0
+			-tail+1 = head
+			-可以吧环形数组看成maxsize个数,循环+1 的队列
+			-tail + 1  % maxsize 中tail + 1始终<maxsize
+			-tail+1%maxsize = tail +1
+			-tail+1%maxsize = head  
+			-满足了tail+1 !=maxsiez的情况
+		-本身maxsize就!=0,不用考虑%0的情况
+		-所以 (tail+1)%maxsize = head满足 用来判断队列 满
+
+  2.数据结构使用手册
+	网址：www.cs.usfca.edu/~galles/visualization
+  
+  	
+  3.Redis设计到的库
+	-栈stack
+		概念：先进后出 
+		LPUSH+LPOP
+	-队列queue
+		概念：先进先出
+		LPUSH+RPOP
+	-阻塞队列blocking mq
+		概念：先进先出,如果没有数据出去,等待到有数据再出去,
+		LPUSH+BRPOP
+		
+-------------------------------------------------数据结构-------------------------------------------------	
+
+	-介绍：
+		数据结构是研究算法的学科
+		程序=数据结构+算法+业务逻辑
+		
+	1.稀疏数组sparsearray:
+		-使用场景：当一个数组大部分值都相同,保存其不同的数的数组
+		-处理方法：
+			-记录数组有几行几列,有多少个不同的值
+			-把不同的值得行列记在另个数组中,从而缩小程序的规模
+		-方法：
+			数组：索引0 总行row 总列col 默认值value
+				  索引1 行row 	列col 	值value
+				  索引2 行row 	列col 	值value
+				  索引3 行row 	列col 	值value
+		-本质：
+			将多余的相同数设置保存,把少余的数组位置记录下来,压缩数组
+		-实例1：
+			func main() {
+				//原始数组
+				var sparseMap [11][11]int
+				sparseMap[1][2] = 1
+				sparseMap[2][3] = 1
+				//转成稀疏数组
+				var sparseArr []node
+				valNode := node{
+					row: 11,
+					col: 11,
+					val: 0,
+				}
+				sparseArr = append(sparseArr,valNode)
+				for i,v := range sparseMap{
+					for j,v1 :=range v{
+						if v1 != 0{
+							valNode := node{
+								row: i,
+								col: j,
+								val: v1,
+							}
+							sparseArr = append(sparseArr,valNode)
+						}
+					}
+				}
+				fmt.Println(sparseArr)
+			}
+			type node struct {
+				row int
+				col int
+				val int
+			}
+		-将稀疏数组转换成原始数组
+		-由于golang,数组长度是const,因此需要建立数组来接受
+		-实例2：
+			//将Sparse数组--->原始数组
+			var unSparseMap [11][11]int
+			for i,j := range unJsonSparse{
+				if i == 0 {
+					for x :=0 ; x < j.Row ;x++{
+						for y :=0 ; y < j.Col ;y++{
+							unSparseMap[x][y] = j.Val + 10
+						}
+					}
+				}else {
+					unSparseMap[j.Row][j.Col] = j.Val
+				}
+			}
+			fmt.Println(unSparseMap)
+			
+	2.队列queue
+		-队列的介绍：
+			队列是一个有序的列表，可以用数组或者是链表来实现。
+			遵循先入先出的原则。
+		-数组模拟队列:(资源耗尽，不能循环使用)
+			-队列本身是有序列表，若使用数组的结构来存储队列的数据，则该队友有最大容量
+			-两个变量来标记队列前后端,front随数据输出改变,rear随数据输入改变
+			-数据存入队列addqueue：
+				1) 尾针传入数据往后移：rear+1
+				2) rear  == maxsize -1 队列满(无法存入数据)
+			-初始front,rear = -1
+			-实例：
+				type Queue struct {
+					Maxsize int
+					Arr		[4]int
+					front  	int
+					rear  	int
+				}
+				//添加数组
+				func (this *Queue)AddQueue(val int)(err error) {
+					if this.rear == this.Maxsize - 1{
+						return errors.New("queue full！")
+					}
+					this.rear++
+					this.Arr[this.rear] = val
+					return
+				}
+				//显示队列
+				func (this *Queue)ShowQueue(){
+					for i:= this.front+1 ; i<= this.rear;i++{
+						fmt.Printf("array[%d]=%d\t",i,this.Arr[i])
+					}
+					fmt.Println()
+				}
+				//取出数据
+				func (this *Queue)GetQueue()(val int,err error) {
+					if this.front == this.rear{
+						err = errors.New("queue empty！")
+						val = -1
+						return
+					}
+					this.front ++
+					val = this.Arr[this.front]
+					return
+				}
+				func main() {
+					 newQueue := Queue{
+						 Maxsize: 4,
+						 Arr:     [4]int{},
+						 front:   -1,
+						 rear:    -1,
+					 }
+					for i:= 1;i<5;i++{
+						err := newQueue.AddQueue(100*i)
+						if err!=nil{
+							fmt.Println(err)
+							return
+						}
+						newQueue.ShowQueue()
+					}
+					v,_ := newQueue.GetQueue()
+					fmt.Println(v)
+				}
+		-环形队列（自制）：(单个队列循环使用)
+			func (this *Queue1)add(val int)(err error){
+				if this.rear == this.Maxsize  && this.Arr[0]== 0{
+					this.rear = 0
+				}else if this.rear == this.Maxsize  &&  this.Arr[0] != 0{
+					return errors.New("队列Full")
+				}//判断rear是否可以环
+				this.Arr[this.rear]=val
+				this.rear++
+				return
+			}
+			func (this *Queue1)show(){
+				fmt.Println(this.Arr)
+			}
+			func (this *Queue1)get()(val int,err error){
+				if (this.front== this.rear && this.rear == 4) || this.front== this.rear{
+					err = errors.New("队列空了")
+					return
+				}//判断front是否可以环
+				if this.front == this.Maxsize{
+					this.front = 0
+				}
+				val = this.Arr[this.front]
+				this.Arr[this.front] = 0
+				this.front++
+				return
+			}			
+		-环形队列(取模)：(单个队列循环使用)
+			-思路：
+				1) 什么时候队列满: (tail+1)%maxsize = head 
+				2) tail == head 表示空
+				3) 初始化, tail = 0 ,head =0 
+				4) 统计该队列中有几个元素: (tail+maxsize- head)%maxsize
+			-实例：
+				type Queue struct {
+					Maxsize int
+					Arr		[4]int
+					front  	int
+					rear  	int
+				}
+				//添加数组
+				func (this *Queue)AddQueue(val int)(err error) {
+					if this.IsFull() {
+						return errors.New("队列满了")
+					}
+					this.Arr[this.rear] = val
+					this.rear = (this.rear+1)%this.Maxsize
+					return
+				}
+
+				//显示队列
+				func (this *Queue)ShowQueue(){
+					size := this.Size()
+					if size == 0{
+						fmt.Println("队列为空")
+						return
+					}
+					front := this.front//一定要创个新的，不用动this.front本身
+					for i:=0 ; i<size;i++{
+						fmt.Printf("Array[%d]=[%d]\t",front,this.Arr[front])
+						//打印的值
+						front = (front+1 )%this.Maxsize
+					}
+					fmt.Println()
+				}
+
+				//取出数据
+				func (this *Queue)GetQueue()(val int,err error) {
+					if this.IsEmpty(){
+						err = errors.New("队列为空")
+						return
+					}
+					val = this.Arr[this.front]
+					this.front ++
+					return
+				}
+
+				//判断队列是否满了
+				func(this *Queue) IsFull()bool{
+					fmt.Println(this.rear)
+					return (this.rear +1 ) % this.Maxsize == this.front
+				}
+				//判断队列是否为空
+				func (this *Queue)IsEmpty() bool {
+					return this.front == this.rear
+				}
+				//判断队列里面有多少元素
+				func (this *Queue)Size() int {
+					return (this.rear+this.Maxsize-this.front)%this.Maxsize
+				}
+
+				func main() {
+					a := Queue{
+						Maxsize:4,
+						front:0,
+						rear:0,
+						}
+					a.AddQueue(10)
+					a.AddQueue(20)
+					a.AddQueue(30)
+					a.AddQueue(40)
+					a.GetQueue()
+					a.AddQueue(50)
+					a.GetQueue()
+					a.AddQueue(50)
+					a.ShowQueue()
+				}
+	 
+	3.链表link
+		-概念：链表是一个有序的列表,单列表类似于结构体,存放数据,同时保存下个节点的地址
+		-单链表：
+			-概念：单个节点里面有个链指向下一个节点
+			-一般情况:都有个头结点,用来表示链表头,本身不存放数据
+			-实例1(基础案例)：
+				type HeroNode struct {
+					id int
+					name string
+					next *HeroNode
+				}
+				func main()  {
+					var hero = &HeroNode{}
+					var hero1 = &HeroNode{id:   1, name: "宋江",}
+					var hero2 = &HeroNode{id:   2, name: "张飞",}
+					InsertHeroNode(hero,hero1)
+					InsertHeroNode(hero,hero2)
+					ShowHeroNode(hero)
+					
+				}
+				//插入链表
+				func InsertHeroNode(head *HeroNode, newhero *HeroNode) {
+					temp := head
+					for{
+						if temp.next == nil{
+							break
+						}
+						temp = temp.next
+					}
+					temp.next = newhero
+				}
+				//显示链表各个信息
+				func ShowHeroNode(head *HeroNode){
+					temp := head
+					if temp.next == nil{
+						fmt.Println("该链表为空")
+						return
+					}
+					for{
+						fmt.Printf("[%d,%s]\n",temp.next.id,temp.next.name)
+						temp = temp.next
+						if temp.next == nil{
+							break
+						}
+					}
+				}
+			-实例2(插入链表升级,根据id排序连接)
+				//插入链表
+				func InsertHeroNode(head *HeroNode, newhero *HeroNode) {
+					temp := head
+					for{
+						if temp.next == nil{
+							break
+						}else if temp.next.id > newhero.id{
+							break
+						}else if temp.next.id == newhero.id{
+							fmt.Println("当前id:",newhero.id,"重复")
+							return
+						}
+						temp = temp.next
+					}
+					newhero.next = temp.next
+					temp.next = newhero
+				}
+			-实例3：(删除链表某个字段)
+				//删除节点
+				func deleteHeroNode(head *HeroNode,id int) {
+					temp := head
+					flag := false
+					for{
+						if temp.next == nil{
+							break
+						} else if temp.next.id == id{
+							flag = true
+							break
+						}
+						temp = temp.next
+					}
+					if flag {
+						temp.next = temp.next.next
+					}else {
+						fmt.Println("没有需要删除的id,",id)
+					}
+				}
+		-双向链表：
+			-概念：单个节点有两个链，一个指向前一个节点，一个指向下一个节点	   
+			-实例1：（基础案例）
+				func main()  {
+					var hero = &Hero{}
+					var hero1 = &Hero{id:   1, name: "宋江",}
+					var hero2 = &Hero{id:   2, name: "张飞",}
+					var hero3 = &Hero{id:   3, name: "李四",}
+					var hero4 = &Hero{id:   4, name: "林冲",}
+					InsertHero(hero,hero1)
+					InsertHero(hero,hero2)
+					InsertHero(hero,hero3)
+					InsertHero(hero,hero4)
+					ShowHer(hero)
+				}
+				//插入链表
+				func InsertHero(head *Hero, newhero *Hero) {
+					temp := head
+					for{
+						if temp.next == nil{
+							break
+						}
+						temp = temp.next
+					}
+					temp.next = newhero
+					newhero.pre = temp
+				}
+				//查看链表
+				func ShowHer(head *Hero){
+					temp := head
+					if temp.next == nil{
+						fmt.Println("该链表为空")
+						return
+					}
+					for{
+						fmt.Printf("[%d,%s]\n",temp.next.id,temp.next.name)
+						temp = temp.next
+						if temp.next == nil{
+							break
+						}
+					}
+				}
+			-实例2：（反向列表特点,可以逆序查看）
+				//逆序查看
+				func DescHero(head *Hero){
+					temp := head
+					if temp.next == nil{
+						fmt.Println("该链表为空")
+						return
+					}
+
+					for {
+						if temp.next == nil{
+							break
+						}
+						temp = temp.next
+					}
+
+					for{
+						fmt.Printf("[%d,%s]\n",temp.id,temp.name)
+						temp = temp.pre
+						if temp.pre == nil{
+							break
+						}
+					}
+				}
+		-单向环形链表：
+			-概念：最一个节点指向最先的节点
+			-技巧：删除链表的某个节点,设定辅助节点很重要。
+				   head有值--->需要用值来设定
+			-实例（简单案例）：
+				type CatNode struct {
+					id    int
+					name  string
+					next  *CatNode
+				}
+
+				func main() {
+					 cat := &CatNode{}
+					 cat1 := &CatNode{
+						id:1,
+						name:"小白",
+					 }
+					InsertCatNode(cat,cat1)
+					ShowCatNode(cat)
+					
+				}
+				//添加猫猫
+				func InsertCatNode(head *CatNode, newCatNode *CatNode) {
+					//判断是否是第一猫
+					if head.next == nil {
+						head.id = newCatNode.id
+						head.name = newCatNode.name
+						head.next = head
+						fmt.Println("第一只猫已加入")
+						return
+					}
+					temp := head
+					for {
+						if temp.next == head{
+							break
+						}
+						temp =  temp.next
+					}
+					temp.next = newCatNode//插入前后链接
+					newCatNode.next = head
+				}
+				//查看猫猫
+				func ShowCatNode(head *CatNode) {
+					temp := head
+					if temp.next == nil{
+						return
+					}
+					for {
+						fmt.Println(temp.id,temp.name)
+						if temp.next == head{
+							break
+						}
+						temp = temp.next
+					}
+				}
+			-删除猫猫(比较复杂,有多种情况判断)
+				//删除猫猫
+				func DeleteCatNode(head *CatNode,id int) {
+					//没有猫猫的情况
+					if head.next == nil{
+						fmt.Println("没有猫猫删除")
+						return
+					}
+					//一只猫猫的情况
+					if head.next == head {
+						head.next = nil
+						return
+					}
+					/**********第一个和最后一个**********/
+					temp := head
+					tail := head
+					for {
+						if tail.next == head{
+							break
+						}
+						tail = tail.next
+					}
+
+					//多只猫猫的情况
+					for {
+						//删除的猫是第一只
+						if head.id == id {
+							fmt.Println("删除的是f猫猫")
+							head.id = temp.next.id
+							head.name = temp.next.name
+							head.next = temp.next.next
+							temp = head.next
+							break
+						}
+						//删除的猫不是第一只
+						if temp.id == id {
+							//删除的猫是最后一只
+							fmt.Println("删除的不是f猫猫")
+							tail.next = temp.next
+							temp = temp.next
+							break
+						}
+						temp = temp.next
+						tail = tail.next
+					}
+					/**********第一个和最后一个**********/
+
+					fmt.Println("删除：猫猫",id,"成功")
+					return
+				}
+			-约瑟夫问题（丢手绢）：
+				type StuNode struct {
+					id int
+					next *StuNode
+				}
+				func main() {
+					head := AddStu(5)
+					ShowStu(head)
+					Play(head,2,4)
+				}
+				//创建环形链
+				func AddStu(num int ) *StuNode {
+					first := &StuNode{}
+					curt := &StuNode{}
+					if num <1 {
+						fmt.Println("num输入错误")
+						return  first
+					}
+
+					for i := 1;i <=num;i++{
+						boy :=&StuNode{
+							id:   i,
+						}
+						if i == 1{
+							//如果第一个boy ,让他自循环
+							first = boy
+							curt = boy
+							curt.next = first
+						}else{
+							curt.next = boy
+							curt = boy
+							curt.next = first
+						}
+					}
+					return first
+				}
+				//显示环形链
+				func ShowStu(head *StuNode) {
+					temp := head
+					if temp.next == nil{
+						log.Fatal("没有小朋友")
+					}
+					for {
+						fmt.Println(temp.id)
+						if temp.next == head{
+							break
+						}
+						temp = temp.next
+					}
+				}
+				//丢手绢出列
+				func Play(head *StuNode, startId int, num int) {
+					if num <0 {
+						fmt.Println("请设定正常丢手绢长度")
+						return
+					}
+					if head == nil {
+						fmt.Println("没有小朋友参加")
+						return
+					}
+					//尾巴指针
+					tail := head
+					for {
+						if tail.next == head{
+							break
+						}
+						tail = tail.next
+					}
+					for i:=1 ;i<= startId - 1 ;i++{
+						head = head.next
+						tail = tail.next
+					}
+					fmt.Printf("开始的是%v\n",head.id)
+					for{
+						for i:=1 ;i<= num - 1 ;i++ {
+							head = head.next
+							tail = tail.next
+						}
+						fmt.Println(head.id,"出局")
+						tail.next = head.next
+						head = head.next
+						if tail == head{
+							break
+						}
+					}
+					fmt.Println(head.id,"最后出局")
+				}
+		
+	4.排序Sort
+		-冒泡排序：	
+			-概念：两个数相互对比,调换位置
+	
+		-选择排序：	
+			-概念：选择最小的数与第一个数交换,然后选除了第一个的最小数与第二个数交换...
+			-实例：(从大到小选择排序)
+				func sort(arr *[5]int) {
+					for j:= 0;j< len(arr);j++{
+						max,maxIndex := arr[j],j
+						for i:= j+1;i< len(arr);i++{
+							if max < arr[i]{
+								max = arr[i]
+								maxIndex = i
+							}
+						}
+						arr[j],arr[maxIndex] = arr[maxIndex],arr[j]
+					}
+				}
+		-插入排序：（效率优于选择排序）
+			-概念：将数组分成有序的和无序的两部分，才开始有序的只有第一个，将无序的提一个数据出来，
+				   与前面有序依次的进行比较，每次比较没符合规则有序数据就往后移且覆盖后一个数据，直
+				   到找到符合规则的就插入到其后面那个数据中(该数据已经copy过一次了)。
+			-实例：	
+				func insertSort(arr *[5]int) {
+					for i:=1; i < 5;i++{
+						insertVal := arr[i] //无序列表中提取出来的第一个数
+						insertIndex := i -1	//有序列表最后一个数据索引
+						for insertIndex >= 0 && arr[insertIndex] < insertVal{
+							//有序列表后移
+							arr[insertIndex+1] = arr[insertIndex]
+							insertIndex--
+						}
+						if insertIndex+1 != i{
+							//插入无序的数进入有序
+							arr[insertIndex+1] = insertVal
+						}
+					}
+
+				}
+		-快速排序：
+			-冒泡排序的改进
+			-概念：
+				找一个基准数,交换他们的位置,使基准左边都小于等于基准右边,分隔开,递归分隔的
+				左右数组,直到排序成功。
+			-实例：	
+				func QuickSort(left int,right int,arr *[10]int)  {
+					l :=left
+					r :=right
+					pivot := arr[(left+right)/2]
+
+					for ;l<r; {
+						for ;arr[l] < pivot;{
+							l++
+						}
+						for ;arr[r] > pivot;{
+							r--
+						}
+						if l>=r{
+							break
+						}
+						arr[l],arr[r] = arr[r],arr[l]
+						if arr[l] == pivot{
+							r--
+						}
+						if arr[r] == pivot{
+							l++
+						}
+					}
+					fmt.Println(l,r)
+					if l==r {
+						l++
+						r--
+					}
+					fmt.Println(l,r)
+					if left<r{
+						QuickSort(left,r,arr)
+					}
+					if right > l{
+						QuickSort(l,right,arr)
+					}
+				}
+		-1W数比较，选择排序：9s，插入排序：2s，快速排序：0.12s（打印的情况）
+		
+	5.栈stack --别名：堆栈
+		-概念：一个先入后出的有序列表
+				限制线性表中元素的插入和删除只能在线性表的同一段进行的一种特殊线性表。
+				允许插入和删除的一段为变化的一端--称为 栈顶。
+				另一端为固定的一段---称为栈底
+		-应用场景：
+			1.子程序调用：跳往子程序前,会将下个指令的地址存到栈中,程序执行完将地址取出,回到原程序
+			2.处理递归调用：
+	
+	6.二叉搜索树(BST)
+		-基本概念：
+			-二叉拥有的属性有：left 左子结点;right 右子结点;p 父结点;key 该结点的属性
+			-根结点为：整颗数唯一一个父结点为null的结点
+			-当结点没有父结点也没有子结点时,该结点的key就为Null
+			-某结点的所有左子结点的key都应该比该结点的key小或等于
+				-例: x.left.key <= x.key  
+			-某结点的所有右子结点的key都应该比该结点的key大或等于
+				-例：x.right.key >= x.key
+		-用处：
+			一种用于搜索的数据结构
+		-性能：
+			遍历 < BST <= 红黑数；其性能的好坏取决于数据插入的顺序,不能保证
+		-搜索模式：
+			搜一个树,先对比节点,比节点小进入左子节点,比节点大进入右子节点,以此推论
+		
+---------------------------------------算法-------------------------------------------
+	
+				
+				
+				
+				
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

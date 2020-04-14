@@ -1,0 +1,1172 @@
+ 
+ --------------------html-------------------------------
+ -<!DOCTYPE html> 让浏览器知道自己要处理的内容是html
+ 
+ -<html> </html>文档中html的开始与结束	根元素
+
+ -lang="en" 浏览器自动翻译成英语， zh=中文 位置<html lang="en">
+
+ -<head>提供文档内容与标注信息 
+   <meta>元素句，给浏览器提供多字的功能访问 
+   charset="UTF-8" 以UTF-8吧整个网页进行编码
+   <title>标题
+ 
+ -<body>网页里的内容
+   -<a href="www.baidu.com">百度</a> 超链接   默认target _self
+     - 加target _blank 新建网页
+   -<b>粗体（后期不用，用css）
+   -<em>斜体 
+   -<u>下划线
+   -<s> 类似删除样子的字体
+   
+ -表格：<table>创建表 <tr>列 <td>每个单元格 <th> 标题
+   border="1px" 加一个1像素的边框
+   align="center" 位置居中 
+   colspan="数量" 合并行单元格的数量
+   rowspan="数量" 合并列单元格的数量
+   
+  -<br/> 换行
+  
+  -列表：<ol>有序列表<ul>无序列表<li>列表中的内容
+    reversed降序
+	type="？？"  换排序名称（1.a.A.i...）
+	
+  -表单:<form> </form>
+  <input>
+   -type="XX"  
+      test     单行文本框
+	  password 密码，页面上是隐藏的
+	  button   按钮（必须声明form里面的method属性，最好添加action属性）
+	  range    滑块
+	    -min    最小值
+		-max    最大值
+		-step   每次滑动距离
+		-value  起始值
+	  number   数字（其中属性同range）
+	  submit   提交
+	  checkbox 多选
+	  radio    单选
+	    -name    同一name只能选择一个
+		-checked 默认选中
+      datalist 非固定内容的选择框 需要加id指定 input里面的list
+	  email    有效邮箱格式
+	  url      有效网页格式
+	  tel      有效电话格式	
+	  date     日期
+	  color    颜色
+	  search   获取搜索用词
+	  hidden   生成隐藏的数据项（提交后能看到）
+  <select> <option>a</option> </select>		固定内容的选择框
+  <button>XX</button> 与JSP合作的并且为绑定事件的按钮
+   -value="XX"        实位
+   -placeholder="XX"  虚位
+   -maxlength="XX"    最大长度
+   -size="XX"         拓宽文本框
+   -readonly          只读
+  <textarea> </textarea>多行表单
+   -rows="xx"         宽度
+   -cols="xx"         长度
+      image   嵌入可点击图片
+	   //<input type="image" src="图片地址" width="80px">
+	  file    选择文件（需要在form 设置enctype="mulitipart/form-data"）
+	    -Multiple   一次允许上传多个文件
+		-Required   必须只能上传一个文件 
+  <datalist> 可选择框同时可以带输入自动搜索的功能
+  /*<datalist id="sexlist">
+      <option value="英雄联盟"></option>
+  */</datalist>
+  
+  -嵌入图片与创建分区响应<img>
+    src="图片地址" 
+	width       整体or长度尺寸
+	heigth      宽度尺寸
+    alt         备注
+   -将<img>放入a中就可以有超链接的效果
+   -创建客户端分区响应图map  （需要设置名字name="XX"，同时img要声明usemap="#XX"）
+     <map>    客户端分区响应元素
+	 <area>   图像上可以点击区域，可多个
+	     -href   加载url
+		 -alt    备注
+		 -shape  注明可点区域类型 + coords 区域范围
+             -shape="rect"  矩形区域     coords="左，上，右，下"
+             -shape="Circle"  圆区域     coords="左圆心距，上圆心距，半径"
+			 -shape="Ploy"    多边形  至少6个点组成 coords="X,X,X,X,X,X"
+		     -shape="Dafault" 默认区域   代表整张图片 不需要coords值
+			 
+  -插入视频 video mp4与ogg两种一起适应大多数浏览器
+        -autoplay    自动播放视频
+		-controls    手动控制
+		-preload     预先载入视频
+		      none 不载入   metadata  只载入第一帧   auto 下载整个（默认）
+	    -loop        循环播放
+		-poster      载入时显示图片的图片
+		-muted       视频静音
+	设置多个播放格式
+	   <source src="新格式视频" type="video/格式">
+	   
+  -插入音频audio：与video相似  mp3（mpeg）与ogg两种一起适应大多数浏览器
+
+  
+  
+  -----------------------CSS-------------------------------
+ 
+  -style  样式  最基本元素   
+      font-size   字体大小
+      color       颜色
+	  position:relative  开启相对定位
+	  overflow 属性规定当内容溢出元素框时发生的事情。
+  -创建css的方法 优先级从上往下
+       -元素内嵌：直接卸载元素框里面
+	   -文档内嵌：在head里面写 需要指定标签
+	   -外部样式：
+	     新建一个css文档，在head里写link rel="styleheet" type="text/css" href="新css"	  
+  -选择器
+       -选择所有元素：style  *{}
+	   -类型选择元素：style  a{}
+	                  body   <a></a>
+	   -类选择元素：  style  .class1{}
+	                  body   <p class="class1"></p>    
+	   -ID选择元素：  style  #id1{}
+	                  body   <p id="id1"></p>  
+	   -属性选择元素：style  [href]{}
+	                  body   <a href=""></a> 
+       -:选择器动作：(鼠标移动到后悔变样式)
+                      style  a{}后添加a:hover{}
+	                  body   <a> </a>    					  
+  
+  -控制边框和背景
+       -border边框
+	    -top 上 bottom 下  left 左 right  右
+         -width  大小
+         -color  颜色
+         -style  样式
+		 -radius 圆角
+             -solid  普通线		
+			 -dashed 破折线
+       -background背景
+	     -color  颜色
+		 -image  图片+url（图片地址）
+		 -repeat 背景出现的位置
+		 -size   尺寸
+		     -cover  布满全局
+			 -auto   自动
+		 -attachment 设置背景随滚动后的变化
+		     -fixed  滚动背景不动
+			 -local  固定背景不动
+	     -clip 作用区域 
+					  
+  -设置文本样式
+        - text-align 对齐文本
+	       -center 居中
+           -left   左对齐
+           -right  右对齐
+        -Direction   文本方向
+           -ltr   从左往右
+           -rtl   从右到左
+        -Letter-spacing  指定文字间距
+        -word-spacing    指定单词间距
+        -line-height     指定行高
+        -text-indent     首行缩进
+        -text-decoration 设置文本装饰
+           -underline 添加下划线
+           -overline  添加上划线
+           -line-through  中划线
+        -text-transform  设置文本大小写转换
+           -capitalize 首字母大写
+           -uppercase  全部字母大写
+           -lowercase  全部字母小写
+        -font-family      设置字体
+        -font-size        设置大小
+        -font-style       设置字体样式
+           -italic   斜体
+           -oblique  大
+        -font-variant  指定字母是否以小型大写字母显示
+        -font-weight   设置字体粗细
+        -text-shadow   创建文本阴影
+          	-text-shadow:水平偏移 垂直偏移 透明度 颜色
+  
+  -使用过渡transition
+      -delay      延迟时间
+      -duration   过渡时间
+      -property   指定过渡内容
+      -timing-function  过渡过程速度控制
+  -动画animation同上
+      需要搭配@keyframes使用
+
+  -盒子
+      属性有：content内容，padding充填，border边框，margin边界
+  -网页里面输出Unicode编码
+      &#编码；这里的编码是10进制的
+
+					  
+-----------------------javascript-------------------------------					  
+
+  
+  -变量  先设定变量
+  // var bianliang="XX";
+     alert(bianliang);
+  -将变量输出到网页
+  // var name=prompt("XX","");
+     document.write("<h1>" + name+"</h1>"); 输出样式设定
+	-prompt 对话框
+  -条件判断
+    -if(变量名){正确输出} else{错误输出}
+ 
+  -循环语句
+    -While（可用在所有循环）
+	例：var num = 1
+        while(num<=50){
+            document.write(num+"<br/>");
+            num=num+2
+        }
+	-for循环
+	例：for(var numb =10;numb>=1;numb=numb-1){
+            document.write(numb+"<br/>");
+        }
+		
+  1.输出指令
+    -&nbsp  空格
+    -document.write  向body写一个内容
+    -console.log     向控制台输出一个内容
+    -alert  警告框互动
+	-prompt() 弹出一个带文本的提示框，且输入文本的内容会作为函数返回
+  
+  2.js写入位置
+	-可以将js代码写在onclick属性中，需要有东西触发他
+	 //<button onclick="alert('是否进去页面呢')">无人</button>
+	-可以将Js写在超链接中，点击触发
+	 //<a href="javascript:alert('对了')" >连接地址</a>
+	-<script里面加入>+src连接外部文档
+	-加入外部文档后，Script里面的内部文档会被忽略
+  
+  3.基本语法
+    -严格区分大小写
+	-每段结束必须加分号
+	-自动忽略多个空格
+  
+  4.字面量，变量，标识符，字符串，number，布尔
+    -var 声明变量 = 字面量
+	-undefind 未定义（默认值）
+	-标识符：变量名，函数名，属性名（遵守驼峰规则）
+	         不能数字开头，关键字
+	-字符串："" 和'' 引起来的里面都是字符串
+	 可以在特殊符号前加\进行转义，讲符号表示成单纯的符号
+	  \n 换行 ; \t 制表符 ;\\ 表示\ ; \u输出编码
+	-number：字面量，数字
+	   Number.MAX_VALUE  数字的最大值
+	   Number.MIN_VALUE  0以上的最小值
+	   浮点运算不精确
+	    -Infinity  正无穷
+	    -NaN  不是一个数字
+    -布尔值: true 真 false 假
+  
+  5.数据类型
+    -String   字符串 使用"" 和'' 引起来
+	-Number   数字 
+	-Boolen   布尔 
+	-Undefind 未定义
+	-object   对象
+	-null     空值  （表示一个为空的对象）
+	-typeof   查看变量的数据类型
+ 
+  6.强制转换类型
+   转换字符串
+    -方法一：调用被转换数据类型的 变量.toString() 方法
+	-方法二：调用String(参数) 函数
+	-该方法不会影响到原变量，它会将转换的结果返回，因此需要重新赋值
+	**注意：null和undefined这两个值没有toString()方法
+   转换数字
+    -方法一：调用Number(参数)函数
+	  -非数字的 或者 undefind 转换成 NaN
+	  -空串 字符串只有空格 或者 Null   转换成 0
+	  -布尔 转换成：true 1 ;false 0
+	-方法二：parseInt(变量,变量的进制)   将字符串的有效整数取出来 
+	         parseFloat(变量,变量的进制) 将字符串的有效小数取出来
+   转换布尔值
+    -方法一：Boolen(参数)函数
+	  -数字：0和NaN，其余都是true
+	  -字符串： 除了空串，其余都是true
+	  -null undefind 转换都是 false
+	  -对象  true
+  
+  7.其他进制的数字
+    -以0x开头的数字 表示16进制
+	-以0开头        表示8进制
+	-以0b开头       表示2进制
+ 
+  8.算数运算符
+      + 加法运算
+	  - 减法运算
+	  * 乘法运算
+	  / 除法运算
+	  % 取余运算
+	  typeof 数据类型查看运算
+    -NaN和任何运算 都得NaN
+	**注意：多个字符串相加会拼接成一个字符串
+	**注意：任何值与字符串想加都会先被转换成字符串
+	-从左到右运算
+	-除了加法 都会转换成Number运算
+  
+  9.一元运算符
+     + 正号   // -"321" : -321
+	 - 负号
+	**都会转换成Number运算
+	- a++ 使a自增1
+	-无论a++ 与 ++a都会使a自增1
+	-不同的是a++的值等于只增前的值（后加运算）
+	         ++a的值等于自增后的值（先加运算）
+	-自减 和 自增一样 a--后减  --a先减
+  
+  10.逻辑运算符
+      !    非(not)：布尔值取反，对非布尔会转换成布尔值然后取反
+	  &&   与(and)：从左到右检查（同下）
+ 	  ||   或(or)：短路检查法（同上）
+    -非布尔值 与运算：先将值转换成布尔值，然后运算，最后返回原值
+	 如果都是true,就返回后面的值
+	 如果遇到false,就返回现在这个false的值
+	-非布尔值 或运算：先将值转换成布尔值，然后运算，最后返回原值
+	 如果遇到true，就返回遇到的true的值
+	 如果都是false,就返回后面的值
+  
+  11.赋值运算符
+      +=    例：a=a+5    a+=5
+	  -=    
+	  *=    
+	  /=
+	  %=
+  
+  12.关系运算符
+     ,>,<,>=,<=,
+	-当非Number作为比较时会将其转换成Number然后比较
+	-任何值与NaN比较，都是false
+	**当比较两边都是字符串比较时，不会转换成Number比较，会比较其字符编码
+	**都是字符串时，会一位一位比较
+    -相等运算符：== 
+	   -Null和0不相等
+	   -因为Undefined 衍生于Null，所以他们比较时是相等的
+	   -NaN不和任何值相等
+	-检查一个变量是否是NaN,用函数isNaN()检查
+	-不相等运算符：!=  与 ==属性一样
+	-全等：===    与相等类似，但是同时比较其数据类型
+	-不全等：！== 与不相等类似，但同时比较其数据类型
+ 
+  13.条件运算符（三元运算符）
+    公式：条件表达式?语句1:语句2;
+	例: 10>20?(alert("正确")):(alert("错误"));
+	-获取a和b中的最大值 var max a>b?a:b;
+	-如果是个条件是个非布尔值会被转换成布尔值
+  -{}对语句进行分组，叫代码块，代码块里的内容是一组的，其内容在外部是可见的
+  
+  14.语句的分类
+      1.条件判断语句
+	  2.条件分支语句
+	  3.循环语句
+ 
+  15.if语句（条件判断语句）*常用*
+    if(条件){ }else if (){ }else{ };
+	-if语句只能控制紧随其后的那个语句或者代码块（尽量用代码块）
+	-从上往下执行，如果值为true执行当前语句,如果值为false则往下继续判断
+  
+  16.条件分支语句switch
+    -switch(){case:..;break;case:..;break;defalut:..;break;}
+	-不加break 会把判断true开始的所有结果都输出
+	-全等比较===
+  
+  17.循环语句while
+    -while(条件表达式){语句...}
+	先对条件表达式进行判断，如果为ture执行语句并继续判断，直到为false停止
+  do..while循环：
+    -do{语句..}while(条件表达式)
+	-区别于while：先执行语句，后判断，再继续。
+  
+  18.for循环语句**常用**
+    -for(初始化表达式;条件表达式;更新表达式){}
+	//for(var i=0;i<=10;i++){alret(i)};
+    -for循环的三个表达式可以省略或者写在外部
+	-for不写任何表达式，会一直循环下去
+	-分号不能省略
+  
+  19.中止语句break，给循环语句取名，继续语句continue，计时器
+    -break 退出循环或switch语句，且只对最近的产生影响
+    -可以给取名字  名字：语句 // outer：for(){};
+    -break + 循环语句名字  = 结束指定的循环语句  //break outer; 
+    -continue 跳过当次循环，然后继续（只对最近的产生影响）
+    -console.time("名字")    开启一个计时器
+    -console.timeEND("名字") 停止一个计时器
+    -Math.sqrt()开方
+  
+  20.对象Object
+    -创建对象： var 变量 = new Object();   // var a =new Object();
+	-添加对象属性： 对象名.属性名=属性值;   // a.name="张三";
+	-读取对象中的属性： 语法:(对象名.属性名);
+	-删除对象属性:  delete 对象名.属性名;
+    **创建对象（正常情况）：var 对象名 ={属性名:属性值,属性名:属性值};
+	//var a ={name:"张三",age="18岁"}
+	-复合数据类型，有多个不同的数据类型的属性
+	-分类：1.内建对象：在ES中定义的对象，在任何ES中都可以使用
+	       比如：Math,String,Number,Boolen,Function,Object
+		   2.宿主对象：JS运行环境提供的对象，主要指由浏览器提供的对象
+		   比如：BOM,DOM
+		   3.自定义对象:开发人员创建的对象
+	-new 调用构造函数constructor
+	-如果读取对象没有属性，会报错underfined;
+	-对象特殊属性名：对象名["属性名"]=属性值;
+
+  21.函数Function  （函数也是一个对象，封装一些代码，在需要的时候使用）
+    -创建函数  var 函数名 = new Function();  //var fun =new Function();
+    -使用函数  函数名(); // fun();
+	-比普通对象的的区别:可以执行封装了的代码
+	**创建函数(常用):function 函数名(形参1,形参2){ 语句 } 
+	//function fun(){ document.write("nihao") };
+	-形参：可以在函数的()里面指定函数形参,形参=在函数内部声明一个没赋值的变量
+	-实参：在调用函数时，在()里面给形参赋值
+	例：function jiafa(a,b){
+	     document.write(a+b);
+	   }
+	   jiafa(2,3);
+	 需要注意的是：不会检查实参的数据类型和数量，可能会收到非法的参数
+	               多余的实参不会被赋值，少实参的话将是undefined
+	-return返回函数：将函数的值返回回来，可以重新给其赋值输出
+	公式 return 变量;
+	-一般函数都是将其运算的结果返回，不做操作
+	-函数中return之后的语句都不会执行
+	-如果return后面没变量的话，会返回undefined
+	- return 函数名    :返回函数这个对象
+	- return 函数名()  :返回函数的值
+	-匿名函数公式：  function(){语句}  没有声明函数名字的函数
+	-立即执行函数:  (function(){语句})()   立即执行这条函数 只能执行一次
+	// (function(a,b){
+	     console.log(a+b);
+	    })(147,3212)               结果 3359
+    -枚举对象中的属性 for..in 
+	语法： for(var 变量名 in 需要检查的对象){console.log(变量名)}  属性名
+                                              -{对象名[变量名]}    属性值
+	-函数对象的方法
+	  -call和apply都可以将一个对象指定为第一个参数,此时这个对象就是指定的那个this
+	    -它能调用 后面跟的对象里面 的参数然后去 用在 之前的对象的方法
+		//obj.sayName.apply(obj2); 用obj2的参数,参与obj的方法（输出）
+		-如果前对象有形参,就不会调用后对象的参数,并且()里面的第一个参数会被忽略
+		//obj.sayName.call(obj2,1,3) 如果这里obj有形参,就会1,3就会成为实参,obj2会被忽略
+	    -apply()区别于call();需要将实参封装到一个数组里面一起传递
+	    //obj.sayName.apply(obj2,[1,3]) 逗号后面跟的数组，数组里面指定实参
+	  
+  22.方法
+    -如果函数在对象里面，调函数的就叫： 调对象里面的方法
+	//document.write() 分开来说 就是 调用document这个对象里面的write方法
+	
+  23.作用域
+    -全局作用域：直接编写在script标签里面的变量
+	     -其实是把属性编写到了一个windows对象里
+	-函数作用域：
+	     -单独只在函数内部生成的变量
+		 -函数操作时，会就近原则
+	******函数作用域有提前声明的特性，在代码被执行前就被声明
+		**因此先执行后声明会被当做之前已经声明了变量但是没有赋值，输出undefined
+		 -var 后就是声明在哪里  没有var 等于修改变量的值
+		 
+  24.this 隐含函数
+    -this指向的对象是上下文对象
+	-根据函数的调用方式不同，this指向的对象是不同的
+	   -以函数形式调用，this永远都会window
+	   -以方法形式调用，this调用的就是方法的那个对象
+	   //function fun(){console.log(this.name);}
+	     var obj ={name:"1",sayName:fun}
+		 var obj1 ={name:"2",sayName:fun}
+	     obj.sayName()
+    -this调用的情况
+	     1.以函数调用时，this是window
+		 2.以方法的形式调用时,this是调用方法的对象
+		 3.以构造函数的形式调用时,this是新创建的那个对象
+		 4.使用call和apply调用时,this是指定的对象
+
+  25.构造函数
+    -var 构造函数 = new 原函数()；
+    -普通函数时直接调用，构造函数需要在前面加new来调用
+	-构造函数的执行流程：1.立刻创建一个新的对象
+	                     2.将新建的对象设置为函数中的this
+						 3.逐行执行函数的代码
+						 4.将新建的对象作为返回值返回
+	-规范：构造函数的首字母要大些
+	-构造函数的作用就是把对象进行分类，本质是个对象但名字不同
+	-构造函数每执行一次就会创建一个新的方法
+	 为了减少运行次数，可以将方法提取到全局，每次都用this调用这个方法
+  
+  26.原型对象prototype - 构造函数的特性
+    -公式： 函数名.prototype
+    -创建构造函数时会自动给这个构造函数添加一个隐藏的属性prototype
+    -可以通过__proto__访问查找隐藏属性prototype
+    -当访问一个对象的属性和方法时，会从自身中搜索，如果没有，就会进入prototype搜索
+	 而且原型对象是个公共区域，构造函数都可以访问他
+	-检查构造函数本身是否含有该属性：使用hasOwnProperty();
+	//对象名.hasOwnProperty();
+
+  27.toString(); 查看方法(默认隐藏,放在prototype里面)
+    -当我们直接在页面行写一个对象时，是输出的对象的toStrig()方法的返回值
+	  对象名.toStrig()  = 对象名
+	-toString()这个方法可以在普通对象里写入，如果就不会显示之前隐藏的对象
+  
+  28.数组Array (对象，存数字)
+    -创建语法:var 数组名 =new Array();
+	-创建数组（正常情况）：  var 数组名 =[元素,元素,元素];
+    -添加语法:数组[索引] =元素 // arr[0] =10;  
+	-读取语法:数组[索引]     //aar[0]
+	-创建数组（构造函数）也可以同时传递函数（如果数组里面只有一个数字,那表示的就是长度）
+       //var arr = new Array(12,3123,"你好",11,undefind);	
+    -数组也是对象，不同是的是其组成概念是：索引+元素;
+	-数组中从0开始，如果索引不存在，会返回Undefined;
+	-length 数组的长度属性
+	-尽量创建连续数组，length数组最大索引数+1
+	-修改length 大于原长度会多空出来，小于原长度会被删除  //arr.length =X
+    -向最大数组添加数据 arr[arr.length] =X;
+    -数组里面也可以有队友,用{}包含起来
+	-数组中放数组,数组里面的数组叫 二维数组 
+	  //arr[[1,2,3],[4,5,6],[7,8,9]];
+	-数组的常用方法   (以下arr都是数组名)
+	    -push()：
+		   该方法可以向数组最后添加一个或者多个元素，并返回新长度
+		   //arr.push("你好","白骨精");
+		-pop()：
+		   删除数组的最后一个元素,并将这个元素返回
+		   //arr.pop();
+		-unshift():
+		   向数组最前面加一个或多个元素，并且返回新长度
+		-shift():
+		   删除数组最前面的一个元素,并且返回这个元素
+		-forEach():（遍历函数的方法，Ie9以上可以用）
+		   //arr.forEach(fun(形参){}); arr数组名   函数直接写在里面
+		   -数组中有个几个元素就执行几次函数,而且每次执行都将遍历到的函数
+		    以实参形式传递传递回来，可以在函数中定义形参来读取内容
+		   -会回调有三个参数:
+		           1.当前正在遍历的元素
+				   2.当前正在遍历的元素的索引
+				   3.当前正在遍历的数组
+		   -由我们创建的但是不由我们调用的叫回调函数
+		-slice(开始位置,结束位置)：
+		   //arr.slice(1,2); 
+		   从已有的数组返回选定的元素
+		   -不会改变原数组,可以新建个数组来提取它
+		   **新数组里面有包括开始位置的索引，不包括结束位置额索引
+		   -不写结束位置时,从开始到最后都可以返回
+		   **索引可以是 负数！ ，意思是从最后开始数第几个// -1 倒数第一个索引
+		-splice(开始位置,删除长度,新元素,新元素):
+		   //arr.splice(1,2,"赵杰","王琦");
+		   可以用于删除数组中的指定元素(还可以替换和添加元素)
+		   -会影响原数组，将原数组的指定元素删除
+		   -会返回删除的元素
+		   -插入的新元素是从删除元素的位置添加进去的 
+		-concat()：
+		   //arr.concat(另一个数组);
+		   连接两个或者更多的数组或者元素并返回结果
+		   -不会影响原数组,需要新建数组来接收他的返回值
+		-join();
+		   //arr.join(连接字符串);
+		   该方法可以将数组转换成一个字符串并返回结果
+		   -可以指定一个字符串作为参数,将作为数组中的元素的连接符（默认,）
+		-reverse();
+		   //arr.reverse();
+		   颠倒数组的元素位置
+		-sort();
+		   //arr.sort();
+		   将数组的元素进行排序
+		   -会影响原数组,按默认编码进行先后顺序排序
+		   -sort后面跟函数时,浏览器会分别使用数组中的每个元素都去作为实参调用函数
+		      -可以根据回调函数的返回值来决定元素的顺序
+		        如果return>0，元素交换位置
+				如果return<0，元素不交换位置
+				如果return=0，认为两个元素相等，元素交换位置
+		   -	
+	-数组的遍历,将数组的所有元素都取出来（for循环）
+	  for(var i=0; i<数组名.length;i++){
+			  console.log(数组名.[i]);
+	  }
+	-检查是否是数组:Array.isArray(对象名);
+	
+  29.arguments  封装实参的对象
+    -类数组对象,不会数组,但是也可以通过索引来操作数据,也可以获取长度
+	-在调用函数时,我们传递的实参都在arguments里保存
+	-有属性callee 对应的函数对象，就是当前正在指向函数的对象
+
+  30.Date  日期对象
+    -创建 var d =new Date();
+    -如果直接使用构造函数的一个Date对象,他就会封装当前代码的执行时间
+    -需要在该构造函数里面添加字符串作为参数
+    -格式： 月/日/年 时:分:秒;
+
+  31.Math  数学对象
+    -Math和其他对象不同,它不是构造函数，可以直接使用
+	-属于工具类不用创建对象,它里面封装了数学相关的属性和方法
+    //Math.abs(1) 返回1的绝对值
+	-Math方法：
+         -ceil()    向上取整
+         -floor()   向下取整		 
+	     -round()   四舍五入
+
+  32.包装类
+    语法: var 新名字 =new Number(3);
+    -有三种 Number , Boolen , String 包装类
+	-一般实际应用中不使用基本数据类型的对象
+  
+  33.字符串的方法
+      -charAt();
+	    返回字符串中指定位置的字符
+		//var 变量名 =字符串名.charAt(X);  X是需要返回字符串的第几个字符
+      -charCodeAT();
+	    返回指定位置字符的Unicode字符编码
+	  -其余参考W3school里面
+	-字符串底层以数组的方式保存的
+	
+  34.RegExp 正则表达式  作用：检查字符串是否符合规则
+    -创建: var 变量名 =new RegExp("正则表达式","匹配模式");
+    //var reg =new RegExp("a","i");   
+	-创建(常用):  var 变量名=/正则表达式/匹配模式   // var reg=/a/i;
+    -match()方法 
+	//reg.match(需要检查的字符串,""); 将匹配的东西返回
+	-replace()方法
+	//字符串.replace(正则表达,""); 将匹配的东西删除并返回
+	-匹配模式  
+	   -g:全局匹配模式
+	   -i:忽略大小写
+	-正则表达式里面的语法
+	   1.  |：或                  //reg=/a|b/i;
+	   2. []: 括号里面都是或      //reg=/[ab]/i    
+	   [X-X]:X到X的或             //reg=/[a-c]/i -是到的意思
+	    [^X]:除了X都可以          //reg=/[^a]/i  ^是除的意思
+	   3. {X}:指定前一个内容出现的次数  //reg=/a{3}/  等于 /aaa/ 
+	      {m,n}:指内容出现m~n次     // reg=/a{2,3}/  等于/aa/ 或 /aaa/
+	   4. ():括号里的都是一个内容  //reg=/(ab){3}/ 等于 /ababab/
+	   5.  ^X:检查字符串是否X开头  //   /^a/
+	   6.  X$：检查字符串是否X开头 //   /a$/
+	       -同时使用^X$  指字符串只能有X
+	   7. 检查特殊用途的字符可以加转义字符\  //    /\./  可以检查.这个字符
+	     -需要注意的是在构造函数时,由于参数是字符串,而\是转义字符 要写成"\\."
+	   8. \w :任意字母数字下划线
+	   9.  * :前一个内容可有可无
+	   -更多查看W3school
+	-正则与字符串相关的方法
+	   -split(); 
+	      将一个字符串拆分成多个数组
+		  //字符串名.split(X);
+		  -拆的时候会将用来拆的那个字符删除
+	   -search();
+	      可以搜索字符串里是否有指定内容
+		  //字符串名.search("需要搜索的内容");
+		  -如果搜索到了返回第一次出现的索引,如果没有搜索到返回-1
+	   -match();
+	      将一个字符串中符合条件的内容提取出来
+	      -默认值将搜索到的第一个提取出来
+		  -设置全局匹配模式i,可以将所有都提出来
+		  -会将提取的内容封装到数组返回
+	   -replace();
+	      可以将字符串中指定内容替换成新的内容
+		  //字符串名.replace("被替换内容","新内容");
+		  -默认替换第一个
+	   -这些方法中都可以用一个正则表达式作为参数来使用
+
+  35.DOM 文档对象模型(Document Object Model)
+    -作用：通过JS操作网页
+	-节点：构成我们网页基本的组成部分,网页每个部分都成为节点
+	  -节点的分类：1.文档节点;整个HTML文档
+	               2.元素节点;文档里每个标签
+				   3.属性节点;元素里面的属性
+				   4.文本节点;HTML里面的内容
+	-通过document （指整个文档节点的对象名）
+	    -getElementById  得到元素通过Id 
+		-getElementsByTagName  通过 标签名 获取 一组 元素节点对象
+		-getElementsByName      通过 name属性 获取 一组元素节点对象
+    -innerHTML 获取HTML里面的内容
+	    -对于自结束标签没有意义
+    -在读取元素点属性时,
+	  语法: 元素.属性名
+	  -需要注意的是class不能读 读class需要className;
+	-onclick 单击.属性         事件
+	-当代码执行时,页面还没有加载,页面没加载DOM对象也没加载
+	 因此无法获得DOM对象；
+	-onload	页面加载完后才触发 事件
+	//window.onload =function(){}
+	    -这样就可以把script放到任意位置,
+	-alert   弹出对话框.方法
+	***在W3里面的DOM Event 事件大全
+	-Dom查询
+	  -getElementsByTagName()方法  返回当前节点的指定标签名后代节点
+	     属性:-childNodes 返回当前节点的所有子节点
+		         文本标签之间的空白页也会算节点
+              -firstChild 当前节点的第一个子节点
+              -lastChild  当前节点的最后一个子节点			  
+	             所有浏览器都可以获取，但版本有差异
+			  -children 属性 获取当前元素的所有子元素
+			  -firtElenmentChild  获取当前元素的的第一个子元素
+			  -lastElenmentChild  获取当前元素的的第一个子元素
+			     ie9以上可以获取
+	          -parentNode 属性  获取当前节点的父节点
+			  -previousSilbling  表示当前节点的前一个兄弟节点
+			  -nextSibling       表示当前节点的后一个兄弟节点
+	             获取空白文本
+			  -previousElenmentsSilbling  获取当前节点前一个兄弟元素
+			  -nextElenmentsSilbling      获取当前节点后一个兄弟元素
+			      Ie9以上可以用
+	          -innerText 属性  获取元素内部得文本内容
+                 自动去除标签			  
+	          -innnerHTML    同上 但不会去除标签
+	  -document里面有body属性 可以直接引用
+	  -all  页面里面的所有元素
+	  -getElementsByClassName()  根据class属性获取一组元素节点对象;
+	      不支持IE8以下浏览器
+	  -querySelector();     根据CSS选择器查询一个元素节点对象
+	     //document.querySelector(".css div");
+		 -但如果有多个元素节点满足,也只会返回第一个元素节点
+	  -querySelectorAll();   根据CSS选择器查询满足的多个元素节点,封装到一个数组返回 
+    -DOM增删改
+	  -createElement();  创建一个元素节点
+	  -createTextNode(); 创建一个文本节点
+	  -appendChild();    把新的子节点加到指定节点里面
+	    用法：   父节点.appendChild(子节点);
+	  -insertBefore();   给指定子节点前面插入新节点
+        用法:   父节点.insertBefore(新节点,指定子节点)
+	  -replaceChild();   替换子节点
+	  *更多DOM对象方法可以根据W3手册查询
+	  
+  36.事件
+    -浏览器窗口或文档发生的一些特定的交互瞬间.需要处理
+	-比如：单击，双击
+	-onscroll  该事件会在元素的滚动条滚动时触发
+	-onclick   该事件会在元素的被单击时触发
+  
+  37.使用DOM操作CSS
+    -通过JS修改CSS元素的样式
+	  语法：元素.style.样式名 =样式值;
+	  -如果CSS样式中有-,是不合法的需要将-去掉，同时修改为驼峰命名法
+	    //box1.style.background-color ="green"; 错误
+		  box1.style.backgroundColor ="green";  正确
+	  -通过内联样式修改的，所以通过JS修改样式会立即显示
+	  -但是如果样式里面写了!important ,则样式有最高优先级,无法被js修改
+	-通过JS读取CSS元素内联的样式
+	  语法：元素.style.样式名
+	-（IE）通过JS读取当前正在显示的样式
+	  语法:元素.currentStyle.样式名
+	   -如果元素没有设置样式，则获取他的默认值
+	-（正常浏览器）通过JS读取当前正在显示的样式
+	  语法：getComputedStyle(需要获取样式的元素,伪元素null);
+	  -这个方法时Window的方法可以直接使用
+	  -该方法会返回一个对象,对象中封装了当前元素对应的样式
+	  -如果元素没有设置样式，则获取他的真实值
+	  -IE8以下不支持
+	***if判断时，如果变量没找到会报错,然后属性没被找到会报Undefined
+	-getStyle(要获取的元素,要获取的样式名);
+	-其他样式操作属性
+	  -clientWidth  获取元素的可见宽度,返回值不带px
+	       -包括的是内容区和内边距
+	       -属性是只读,不能修改
+	  -offsetWidth  获取元素的整个宽度
+	  -offsetParent 获取当前元素的定位父元素
+	       -会获取离当前位置最近的开了定位的父元素
+		   -如果父元素没有开启定位，则返回body
+	  -offsetLeft   获取当前元素相对定位父元素的水平偏移量
+	  -offsetTop    获取当前元素相对定位父元素的垂直偏移量 
+	  -scrollHeight 返回元素的整体滚动区域的高度
+      -scrollWidth  返回元素的整体滚动区域的宽度
+	  -scrollLeft   返回元素水平滚动条滚动的距离
+	  -scrollTop    返回元素垂直滚动条滚动的距离
+	        -当scrollHeight-scrollTop ==clientHeight的时候说明滚动条到底了
+			 (在谷歌，需要等式前面取整)
+	  
+  38.事件对象
+    -当事件的响应函数被触发时,浏览器每次都会将一个事件对象作为实参传递进响应函数
+	 在事件对象中封装了当前事件的一切信息,如：滚轮滚了一下
+	-w3里面的DOM event
+      -clientX 获取鼠标所指位置的X坐标（当前的可见窗口）
+	  -clientY 获取鼠标所指位置的Y坐标（当前的可见窗口）
+	    -在ie8以下浏览器中，事件对象是作为一个window对象的属性保存的//window.clientX     
+	  -pageX  获取鼠标所指位置的X坐标（当前页面）
+      -pageY  获取鼠标所指位置的Y坐标（当前页面）	  
+	    -不支持ie8
+	-事件的冒泡(Bubble)
+	  -当前元素事件被触发时，他的父元素事件也被触发
+	  -默认行为,如果不需要冒泡使用 事件.cancelBubble = true 取消冒泡
+	-事件的委派
+	  -当将事件统一绑定给共同父元素时，这样后代的元素事件触发时，会冒泡到祖先
+	  -taroet 表示事件触发的对象
+	-事件的绑定
+	  -addEventListener(); 这个方法可以为元素绑定响应函数
+	    -参数：1.事件的字符串,不要on 
+		       2.回调函数，当事件触发时该函数被调用
+			   3.是否在捕获阶段触发事件，需要一个布尔值，一般都false
+	    -IE8以下不支持
+        -要兼容要写attachEvent() 区别：倒叙执行，this 是window
+    -事件的传播
+    -拖拽
+      -如果不希望拖拽后浏览器搜索引擎中的内容return false来取消默认行为
+    -滚轮的事件
+      -onmousewheel 鼠标滚轮滚动的事件（DOMMouseScroll火狐）	
+	  -wheelDelta   可以获取鼠标滚轮滚动的方向（detail火狐）
+	  -（默认）当滚轮滚动时,如果浏览器有滚动条,滚动条会随之滚动
+      -return false 取消默认行为
+    -键盘事件
+       -onkeydown  按键被按下
+       -onkeyup    按键被松开	   
+	      -keyCode 来获取按键的编码
+	
+  39.BOM  浏览器对象模型
+    -BOM可以使我们通过JS来操作浏览器
+	-BOM对象有:Window,代表浏览器窗口
+	           Navigator,代表当前浏览器的信息（可以识别不同的浏览器）
+	           Location,代表浏览器的地址信息
+			   History,代表浏览器的历史记录
+			   Screen,代表用户的屏幕信息
+
+  40.JSON  JS对象表示法：用来数据的交互
+    -JSON 就是一个特殊格式的字符串，这个字符串可以被任意语言识别
+	      并且可以转换为任意语言的对象
+	-JSON的属性名必须加双引号,其他语法与JS一致
+	-JSON中允许的值：1.字符串
+	                 2.数值
+					 3.布尔值
+					 4.null
+					 5.对象
+					 6.数组
+	-将JSON字符串转换成JS中的对象
+	  -该工具就是JSON
+	  -JSON—>JS  并返回对象; 
+	   语法：JSON.parse(需要转换的JSON);
+    -将JS转换成JSON字符串
+      -JS->JSON  并返回字符串;
+	   语法：JSON.stringify(需要转换的JS);
+	  -仅IE9以上才能使用
+	-eval(); 可以将字符串代码形成的JS代码运行,并将结果返回
+	    -如果使用eval()执行的字符串中有{},他会将{}当成代码块
+		   如果不希望将其当成代码块解析,则需要在字符串前后加();
+		-开发中尽量不要使用,1.执行能力差;
+		                    2.有安全隐患;
+	
+  41.javascript闭包
+	-通俗理解：闭包就是能够读取其他函数内部变量的函数。
+	-基础闭包
+			function f1() {　　　　
+				var n = 999;　　　　
+				nAdd = function() {
+					n += 1
+				}　　　　
+				function f2() {　　　　　　
+					alert(n);　　　　
+				}　　　　
+				return f2;　　
+			}　
+			　
+			var result = f1();　　　　
+			f1(); //运行f1这个函数，里面n是声明的局部的，因此全局获取不到
+			nAdd();　　//全局无n，所以n没有增加
+			result(); // 999,闭包形式返回n这个数
+			nAdd();  //上面获取到了n， n+1
+			result(); // 1000
+	
+	-函数内部var n =1，局部变量，只在局部有效,全局无法获得	；
+	 函数内部 n =1，全局变量，全局有效；
+	**闭包的用处**
+		1.一个是可以读取函数内部的变量，
+		2.另一个是让这些变量的值始终保持在内存中。
+	-简单实用闭包：函数里面有局部变量想全局使用，在函数里面定义一个函数，将局部变量
+				   打印return给父函数。
+	-保存在内存的原因：f1是f2的父函数，而f2被赋给了一个全局变量，这导致f2始终在内存中，
+	 而f2的存在依赖于f1，因此f1也始终在内存中，不会在调用结束后，
+	 被垃圾回收机制（garbage collection）回收。（反向利用继承）
+	-进阶闭包：
+			var name = "The Window";　　
+			var object = {　　　　
+				name: "My Object",
+				getNameFunc: function amd() {　　　　　　
+					return function() {　　　　　　　　
+						return this.name;　　
+					};　　　　
+				}
+			};
+			alert(object.getNameFunc()()); //The Window
+			alert(object.getNameFunc()); //function() {return this.name;};
+	-自行理解，不解释！
+	-自我理解内容：f1()()中,f1()将里面内容全部摊开,()使用Return的方法
+	
+  42.原型 Person.prototype
+    -原型对象，顾名思义，它就是一个普通对象
+	-原型对象（Person.prototype）是 构造函数（Person）的一个实例。
+	-prototype(对象属性)的所有属性和方法，都会被构造函数的实例继承
+	-对象是由Object函数来生成的
+	 函数是由Function函数生成的
+		  //function MyObj(){}     //创建一个方法
+			alert(typeof MyObj)    //"function"
+			var mo = new MyObj()   //创造一个构造函数
+		  //mo.__proto__ === MyObj.prototype  //判断构造函数mo的原型是MyObj的原型属性
+		*Function函数本身作为对象时，生成它的函数是他自身！
+		*Object函数既然是函数，那生成它的函数自然是Function函数咯
+		
+	-默认一般的函数prototype属性是自动生成的,是个object，他有两个对象
+		-constructor构造函数的函数就是其本身
+		-__proto__属性指向Object.prototype
+		以上说明：一般函数的prototype是由Object函数生成的
+	-不一般函数Object和Function函数
+		-原型链的终点：Object
+		-Object函数的 prototype 类型是 "object"
+		-Object.prototype是{}
+		-根据普通规则Object.prototype.__proto__ === Object.prototype,那这样原型链就没有终点,是个循环
+		 因此JavaScript规定了Object.prototype.__proto__ === null
+		 
+		-Function函数的 prototype 类型是 "function" 
+		-Function.prototype.__proto__ === Object.prototype   
+			说明：Function 的原型是Object,这样可以使Function的原型链也终结
+		
+	43.继承
+	-call(), 改变this的指向
+	-this  同级元素的设定值
+	-构造函数：
+		-用New来调用一个函数，叫构造函数 （等于创造一个新的函数,其原型是之前的函数）
+		-创建一个构造函数后,他的每个实例都有一个属性constructor 函数名
+			-constructor指的是构造函数的原函数
+				//var test=new Array();
+				//test.constructor==Array
+		1.如果没有函数内部没有return,其默认返回this,
+		2.手动添加一个基本数据类型的返回值，最终还是返回 this。
+		3.手动添加一个复杂数据类型(对象)的返回值，最终返回该对象	
+	-继承：设定一个构造函数原型属性,使其子函数有其父函数的属性
+		//Person.prototype.age =10 //那么之后根据Person构造的函数都有属性age =10
+	-六大继承方式：
+		-原型链继承
+			//function Person (name){//父函数
+			  this.name =name;
+			 }
+			 Person.prototype.age =10;//父函数原型属性
+		    //function per (){  //子函数
+			  this.name ="ker";
+			 }
+			 per.prototype = new Person();//子函数的原型为父函数的实例
+			var per1 = new per(); //实例化子函数
+			console.log(per1.age) //打印出来的子函数继承的父函数的原型属性age
+			-用处：让新实例的原型等于父类的实例。
+			-特点:1.实例的构造函数的属性，
+								2.父类构造函数属性，
+								3.父类原型的属性。
+			-缺点：1、新实例无法向父类构造函数传参。
+　　　　　　　	   2、继承单一。
+　　　　　　　     3、所有新实例都会共享父类实例的属性。
+					（原型上的属性是共享的，一个实例修改了原型属性，另一个实例的原型属性也会被修改！）
+		
+		-借用构造函数继承
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function Con() { //子函数
+				Person.call(this, "jer"); //用call()将父函数的属性引用，但是没引用到原型属性
+				this.age = 12;
+			}
+			var con1 = new Con();
+			console.log(con1.name); // "jer"
+			console.log(con1.age); //12
+			-用处：用.call()和.apply()将父类构造函数引入子类函数
+				 （在子类函数中做了父类函数的自执行（复制））
+			-特点：1、只继承了父类构造函数的属性，没有继承父类原型的属性。
+	　　　　　　　 2、解决了原型链继承缺点1、2、3。
+	　　　　　　　 3、可以继承多个构造函数属性（call多个）。
+	　　　　　　　 4、在子实例中可向父实例传参。
+			-缺点：1、只能继承父类构造函数的属性。
+　　　　　　　	   2、无法实现构造函数的复用。（每次用每次都要重新调用）
+　　　　　　　	   3、每个新实例都有父类构造函数的副本，臃肿。
+		
+		-组合继承（组合原型链 和 借用构造函数）（常用）
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function per(name) {
+				Person.call(this, name)//借用Person的构造函数
+			}
+			per.prototype = new Person();//获得Person的原型属性+构造函数属性
+			var per1 = new per("gar");//实例化
+			console.log(per1.name);//"gar"构造函数的属性
+			console.log(per1.age);//10 父函数原型属性	
+			-用处：原型链和借用构造函数 的 组合
+			-特点：1、可以继承父类原型上的属性，可以传参，可复用
+　　　　　　　     2、每个新实例引入的构造函数属性是私有的
+			-缺点：1、调用了两次父类构造函数（耗内存）
+				   2、子类的构造函数会代替原型上的那个父类构造函数
+		
+		-原型式继承
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function per(obj) {
+				function f() {}; //创建一个函数
+				f.prototype = obj; //函数的原型等于传递进来的参数(对象)
+				return new f(); //返回new的f()
+			}
+			var obj = new Person();
+			var per1 = per(obj);  //实例化 这里不能new 是因为New的是Per
+			console.log(per1.name); //undefined 没传参
+			console.log(per1.age); //10 父函数原型属性		
+			-重点：用一个函数包装一个对象，然后返回这个函数的调用，
+				   这个函数就变成了个可以随意增添属性的实例或对象。object.create()就是这个原理。
+	　　　　-特点：类似于复制一个对象，用函数来包装。
+	　　　　-缺点：1、所有实例都会继承原型上的属性。
+	　　　　　　　 2、无法实现复用。（新实例属性都是后面添加的）
+		-寄生式继承
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function per(obj) {
+				function f() {}; //创建一个函数
+				f.prototype = obj; //函数的原型等于传递进来的参数(对象)
+				return new f(); //返回new的f()
+			}
+			var obj = new Person(); //实例化父函数
+			//在原型继承的基础上,给他套壳,同时添加属性
+			function sub(obj) { //给原型式继承套个壳
+				var sub = per(obj); //获取原型式继承
+				sub.name = "gar"; //给原型式继承添加属性
+				return sub; //返回
+			}
+			var sup2 = sub(obj); //给套了壳的原型式继承传递实例化的属性+原型属性
+			console.log(typeof sub); // function
+			console.log(typeof sup2); //object
+			console.log(sup2.age); //10
+			console.log(sup2.name); //"gar"			
+			-重点：就是给原型式继承外面套了个壳子
+	　　　　-优点：没有创建自定义类型，因为只是套了个壳子返回对象（这个）,
+				   这个函数顺理成章就成了创建的新对象
+	　　　　-缺点：1、没用到原型
+				   2、无法复用
+		-寄生组合式继承（常用）
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function per(obj) {
+				function f() {}; //创建一个函数
+				f.prototype = obj; //函数的原型等于传递进来的参数(对象)
+				return new f(); //返回new的f()
+			}
+			var con = per(Person.prototype);//提取父函数的原型属性
+
+			function Sub() {//创建子函数
+				Person.call(this);//只继承父函数的构造函数属性,不继承原型属性
+				this.name ="gar"//添加属性
+			}
+
+			Sub.prototype = con;//使子函数的原型属性获得父函数的原型属性
+			con.constructor = Sub;//改变实例的引用,使其对应是子函数
+			var sub1 = new Sub();//实例化子函数
+			console.log(sub1.age);//10结果
+			-简单化：
+			//function Person(name) { //父函数
+				this.name = name;
+			}
+			Person.prototype.age = 10; //父函数原型属性
+
+			function f() {};//创建一个空对象
+			f.prototype = Person.prototype;//用空对象原型属性获取复函数的原型属性
+			function Sub() {//子函数
+				Person.call(this);//子函数获取父函数的普通属性
+			}
+			Sub.prototype = new f();//子函数的原型为父函数原型属性的实例
+			var sub1 = new Sub();//实例化
+			sub1.constructor = Sub;
+			console.log(sub1.age);//10
+			重点：修复了组合继承的问题的构造函数重复利用的问题	
+		
+  44.instanceof  判断数据类型
+  
+  45.随机数：
+	Math.floor() 
+		返回小于或等于一个给定数字的最大整数。
+	Math.random() 
+		返回介于 0（包含） ~ 1（不包含） 之间的一个随机数：
+  
+  46.函数默认值：
+	-实例：
+		function XX(a,b){
+			b = b || 0	//b没传值 默认为0
+			return a+b
+		}
+		console(5) //5
+	
+  
+  
+  
+-----------------------Ajax-------------------------------					
+	
+  1.XMLHttpRequest 创建对象
+    -request =new XMLHttpRequest()
+         只对高级浏览器有用
+    -xmlhttp =new ActiveXObject('Msxm12.XMLHTTP')
+	     IE6以上都可以
+	-xmlhttp=new ActiveXObject('Microsoft.XMLHTTP');
+	     修改参数，几乎所有浏览器
+  2.XMLHttpRequest 属性和方法	 
+	-onreadystatechange  存储处理服务器响应的函数
+	
+	-readyState  存储服务器响应的状态信息
+	  0 未刷新请求
+	  1 请求已经提出，请求发出去之前
+	  2 请求已发送
+	  3 服务器正在处理中
+	  4 服务器响应完成，已就绪
+	-responseText 获取服务器返回的数据
+	
+	-open()
+	  三个参数：1.GET/POST  表明这个HTTP的方法
+	            2.URL   规定服务器端的脚本
+				3. 异步处理标志  规定应当对请求异步的处理
+	-send()  可以将请求发送到服务器端
+	
+  3.eval 使用
+    -定义和用法：计算某个字符串，并执行其中的JS代码
+	   //eval(string); string必须 含有表达式或执行语句 ，只接受原始的字符串参数
+	   
+  4.Ajax的数据类型
+    -数据类型有：json，xml，html,text,javascript
+    -json            名称/值
+	-XML             可扩展的标记语言
+	-text            文本类型
+	-html            网页类型 
+	-javascript      一般为eval的返回值
+	   
+	   
+-----动态获取Input 框内容  oninput，keyup  JS原生
+-----动态获取textarea 框内容  input
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

@@ -1,0 +1,447 @@
+  -启动Mysql：mysql -u root -p
+  -列，又名字段，column;
+   有：名称、数据类型、约束、长度
+  -sql分类：
+   数据查询语言（DQL）：select
+   数据操作语言（DML）：insert、delete、update增删改（数据）
+   数据定义语言（DDL）: create、drop、alter  （结构）
+   事务控制语言（TLC）：commit（提交）、rollback（回滚）
+   数据控制语言（DCL）：grant、revoke
+   
+  -连接>创建（create database +名称）>选择（use+名称）>导入（Source+地址）>删除（drop database+名称）
+  -显示表格：show tables；
+   显示有几个数据库：show databases；
+  -desc+名称 ：描述 表 的结构；
+  -mysql -hlocalhost -uroot -p
+  -查看其它库中的表:show table from XX ;
+  -查看当前使用的数据库：select database();
+  
+  -修改用户密码：
+	
+  1.简单查询：
+	  -select 名称 from 表名称： 从XX表里面显示XX;
+	  -         *             ： 从  表里面显示所有（java里面不常用，易出错）;
+				
+						   
+  2.条件查询：
+	  where语句：
+				=   ：        等于
+		 <>或者!=   :        不等于
+	  between..and..:       两值之间（数字：前闭后闭； 字符串：前闭后开 ；）
+			 is null:         为空
+			  and   :         并且
+			  or    :         或者
+			  in    ：        包含，忽略null（not in：不在这个范围，不忽略Null）
+			  not   ：        非
+			  like  ：        像(%:n多个任意字符 ； _：1个任意字符。)
+			  
+	/* 
+	select 
+		  ename,deptno,sal
+	from
+		  emp
+	where 
+		  ename like '_L%' and ename like '__L%';
+	*/
+	  
+	  
+  3.排序：
+		 order by +名称： 根据XX 排序（默认升序）
+		 order by +名称 desc  : 降序；   （asc:升序）          
+	/*
+	select 
+		  ename,deptno,sal
+	from
+		  emp
+	order by
+		  sal  desc , ename asc;
+	*/
+
+  4.数据处理函数：
+	  -lower   转换小写
+	  -upper   转换大写
+	  -substr  截取字符串（substr（被截取的字符串，起始数，长度数））
+	  -length  取长度
+	  -trim    取空格
+	/*
+	  select ename from emp where ename =trim('   simith ');
+	*/
+	  -round   四舍五入（round（需要查询的数，保留几位小数位））；
+	  -rand    生成随机数
+	  -ifnull  将空值转成一个数（ifnull（列名，转换成的数））； 
+	  ***Null参加运算的出来的数字还是Null***
+	  -str_to_date 将“字符串”转换成“日期类型”  str_to_date('日期字符串','日期格式')
+	/*
+	   select ename,hiredate from emp 
+	   where hiredate=str_to_date('17-12-1980','%d-%m-%Y'); 
+	   Y=年，m=月，d=日，H=时，i=分，s=秒；
+	*/   
+	  -date_format 将"日期类型”转换成"特定格式"  date_format('日期类型数据','日期格式')
+	//select ename,date_format(hiredate,'%m月%d日%Y年')as hiredate from  emp;
+	  （每个数据库处理日期机制不同，一般用字符串表示）
+	/*
+	create table t_student(
+	   id  int(10),
+	   name varchar(32),
+	   birth date  
+	);
+	insert into t_student(id,name,birth) values(1,'jack',str_to_date('10-11-1980','%m-%d-%Y'));
+	*/  
+	  -format  设置千分位
+	  
+  5.分组函数（自动忽略Null）
+	  -count     统计
+	  -sum       求和
+	  -avg       取平均
+	  -max       取最大的数
+	  -min       取最小的数
+	  ***分组函数与查询都不能直接使用在where后面
+	  -distinct  去除重复的行（只能放在需要查询的最前面）
+	  
+  6.分组查询
+	  -group by   通过字段进行分组（select 只能+分组字段和分组函数）
+	  // select job,max(sal) from emp where job != 'manager' group by job;
+	  -having     分组后过滤  同where效果，where在前 having在后（优先用where）
+	  // select job,max(sal) from emp group by job having max(sal)>2000;
+	  
+	  1-6总结：select .. from .. where .. group by .. having .. order by ..
+	  
+  7.连接查询
+	  -连接方式分为：
+				内连接：等值连接、非等值连接、自连接(多表安全对应的数据展示)
+				外连接:左外连接、右外连接(内连接的基础上，还要展示其中一些表的全部数据)
+				全连接
+	  **两张表连接查询没有限制条件会出现'笛卡尔积'现象
+	  -等值连接：
+	  //select e.ename,d.dname from emp e,dept d where e.deptno =d.deptno;（92语法）
+	  //select e.ename,d.dname from emp e join dept d on e.deptno =d.deptno;(99语法)
+	  (普通连接查询，匹配了56次，显示on/where限制的结果)
+	  **inner join... on... (inner可以省略)
+	  -非等值连接：
+	  /*
+		select e.ename,e.sal,s.grade 
+		from emp e join salgrade s 
+		on e.sal between s.losal and s.hisal;
+	  */
+	  -自连接（一张表当两张表来查）：
+	  //select a.ename ename,b.ename leader from emp a join emp b on a.mgr =b.empno;
+	  （将emp分为a.b两个表，a的领导编号=b的员工编号，显示出a的员工名和b的领导名）   、
+	  -左外连接：
+	  //select e.ename,d.dname from emp e left join dept d on d.deptno =e.deptno;
+	  -右外连接：
+	  //select e.ename,d.dname from emp e right join dept d on d.deptno =e.deptno;
+	  （left outer,其中的outer可以省略）
+	  
+		 /*
+		 select 
+		 e.ename,d.dname,s.grade 
+		 from 
+		 emp e join dept d on e.deptno=d.deptno 
+		 join salgrade s on e.sal  between  s.losal and s.hisal; 
+		*/	
+		
+  8.子查询
+	  select嵌入select语句
+	  -where后面+select
+	  //select ename,sal from emp where sal> (select avg(sal) from emp);  
+		(找出工资高于平均工资的员工)
+	  -form后面+select 
+	  /*
+		select
+		a.avgsal,b.grade
+		from 
+		(select deptno,avg(sal) avgsal from emp group by deptno) a 
+		join 
+		salgrade b 
+		on 
+		a.avgsal between b.losal and b.hisal;
+	 */
+	 // select avg(sal) from emp group up deptno;
+	  -select后面+select
+	  
+  9.union
+	  合并集合（两个查询结果相加，要求合并列数相同,如果查询结果相同则合并为一条）
+		/*
+		select ename,job from emp where job='manager'
+		union
+		select ename,job from emp where job='salesman'
+		*/   
+	 
+	 -union all 合并集合（两个查询结果相加，要求合并列数相同,如果查询结果相同不合并）
+		 /*
+		   select ename,job from emp where job='manager'
+		   union all
+		   select ename,job from emp where job='salesman'
+		 */ 
+	 
+  10.通用的分页SQL(只mysql)
+	  -limit：limit 起始下标，长度（起始为0可以省略，且limit位于语序最后）
+	  -获取一张表中的一部分数据
+	  -limit只在mysql存在
+	  //select t.* from t  order by t.x limit (pageNo - 1)*pageSize,pageSize
+	  
+  
+  11.创建表
+	   -表格的字段属性：字段名称、字段数据类型、字段长度、字段约束
+		  /*
+		  create table tablename（
+				  columnname dataType(length),
+				  columnname dataType(length),
+				  columnname dataType(length) default '默认值',
+		  ） ; 
+		  */
+	   -创建数据库且编码 CREATE DATABASE `名称` CHARACTER SET utf8 COLLATE utf8_general_ci;
+	   -获取系统当前时间：select now();
+	   
+  12数据类型:
+     -varchar    可变长度字符串 （占用空间小）
+	 -char       定长字符串（效率快）
+	 -int        整数性
+	 -bigint     长整性（Int的2次倍）
+ 	 -float      浮点型单精度 //float(7.2)-7个有效数字，2个小数位
+	 -double     浮点型双精度
+	 -date       日期类型 （一般不用，用字符串代替）
+	 -blob       二进制大对象（存储图片声音视频）
+	 -clob       字符大对象（可以存大的文本，varchar最大版）
+	 -....
+	 /*
+	 create table t_student(
+       no int(10),
+	   name varchar(30),
+	   sex  char(4),
+	   brithday date,
+	   email  varchar(60)
+	 );
+    */
+    -删表：drop table if exists +名称;(只mysql特色删表，不管有没有都删)
+    -复制表：create table 新表名 as select * from 就表名；
+	
+	
+  13 insert into (给表格加数据)
+	-insert into tablename（column1,column2..） values（value1,value2..）
+	//insert into t_student(no,name,sex,brithday,email) 
+	values(01,'zhangsan','m','1970-10-11','zhangsan@qq.com');
+	-查询相关字符编码：show variables like '%char%';
+	-修改当前结果显示编码方式： set character_set_results='编码名';
+    -给表插入查询结果：insert into 名称 select ... from 名称 where ...；
+	
+  14 增删改表结构
+	  -添加：alter table+表名 add+新添字段+数据类型；
+	  -删除：alter table+表名 drop+字段；
+	  -修改字段结构：alter table+表名 modify+字段名+数据类型 
+	  -修改字段名称：alter table+表名 change+旧字段名+新字段名+数据类型；
+	  
+  15增删改表数据
+	  -修改：update+表名 set 字段名=字段值 where...；
+	  //update emp set sal=sal*1.1 where job='saleman';
+	  -删除：delete from+表名 where...；*****一定要加条件，不然跑路*****！！！；
+	  
+  16约束constraint
+	  -非空约束 not null
+	  // create table emp(id int(10) not null);
+	  -唯一性约束  unique 指该字段的数据不重复
+	  // create table emp(id int(10) unique);
+	  /*表级约束+给约束起名字
+		create table emp(
+			 id int(10) 
+			 constraint 约束名字 unique（id）
+			 );
+	  */
+	  -主键约束 primary key (pk)
+	   在表中加入主键约束的字段为主键字段，且该字段的数据都为主键值
+	   加入primary key后 =加入 not null unique的同时添加索引index
+	   一张表一定有主键，约束只有一个
+	   复合主键：两个字段联合添加成主键，有一个字段数据不同都可以添加
+	   单一主键：只有一个字段有主键，使用最多
+	   自动生成主键值：auto_incremant 主键按1自然增长
+	   /*
+		create table UU(
+			   id int（10）primary key auto_incremant,
+			   name varchar(32)
+		)
+	  */
+	  -外键约束foreign key(fk)
+	  属性同主键一样，不过外键指的是一个表的字段对应另外一张表的字段
+	  可以为Null，但对应的表字段不能重复。
+	  /*
+	  create table t_class(
+			cno int(3) primary key,
+			cname varchar(128) not null unique		
+	  );
+	  create table t_student (
+			sno int(3) primary key,
+			sname varchar(32) not null,
+			classno int(3),
+			foreign key (classno) references t_class(cno)
+	  ) ;
+	  -级联更新和级联删除
+	  在有外键下，更新删除一张表的数据影响另一张表
+	  更新： on update cascade 
+	  删除； on delete cascade
+	  -检查约束  
+	  -查看表中约束名字：select constraint_name from table_constraints where table_name='表名字'；
+	  -CASCADE：父表delete、update的时候，子表会delete、update掉关联记录；
+
+	   SET NULL：父表delete、update的时候，子表会将关联记录的外键字段所在列设为null，所以注意在设计子表时外键不能设为not null；
+
+	   RESTRICT：如果想要删除父表的记录时，而在子表中有关联该父表的记录，则不允许删除父表中的记录；
+
+	   NO ACTION：同 RESTRICT，也是首先先检查外键；
+
+	
+  17.case..when ..then..else..end 数据处理函数
+	 /*
+	  select 
+	   ename,sal,(case job when 'manager' then sal*1.1 else sal end) newsal
+	  from
+	   emp;
+	 */
+		
+  18.函数：to_day(日期) 转为天数
+	// select to_days(now())
+  
+  19.修改删除增加约束
+	alter table 表名 modity 字段名 类型 约束
+	//alter table c modify cno int(16) not null
+  
+  20.存储引擎（mysql独有）
+	查看存储引擎有哪些：show engines\G
+	查看表的存储引擎：show create table 表名；
+	常用的存储引擎：MyISAM、InnoDB（支持事务，级联更新，级联删除）、MEMORY
+  
+  21.事务,transaction:
+    -特征ACID：
+        原子性a（整个事务操作，必须是一个单元全部完成or全部失败）
+        一致性c（在事务开始与结束，数据库都保持一致状态）
+		隔离性i（一个事务不影响其他事务）
+		持久性d（在事务完成后，该事务对数据库的更改讲持久保存在数据库，不会被回滚）
+	-术语：
+	    开启事务:start transaction
+        结束事务:end transaction
+		提交事务:commit transaction
+        回滚事务:rollback transaction
+    -SQL语句：
+        commit 提交      rollback 回滚	
+    -在mysql数据库管理系统中，默认情况下，事务是自动提交的，
+	 执行一条DML语句就开启事务+提交事务。
+	-start transaction 开启事务功能，关闭自动提交（单次的）
+	 set autocommit =off 关闭自动提交事务功能（对当前会话有效）	 
+		/*
+		   start transaction 
+		   insert ...
+		   insert ...            
+		   commit（成功提交事务）/rollback（回滚事务）；
+		*/
+    -查看变量状态：Show variables like '%auto%'
+	-隔离级别（4个）：
+	   read uncommitted 读未提交(最低隔离级别)
+	    -一个事务还没提交，另一个事务就可以读取到，"dirty read"
+	   read committed 读已提交（2级）
+	    -一个事务提交了的数据，另一个事务才能读取到，不可重复读，oracle默认
+	   repeatable read 可重复读（3级）
+	    -一个事务提交的数据，另一个事务读取不到，可重复读，Mysql默认
+	   serializable 串行化（4级）
+	    -一个事务读书时，另一个事务只能排队等，效率低，
+	   1.修改配置文件改变隔离级别：
+	    //[mysqld] 
+		    transaction-isolation = READ-COMMITTED
+       2.使用命令方式设置事务的隔离级别
+	   // set (session/global) transaction isolation level read committed
+	   3.查看隔离级别：
+	   select @@tx_isolation
+	   select @@session.tx_isolation
+	   select @@global.tx_isolation
+	   (session 或者不加=作用于当前会话，global =作用于全局)
+	   
+  22.索引 index
+    -等于目录，提供查询效率，普通的查询会全表索引
+	-主键，unique自动添加索引
+	-创建索引：
+	 create index 索引的名字 on 表名（列名）
+	 create unique index +索引的名字 on 表名（列名）
+	-删除索引
+	 drop index 索引名字 on 表名
+  
+  23.视图
+    -create view 视图名 as select * from 表名
+	-隐藏表的实现细节
+  24.导出
+    -mysqldump 数据库名 表名 >输出目录+数据库名.sql -u root -p
+
+  25.设计规范
+	  -第一规范:要求有主键，并且每个字段原子性不可再分
+	  -第二规范：要求所有非主键字段完全依赖主键，不能产生部分依赖
+	  -第三规范：所有非主键字段和主键字段之间不能产生传递依赖
+	  -设计：1对1
+			 1对多：分多张表存储，在多的一方添加外键，外键引用主键字段
+			 多对多:
+		 
+  26.允许Navicat连接mysql
+	1、use mysql;
+	2、alter user 'root'@'localhost' identified with mysql_native_password by '********';
+	3、flush privileges;
+  
+  27.开放/关闭Mysql对外开放权限, 允不允许其他电脑来连接本地Mysql
+	-打开本地mysql表-->user-->HOST字段：localhost 只能本地
+											%	  其他人也可以
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  

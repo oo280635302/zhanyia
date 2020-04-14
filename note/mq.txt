@@ -1,0 +1,21 @@
+
+  -------------------------------RabbitMQ----------------------------------------
+  1.安装及其部署
+	-1.1需要先安装erlang
+		地址:http://erlang.org/download/
+	
+	-1.2安装rabbitmq
+		地址:https://www.rabbitmq.com/
+		
+  2.启动rabbitMq
+	-2.1 管理员权限在.\sbin目录漆面运行
+		rabbitmq-plugins enable rabbitmq_management
+	
+	-2.2 创建virtual host并为用户开通权限
+		admin -> virtual hosts -> add virtual hosts
+		admin -> virtual host选择host -> set permission
+		
+  3.五种队列模式
+	-简单模式
+	-工作模式
+	-

@@ -1,0 +1,3042 @@
+  
+  1.go特点：
+	-不需要依赖环境，文件可以直接拷贝使用
+	-支持内存垃极回收,不完美
+	-支持高并发
+	-适用范围：
+		-服务器编程
+		-分布式系统
+		-网络编程
+		-内存数据库
+		-云平台
+	
+  2.运行程序
+	-go env 	查看go权限配置信息
+	-go语言必须是utf-8编码方可运行
+	-go语言以包package为管理单位
+	-每个文件必须先声明包
+	-程序必须有个main包(对应入口函数),一个工程只有一个main函数
+	-实例：
+			package main 
+			import "fmt"
+			func main(){
+				fmt.Println("hello world")
+			}
+			
+	-go run xx.go 直接运行go代码,不生成可以执行程序
+	-go run ./	windows 直接运行同文件夹下面all文件
+	-go bulid xx.go 编译go代码,生成可执行程序
+	-go终端操作：
+		-build		编译go代码,生成可执行程序
+		-clean		用于清除执行其他go命令遗留下来的目录和文件
+		-doc		执行godoc命令以打印指定代码包
+		-fix		修正源码文件中过时的语法和代码
+		-fmt		执行gofmt命令以格式化代码包中的源文件
+		-get		下载和安装代码包和依赖包
+		-list		显示代码包的信息
+		-run		直接运行go代码,不生成可以执行程序
+		-install	编译包文件并编译整个程序
+		-test		用于测试给定的代码包
+		-tool		用于运行Go语言的特殊工具
+		-version	查看版本信息
+		
+		
+  3.基本数据类型
+	-告诉编译器这个数据以多大内存存储
+	-bool		1	布尔类型
+	-byte		1	字节型，uint8
+	-rune		4	字符类型，uint32，unicode编码
+	-int,uint	4,8	整型32位,64位
+	-int8,uint8 	1	整型有负,无负
+	-int16,uint16 	2	整型
+	-int32,uint32 	4	整型
+	-int64,uint64 	8	整型
+	-float32	4	精确到小数7位
+	-float64	8	精确到小数15位
+	-complex64	8	复数类型
+	-complex128	16	复数类型
+		-实例：
+			var t complex128 = 1.4 + 3.5i
+		-取实部
+			real(变量)
+			real(t) = 1.4 
+		-取虚部
+			imag(变量)
+			imag(t) = 3.5
+	-uintptr	4,8	整型,足以存储指针的uint32和uint64整型
+	-string			字符串utf-8
+	-字符是单引号,字符串双引号
+	-字符串都是字符+\0组成
+	-值类型和引用类型	
+		-值类型：
+			int,float,bool,string,数组,结构体stuct
+		-引用类型
+			指针,slice切片,map,管道chan,interface
+	
+  4.变量
+	-格式：var 变量名 类型
+	-声明了的变量必须要使用,且只需要声明一次
+	-只声明了的变量未赋值,默认值为0
+	-命名规范如其他
+	-实例：
+		var a int 
+		var a int = 20
+		a := 30
+		var (
+			a int 
+			b float64
+		)
+		var (
+			a = 1
+			b = 2.0
+		)//自动推导
+	-golang可以交叉赋值:
+		-实例：
+			a, b := 10, 20
+			a, b = b, a //a= 20,b= 10
+	-匿名变量
+		-多余的数据想要丢弃时,使用	
+		-实例:
+			a, _ = 10, 20  //a= 10， 20被丢弃
+	-作用域	
+		-分为局部变量和全局变量	
+		-类似于Js
+		-
+
+  5.常量
+	-不会变的常量
+	-格式：const 常量名 类型
+	-格式与变量机会一致
+	-实例：
+		const a int 
+		const a int = 20
+		const (
+			a int 
+			b float64
+			)
+		const (
+				a = 1
+				b = 2.0
+			)//自动推导
+	-iota
+		-常量自动生成器,每个一行,自动累加1
+		-iota给常量赋值使用
+		-初始为0
+		-当遇到const, 会重置为0
+		-实例1:
+			const(
+				a = iota 	//0
+				b = iota 	//1
+				c = iota 	//2
+			)
+			const d = iota 	//0
+		-实例2:	
+			const(
+				a = iota 	//0
+				b  			//1
+				c 			//2
+			)
+		-如果在同一行,值都一样	
+			-实例2:	
+				const(
+					a = iota 	//0
+					b,c = iota 	//1,1
+				)
+	
+  6.工具包
+	-import "xx" 使用工具包
+	-import . "XX"	这个格式：无需通过包名,调用函数
+	-import 别名 "XX"	给包取别名
+	-import _"XX"		不调用包的函数,但是会执行init函数
+	-fmt
+		-fmt.println
+			-控制台输出,一段一段输出,末尾自动加换行
+		-fmt.printf
+			-格式化输出,不能自动换行
+				-%d 	整型方式打印变量
+				-%c		字符方式打印变量
+				-\n		换行符
+				-%T 	打印变量所属的类型
+				-%%		一个%字面量
+				-%t		布尔值方式打印变量
+				-%v		万能格式
+				-%+v	让内容显示更详细
+				-%s		字符串方式打印变量,知道遇到空字符停止
+				-%p 	地址
+				-%f		小数方式打印
+					- %f:    默认宽度，默认精度
+					- %9f    宽度9，默认精度
+					- %.2f   默认宽度，精度2 ; %9.2f  宽度9，精度2 ; %9.f   宽度9，精度0
+		-fmt.Scanf	
+			-阻塞等待用户输入
+			-实例：
+				var a int 
+				fmt.Scanf("%d\n",&a)
+				//说明当检测到\n回车后，解析输入的格式化内容
+		-fmt.Scan
+			-实例：
+				fmt.Scan(&a)
+		-fmt.Scanln
+			-实例：
+				fmt.Scanln(&a)
+		-fmt.Sprintf("字符串%d", 变量)	格式化转字符串
+			-实例：
+				fmt.Sprintf("张三%d", i)
+				
+	-time
+		-time.Sleep(time.Second) 	每隔1S运行一次
+		-time.Now()					获取当前时间
+		-time.Now().Year()			获取当前时间的年
+		-time.Now().Month()			获取当前时间的月
+		-time.Now().Day()         	获取当前时间的日
+		-time.Now().Hour()        	获取当前时间的时
+		-time.Now().Minute()      	获取当前时间的分
+		-time.Now().Second()      	获取当前时间的秒
+		-time.Now().Nanosecond()  	获取当前时间的纳秒
+		-time.NewTicker(XX)			创建一个通道,每隔XX时间,发送当时时间
+			-ticker.C				ticker一时刻创建的时间
+		-time.NewTimer(xx)			创建一个通道,过了XX时间过后向自身C发送时间并过期
+			-timer.C				ticker一时刻创建的时间
+			-timer.Reset(XX)		再次向NewTimer发送XX过后的时间
+		-time.Now().In(location)	创建一个时间自定义时区的当前时间
+			-time.FixedZone("字段名",偏移量) 	获取一个自定义的location
+			-time.LoadLocation("地区名")		获取一个指定地区的location
+		-time.Date(年,月,日,时,分,秒,纳秒,location)		获取一个全自定义的时间
+			
+				
+	-os
+		-获取命令行的参数
+		-os.Args 	获取用户传递的参数，数组类型，0索引为运行的地址+程序
+		-os.Open("地址")	打开一个文件,返回文件指针,错误信息
+			-实例：
+				file,error := os.Open("E:/go_test/image/640.gif")
+		-XX.close()			关闭一个文件,返回错误信息
+			-实例：
+				error := file.close()
+		-XX.read()
+		-os.Stdin			标准输入(终端输入)
+		-os.Exit()			退出程序
+		-os.Stat(`文件`)    获取文件属性fileinfo,返回指针和错误信息
+			-fileinfo.Name()	获取文件名
+			-fileinfo.IsDir()	判断是否是目录，返回bool类型
+			-fileinfo.ModTime() 获取文件修改时间
+			-fileinfo.Size()	获取文件大小
+			-fileinfo.Mode()	文件的模式位
+			-fileinfo.Sys()		底层数据来源
+		-os.Getenv("XX")		获取环境变量XX
+		-os.MkdirAll(地址,权限)			创建文件夹
+			-os.ModePerm		最高权限0777
+		-os.Getwd()						获取当前文件所在路径
+		-os.Signal				系统信号
+			-signal.Notify(信号协程,信号常量)	当接收到信号就信号协程<-
+				-signal.SIGHUP  		挂断
+				-signal.SIGINT  		中断
+				-signal.SIGQUIT 		退出
+				-signal.SIGILL  		非法指示
+				-signal.SIGTRAP 		跟踪/断点陷阱
+				-signal.SIGABRT 		中止
+				-signal.SIGBUS  		总线错误
+				-signal.SIGFPE  		浮点异常
+				-signal.SIGKILL 		被杀死
+				-signal.SIGSEGV 		分段错误
+				-signal.SIGPIPE 		断管
+				-signal.SIGALRM 		报警闹钟
+				-signal.SIGTERM 		终止
+		
+	-math/rand 随机数
+		-rand.Seed(数) 		要先设置种子
+			-根据给的数字不一样获取到的随机数不一样
+			-因此数要是随机的,大部分使用时间戳time.Now().UnixNano()	
+		-rand.Int()			生成一个随机数,19位
+		-rand.Intn(X)		限制在[0,X)之间的随机数
+		-rand.New(rand.NewSource(time.Now().UnixNano()))	获取随机数生成器
+			-r.Int()		生成一个随机数,19位							
+			..
+		-rand.Ceil()		向上取整
+		-rand.Floor()		向下取整
+		-rand.round()		四舍五入
+		...
+	
+	-sort
+		-sort.ints(切片类型变量)			对切片类型变量进行增量排序				
+		-sort.Sort(切片类型结构体)		对切片类型结构体排序
+			-需要满足3个接口方法才能排序
+			-实例：
+				type hero struct {
+					name string
+					age  int
+				}
+				//heroes是切片类型结构体
+				type heroes []hero
+				func (h heroes)Len() int {
+					return len(h)//判断heroes长度
+				}
+				func (h heroes)Less(i, j int) bool {
+					return h[i].age > h[j].age //判断大小i>j降序,i<j升序
+				}
+				func (h heroes)Swap(i, j int){//交换位置
+					h[i],h[j] = h[j],h[i]
+				}
+
+				func main()  {
+					var a heroes
+					for i :=0; i<10; i++{
+						x := hero{
+							fmt.Sprintf("张三%d", i),
+							13 + i,
+						}
+						a =append(a, x)
+					}
+					fmt.Println(a)
+					sort.Sort(a)//使用sort排序
+					fmt.Println(a)
+				}	
+				
+	-strconv
+		-strconv.Atoi()		字符串 转为 整型
+		-strconv.Itoa()		整型 转为 字符串
+		
+	-runtime *CPU相关库*
+		-runtime.NumCPU()			获取当前系统CPU的数量
+		-runtime.GOMAXPROCS(num)	设置当前go程序使用几个CPU
+		-runtime.GOOS				获取当前是什么操作系统
+		-runtime.GOARCH				获取当前系统架构
+		-runtime.Caller(0)			返回当前参数在文件的位置
+		
+	-strings
+		-strings.Trim(字符串,"需要去掉的字")			将字符串中的某字去掉
+		-strings.Replace(s ,old ,new string,n int)		返回将s中前n个不重叠old子串都替换为new的新字符串，如果n<0会替换所有old子串。
+		-strings.Split("字符串","分隔符")				将字符串根据分隔符分隔
+		-strings.ContainsAny(待检测, 用于检测的字符)	检测字符串中是否有哪些字符
+		-strings.ToUpper(str)							将字符串全部转成大写
+		-strings.ToLower(str)							将字符串全部转成小写
+		-regexp.MatchString(正则, 被检测字符串)			检测字符串是否符合正则要求
+		
+	-binary	*数字与字节序列的转换*
+		-binary.BigEndian.PutUint32(被渲染的字节切片,uint32)	将数字转成字节切片
+		-binary.BigEndian.Uint32(被渲染的字节切片)	
+		
+	-errors
+		-errors.New("....")		创建一个error类型的信息并返回
+	
+	-bytes
+		-bytes.NewBuffer(xx)	初始化一个可接受字节切片的buffer缓冲
+	
+	-sync包
+		-sync.map				一种能保证读取线程安全的类map类型,自带锁,效率高。	
+			-scmp.Store(X)		存储
+			-scmp.Load(X)		获取
+			-scmp.Delete(X)		删除
+			-实例：
+				var scene sync.Map
+				// 将键值对保存到sync.Map
+				scene.Store("greece", 97)
+				scene.Store("london", 100)
+				scene.Store("egypt", 200)
+				
+	-filepath  文件路径的操作
+		-filepath.Dir(X)			返回路径除去最后一个路径元素的部分
+		-filepath.Abs(X)			返回绝对路径,如果path不是绝对路径加入当前目录使其成为绝对路径
+
+	-flag 		获取命令行的参数
+		-flag.String("参数名", "默认值", "提示")	先设置要获取的数据
+		-flag.Lookup("number").Value.String()		获取参数
+	
+	-log		日志打印相关包
+		-log.Fatal("XXX")			打印之后立即退出
+		-log.panic(XXX)				引发异常，并退出
+	-ioutil		I/O的实用功能包
+		-ioutil.ReadALL(io.Reader)		从reader里面全部读取,返回[]byte,error
+			-参数可以是:file.open()返回的*File类型
+		-ioutil.ReadFile(strig)			从文件里面全部读取,返回[]byte,error
+			-参数为指定的文件地址
+		-ioutil.WriteFile(filname,data,perm)	想一个文件写入数据,没有就根据权限创建,返回error
+			-参数:文件地址,数据,权限
+		-ioutil.ReadDir(dirName)		查询一个目录的目录信息,返回[]os.FileInfo,err
+			-参数：目录地址
+	-path 		path实现了对斜杠分隔的路径的实用操作函数。
+		-path.Join(地址,下级地址名)		将地址path合并在一起
+
+	-导入包
+		-同一目录的文件 package 名字 必须一样
+		-同一目录的文件之间的方法可以相互调用
+		-不同级目录需要import来调用,且他的函数必须开头大写
+	
+	-自定义包
+		-引用自定义包,需要修改环境变量的GOPATH到项目文件夹
+		-代码都放在项目文件夹的src里面
+		-自定义包,文件夹名 与 package名 需要一样
+		-包中首字母大写的可以调用，小写无法用
+		
+	-项目的文件夹管理
+		-src放源代码
+		-pkg放平台相关的包
+		-bin放可执行程序
+		-go install来生成bin或pkg目录，	
+	
+  7.数据类型转换
+	-int()
+		转换成整型
+	-不兼容类型	
+		-布尔,整型不兼容
+		
+  8.类型别名
+	-type 新名字 类型名
+	-实例：
+		type char byte
+ 
+  9.运算符
+	-算术运算符
+		+,-,*,/		加减乘除
+		%			取模(余)
+		++			自增
+		--			自减
+	-关系运算符
+		==		相等
+		!=		不相等
+		<		小于
+		>		大于
+		<=		小于等于
+		>=		大于等于
+	-逻辑运算符
+		!		非
+		&&		与
+		||		或
+	-位运算符
+		-类似于其他语言,百度
+		...
+	-赋值运算符	
+		-类似于其他语言
+		...
+	-其他运算符
+		-&		取地址运算符
+			-&a		变量a的地址
+		-*		取值运算符
+			-*a		变量a的所指内存的值
+
+  10.流程控制
+	-与js很像
+	-if语句
+		-格式：
+			if ... {
+				...
+			}else if{
+				...
+			}else{
+				...
+			}
+		-实例：
+			if a:=0 {
+				fmt.println(a)
+			}else{
+				fmt.println("结束")
+			}
+	-switch
+		-格式：	
+			switch 变量{
+			case 条件1：
+				....
+
+			case 条件2：
+				....
+			case 条件3：
+				....	
+			defalut:
+				...
+			}
+		-实例：
+			num := 1
+			switch num{
+			case 1：
+				fmt.println(1)
+				break
+			case 2：
+				fmt.println(2)
+				break
+			case 3：
+				fmt.println(3)
+				break
+			defalut:
+				fmt.println("没找到")
+				break
+			}
+		-break跳出switch语句,默认包括,不写
+		-fallthrough 不跳出switch语句,后面case也要被执行
+		-switch后面可以没有条件,将条件放在case后面
+		-实例：
+			num := 1
+			switch {
+			case num == 1：
+				fmt.println(1)
+				fallthrough
+			case num == 2：
+				fmt.println(2)
+				fallthrough
+			case num == 3,4,5：
+				fmt.println(3,4,5)
+				fallthrough
+			defalut:
+				fmt.println("没找到")
+			}
+	-for循环
+		-格式：	
+			for 初始条件;判断条件;条件变化{
+				....	
+			}
+		-实例：
+			for i:=1;i<10;i++{
+				fmt.println(i)
+			}
+	-range迭代
+		-格式：	
+			for X, Y := range str{
+				...	
+			}
+		-实例：
+			for i, data := range str{
+				fmt.println(i,data)
+			}
+		-range默认返回两个值:值的位置,值的数据
+	-break和continue
+		-同其余语言相同
+	-goto
+		-goto可以用在任何地方,但不能跨函数使用
+		-代码直接跳转到标记的地方
+		-格式：	
+				goto 标签
+			标签：
+				...	
+		-实例：
+				goto End
+			End:
+				fmt.println("结束")
+		-标签+退出多重循环：
+			Exit:
+				for {
+					switch XX{
+					case X:
+						break Exit //这个break-->退出Exit标签的for循环	
+					}
+				}
+	
+  12.函数
+	-格式:
+		func 名字(参数列表) (返回值 返回类型,返回值1 返回类型1){
+			....
+			return ...
+		}
+	-实例:
+		func FunName(a ,b int,c sting)(){
+			...
+		}
+	-不定参数：
+		func MyFunc(args ...int){
+			...
+		}
+		-可以传多个数据进去
+		-实例：	
+			func main()  {
+				MyFunc(123,3123)	
+			}
+			func MyFunc(args ...int) {
+				fmt.Println(args)
+			}
+	-有返回值得函数
+		-实例(推荐写法):
+			func FunName()(result int){
+				result = 666
+				return
+			}
+			a = FunName()
+		-可以有多个返回值
+	-规范：函数名字：大写共有public,小写私有private
+	-递归函数：
+		-实例:
+			func test01(i int)i{
+				if i == 1{
+					return 1
+				}
+				return i + test01(i-1)
+			}
+	-函数类型:
+		-golang可以自定义函数类型
+		-实例:	
+			type FuncType func(int,int) int
+			func Add(a int, b int) int {
+				return a + b
+			} 
+			var firstTest FuncType
+			firstTest = Add
+			result = firstTest(10, 20)
+		-主要作用于多态，配合回调函数使用
+	-回调函数：
+		-实例：
+			func Add(a, b int) int {
+				return a + b
+			}
+			type FuncType func(int,int) int
+			func Calc(a, b int,fTest FuncType)(result int){
+				result = Add(a, b)
+				return
+			}
+			a := Calc(1, 1, Add)
+	-匿名函数,闭包
+		-匿名函数就是没有名字的函数
+		-格式：
+			f1 := func(){
+				...
+			}
+		-闭包:
+			-以引用方式捕获外部变量
+			-实例:
+				func main(){
+					a:=10
+					func(){
+						a:=20
+						fmt.printf("%d", a) //20
+					}
+					fmt.printf("%d", a) //20	
+				}
+			-闭包不关心捕获的变量和常量是否超出作用域，只要闭包还在使用,变量将会一直存在
+			-实例：
+				package main
+				import "fmt"
+				
+				func MyFunc() func() int {
+					var x int
+					return func() int {
+						x++
+						return x*x
+					}
+				}
+				
+				func main()  {
+					f := MyFunc()
+					fmt.Println(f()) //1
+					fmt.Println(f()) //4
+					fmt.Println(f()) //9
+				}
+	-延迟调用defer
+		-defer后面跟的代码会当函数其他代码执行完后调用
+		-如果有多个defer会先执行后面的defer代码再执行前面的defer代码
+		-实例：
+			func main(){
+				defer fmt.Println("1") 
+				fmt.Println("2") 
+				defer fmt.Println("3") 
+				fmt.Println("0") 
+			} 		//2031
+	-初始化函数init
+		func init(){
+			....
+		}
+		-包被调用时,首先执行的函数
+	-动态分配空间的new()函数
+		-自动分配一个内存地址
+		-格式：	
+			XX = new(数据类型)
+		-不需要清理,有自动gc
+		-实例:
+			var p *int 
+			p = new(int)
+			*p = 666
+			fmt.println("%d",*p) //666
+
+  13.复合类型
+	-指针
+		-&变量  取变量的地址
+			-实例:
+				a := 1
+				printf("%d", a) 	//10
+				printf("%v", &a)	//0xc0000100b8	16进制的内存地址
+		-*int 		类型 用来保存指针的地址
+		-**int		类型 保存*int的地址
+		-*地址变量	指向该地址的值,可以重新赋值
+			-必须要有合法的指向内存地址才能操作
+		-指针类型变量默认值为：nil
+			-实例:
+				var p *int
+				Printf("%v",p)	//<nil>
+		-实例：
+			a := 1
+			var p *int = &a
+			Printf("%v,%v",&a,p) //0xc0000100b8,0xc0000100b8
+			*p = 666
+			Printf("%v,%v",a,*p) //666,666
+		-相关函数new函数
+		
+	-数组
+		-创建数组： var 变量 [长度]int
+		-数组是同一类型的集合,长度固定
+		-初始化数组：
+				var a [X]int = [X]int{1, 2, 3, ...}
+			-声明同时赋值
+			-可以部分初始化
+				a := [5]int{1,2,3} 		//[1 2 3 0 0]
+			-指定某元素赋值：
+				a := [5]int{1:10, 4:20} //[0 10 0 0 20]
+		-二维数组：
+			-数组里面嵌套数组
+			-var 变量 [X][Y]int
+			-初始化二维数组：
+				a := [3][4]int{{1,2,3,4},{5,6,7,8},{9,10,11,12}} 
+				-{大括号同一行}
+			-实例：
+				var a [3][3]int
+				var k int
+				for i := 0;i < 3;i++{
+					for j := 0; j<3; j++{
+						k++
+						a[i][j] = k
+						Printf("a[%d][%d]=%d", i ,j, k)
+					}
+					Printf("\n")
+				}
+				b := [3][4]int{{1,2,3,4},{5,6,7,8},{9,10,11,12}} 
+				Println(b)
+		-数组做函数参数
+			-实参数组的每个元素给形参数组拷贝一份
+			-函数内部修改参数,不会修改函数外数组的值,互不相关
+			-实例:
+				func modify(a [5]int){
+					a[0] = 888
+					fmt.Println(a) //[888,2,3,4,5]
+				}
+				func main(){
+					a := [5]int{1,2,3,4,5}
+					modify(a)
+					fmt.Println(a) //[1,2,3,4,5]
+				}
+			-想要数组参数的函数与外部的数组相同
+				-数组指针做参数
+				-实例：
+				fmt.Println(a)
+				b := [5]int{1,2,3,4,5}
+				modify(&b)
+				fmt.Println(b)
+				func modify(p *[5]int){
+					(*p)[0] =1531
+					fmt.Println(*p)
+				}
+				
+	-slice切片
+		-动态数组(其实不是数组了)
+		-格式： a := [...]int{1 ,2, 3, 4}
+		-取slice的一部分：	a[low:high:max]
+			-low	下标的起点
+			-high	下标终点(不包括)
+			-max	cap(容量)+low
+			-cap()函数		查看变量的容量
+		-make()函数	
+			-格式：
+				变量 := make(切片类型, 长度, 容量)
+			-实例：
+				a := make([]int, 5, 10)
+		-切片截取：
+			-s[n]			切片s中索引位置为n的项
+			-s[:]			全部截取
+			-s[low:]		从low到末尾
+			-s[:high]		从0到high
+			-s[low:high]	从low到high
+		-切片和底层数组的关系是：
+			-地址指向同一个地方
+			-切出来的数组指针指向与底层数组一样
+			-因此修改切出来的数组,也会改变原数组
+		-内置函数
+			-append			给slice末尾追加数据	
+				-格式：变量 = append(变量, 数据)
+				-实例：	a = append(a, 5)
+				-如果append时超过了原slice的容量,会两倍的扩容
+				**append()的第二个数据不能是切片,[]int...可以把切片打散
+			-删除数据：
+				-a = append(a[:index],a[index+1:]...)
+				-使用append函数,将切片切开再拼接
+			-copy			将复制的数组的数据覆盖掉被覆盖数组
+				-格式: copy(被覆盖, 复制)
+				-实例：
+					a := []int{1,2}
+					b := []int{7,7,7,7}
+					copy(b,a)  //{1,2,7,7}
+		-切片做函数参数
+			--切片作为参数是引用传递,不同与数组是复制过去一个新的
+			-因此函数内修改切片,原切片也会被修改
+			
+	-map数据类型	
+		-键值对数据类型
+		-格式：map[keytype]valuetype
+			-keytype不能是切片或者函数类型
+			-keytype是唯一的
+		-map只有len长度,没有cap容量
+		-make创建：
+			-格式：make(map[keytype]valuetype,长度)
+			-提前分配长度,减少运行速度
+		-map的遍历：
+			-for key, value :=range map{
+				...
+				}
+			-遍历出来的结果顺序是不定的
+		-value, ok ：=m[X] 会返回两个数据
+			-如果m[X]存在, value为他的值,ok为Ture
+			-如果m[X]不存在, value为空值,ok为False
+		-map的操作：
+			-给map类型里的数据赋值
+				-格式：
+					变量[X] = xxx
+				-有赋值，没有追加
+			-删除map的数据
+				-格式：
+					delete(map变量名, key键名)
+				-实例:	
+					delete(m, 1)//删除了m里面1这个键值对
+		-map做函数参数
+			-引用传递
+		
+	-结构体
+		-聚合的数据类型
+		-格式：
+			type 结构体名 struct{
+				变量1	类型1
+				变量2	类型2
+			}
+		-实例：
+			type Student struct{
+				id 		int
+				name 	string
+			}
+		-初始化：
+			-顺序初始化
+				-格式：	
+					var 变量 结构体名 = 结构体名{数据1, 数据2}
+				 or	变量 := 结构体名{数据1, 数据2}
+				-实例：
+					var s1 Student =Student{01, "张三"}
+				*顺序初始化必须都初始化
+			-指定成员初始化	
+				-格式：
+					var 变量 结构体名 = 结构体名{变量1:数据1, 变量2:数据2}
+				 or	变量 := 结构体名{变量1:数据1, 变量2:数据2}
+				-实例：	
+					s1 := Student{id: 01, name: "张三"}
+				-指定成员的初始化,其余没指定的默认为0	
+			-指针初始化
+				-格式：
+					var 变量 *结构体名 = &结构体名{变量1:数据1, 变量2:数据2}
+				 or	变量 := &结构体名{变量1:数据1, 变量2:数据2}
+		-结构体成员,普通变量
+			-格式：
+				var 变量 结构体名
+				变量.变量1 = XX	 //进行赋值
+		-结构体成员,指针变量
+			-实例:	
+				var a Name
+				var a1 *Name
+				a1 = &a		
+				a1.id = 123		//这里的 a1 == (*a1)
+				fmt.Println(a) 		//{123}	
+				fmt.Println(*a1)	//{123}	
+			-实例2：
+				p2 := new(Name)
+				p2.id = 132
+				p2.name = "lisi"
+				fmt.Println(p2) 		//&{132 lisi}	
+		-结构体的比较
+			-同类型结构体内容相同 就 全等
+				-实例：
+					p1 := Name{1,"13da"}
+					p2 := Name{1,"13da"}
+					fmt.Println(p1==p2)	 //	ture
+			-两个同类型结构体可以相互赋值
+				-实例：
+					p1 := Name{1,"13da"}
+					p2 := Name{3,"13da"}
+					p2 = p1
+					fmt.Println(p2)	 	//{1,"13da"}
+		-结构体作为函数参数
+			-值传递,类似于数组
+	
+	-可见性
+		*如果想使用别的包的函数、结构体类型、结构体成员	
+			包里的变量名首字母必须 *大写*
+			
+		
+  14.冒泡排序
+	-依次对比每个数组之间数然后排序
+	-实例：
+		var a [10]int
+		n := len(a)
+		for i := 0;i < n;i++{
+			a[i] = rand.Intn(50)
+		}
+		for i := 0; i < n-1; i++{
+			for j := 0; j < n-1-i; j++{
+				if a[j] > a[j+1]{
+					a[j],a[j+1] = a[j+1],a[j]
+				}
+			}
+		}
+		fmt.Println(a)  //升序
+	
+  15.面向对象编程
+	-匿名字段初始化	
+		-类似于继承,可以让结构体拥有另一结构体的成员	
+		-实例：
+			type Person struct{
+				name string 
+			}
+			type Student struct{
+				Person
+				id 	int
+			}
+			//现在Student就拥有了 name 成员
+		-使用匿名函数
+			var s Student = Student{Person{"张三"}} //{{"张三"}}
+		-初始化规则与结构体一致
+			-特殊：
+				s1 := Student{Person: Person{name: "张三"}}
+				-给匿名字段里面指定成员初始化
+		-成员操作
+			-与结构体一致
+			-特殊：
+				s1.Person = Person{"张三"}
+				-可以给匿名的字段单独整体赋值
+		-同名字段
+			-如果遇到同名字段,会给结构体本身的先操作
+			-如果非要操作匿名字段
+				-实例：
+					s.Person.name = "李四"
+		-非结构体匿名字段
+			-实例：
+				type str string
+				type Person struct{
+					name string 
+				}
+				type Student struct{
+					Person
+					int		//可以没有名字
+					str		//自定义数据类型
+				}
+			-使用：	
+				s1 := Student{Person{"wangwu"},666,"你好"}
+		-结构体指针匿名字段
+			-实例：	
+				type str string
+				type Person struct{
+					name string 
+				}
+				type Student struct{
+					*Person
+					int		//可以没有名字
+					str		//自定义数据类型
+				}
+			-使用：	
+				s2 := Student{&Person{"wangwu"},666,"你好"}
+	-方法
+		-指定数据类型才可以调用的函数叫方法
+		-被 指定数据类型 创建出来的方法只能通过 这个数据类型的变量来调用
+		-实例：
+			type Person struct{
+				name string
+			}
+			func main()  {
+				a := Person{"数字是"}
+				a.sss(123)
+			}
+			func (p Person) sss(x int)  {
+				fmt.Println(p.name,x) //数字是123
+			}
+			//sss() 只能被 Person类型的变量调用
+		-可以通过传入地址,修改变量本身的值
+			-实例：
+			type Person struct{
+				name string
+			}
+			func main()  {
+				var a Person
+				a.name = "zhangsan"
+				a.sss() //a.name = "zhangsan"
+				(&a).xxx("李四")	//传地址
+				a.sss() //a.name = "李四"
+			}
+			func (p Person) sss()  { //打印数据方法
+				fmt.Println(p.name) 
+			}
+			func (p * Person) xxx(n string){//接受地址修改数据方法
+				p.name = n
+			}
+		-值语义和引用语义
+			-传入的是值,就是值语义
+			-传入的是引用,就是引用语义
+		-指针变量和普通变量方法集
+			-不管传入变量是地址还是值,都会转换成需要的参数传递进去
+		-继承
+			-类型继承了其他类型,会将其会员和方法都继承了
+			-实例：
+				type Person struct{
+					name string
+				}
+				type Student struct{
+					Person
+					int
+				}
+				func main()  {
+					a := Student{Person{"da123"},123}
+					a.sss()
+				}
+				func (p Person) sss()  { 
+					fmt.Println(p) 
+				}
+		-方法的重写
+			-继承了字段后,又写了同名的方法
+			-直接调用会使用新写的方法
+				-变量.方法()	使用的是新方法
+			-想要调用继承的方法用显示调用(参考同名字段)
+				-变量.原数据类型.方法()		使用的是旧方法
+		-方法值
+			-实例：
+				p := Person{"zhangsan"}
+				f := p.sss
+				f()  ===>	p.sss()
+		-方法表达式
+			-实例：
+				p := Person{"zhangsan"}
+				f :=(Person).sss
+				f(p) ===>	p.sss()
+	-接口interface（13.复合类型）
+		-格式：
+			type 接口名 interface{
+				method1(参数列表)返回值列表
+				method2(参数列表)返回值列表
+			}
+		-可以根据变量的数据类型使用对应的方法
+		-接口的所有方法都调用叫实现接口
+		**每个接口的对应方法都必须写出来,可以不调用**
+			-格式：
+				func(t 自定义类型)method1(参数)返回值{
+					...
+				}
+		-非显示实现
+		-
+		-实例1：
+			func main()  {
+				var a Humaner
+				var b stre = "yes"
+				a = b
+				a.sss() //yes
+				var c str = "no"
+				a = c
+				a.sss()	//no
+			}
+			type stre string
+			func (p stre) sss()  { 
+				fmt.Println(p) 
+			}
+			type str string
+			func (p str) sss()  { 
+				fmt.Println(p) 
+			}
+		-实例2：
+			//Usb接口
+			type Usb interface{
+				start()
+				stop()
+			}
+			//手机
+			type Phone struct{
+
+			}
+			func (p Phone)start()  {
+				fmt.Println("手机开始")
+			}
+			func (p Phone)stop()  {
+				fmt.Println("手机停止")
+			}
+			//相机
+			type Camera struct{
+
+			}
+			func (p Camera)start()  {
+				fmt.Println("相机开始")
+			}
+			func (p Camera)stop()  {
+				fmt.Println("相机停止")
+			}
+			//电脑,调用传入数据类型的相对应接口
+			type Computer struct{
+
+			}
+			func (c Computer)working(usb Usb)  {
+				usb.start()
+				usb.stop()
+			}
+			func main()  {
+				var c Computer
+				var cam Camera
+				var p Phone
+				c.working(cam)
+				c.working(p)
+			}
+		-接口的注意事项：
+			1) 接口本身不能创建实例,但可以指向实例了该接口方法的自定义类型变量
+				-参考实例1
+			2) 接口中所有的方法都没有方法体,即没有实现的方法
+			3) 一个自定义类型只有实现了接口,才能把自定义类型赋值给接口类型
+			4) 接口里面不能有任何变量
+			5) 接口也可以继承	
+				-两个继承的方法里面不能有相同的方法
+			6) interface类型默认是引用类型
+			7) 空接口能接受任何一个变量，任何一种数据类型
+			8) 如果方法传入的是指针类型,接口需要接受地址！
+				-实例：
+				type Usb interface{
+					playb()
+				}
+				type Computer struct {
+				}
+				func (c *Computer)playb()  {
+					fmt.Println("lalal")
+				}
+				func main()  {
+					var u Usb
+					var c Computer
+					u = &c
+					u.playb() //lalal
+				}
+		-多态	
+			-多态根据接口来体现
+			-同一个接口调用不同的实现,呈现的东西不一样
+			-根据多态可以给一个数组添加多个数据类型
+				-实例：
+					type Animal interface {
+					}
+					type Monkey string
+					type Bird int
+					func main()  {
+						var a [2]Animal
+						var m Monkey ="nihao"
+						var b Bird = 123
+						a[0] = m
+						a[1] = b
+						fmt.Print(a) [nihao 123]
+					}
+		-类型断言
+			-情景1：
+				当根据结构体调用一个接口方法时,如果有个结构体有方法,
+				另一个结构没方法,需要进行类型断言来判断是否使用这个方法
+			-情景2：
+				当一个空接口a被赋值了自定义类型point的值,再将a赋给先的point变量时,需要用到类型断言
+			-格式:
+				新变量, 判断是否成功 ：= 变量.(类型)
+			-实例：
+				var a interface{}
+				var b Point = Point{1,2}
+				a = b
+				var c Point
+				c = a.(Point)//类型断言
+				c = a //错误的！两个变量类型不一样不能赋值
+			*空接口原来的类型 要与 断言的类型 保持一致
+			-为保证断言失败时,程序能继续进行,要判断断言是否成功
+				-实例1（带检测的类型断言）
+					var a interface{}
+					var b int16 = 1
+					a = b
+					c, ok := a.(int32)//类型断言,同时判断是否成功返回到ok上
+					if ok == else {
+						fmt.Println("convert fail")	//convert fail
+					}
+					fmt.Println(c) //0
+				-实例2：
+					//Usb接口
+					type Usb2 interface{
+						start()
+						stop()
+						work()
+					}
+
+					//相机
+					type Camera1 struct{
+						name string
+					}
+					func (p Camera1)start()  {
+						fmt.Println(p.name,"相机开始")
+					}
+					func (p Camera1)stop()  {
+						fmt.Println(p,"相机停止")
+					}
+					func (p Camera1)work()  {
+						fmt.Println(p,"工作ing~")
+					}
+
+					//电脑
+					type Computer1 struct{
+					}
+					func (c Computer1)working(usb Usb2)  {
+						usb.start()
+						if _, ok:=usb.(Camera1);ok== true{
+							usb.work()
+						}
+						usb.stop()
+					}
+					func main()  {
+						var u [2]Usb2
+						u[0] = Camera1{"看你"}
+						u[1] = Camera1{"玩的"}
+						var com Computer1
+						for i, v := range u{
+							com.working(v)
+						}
+					}
+			-判断变量的类型(固定写法)
+					变量.(type){ 	**这里的 变量.(type) 是固定写法
+					case int,int64:
+						...
+					case float:
+						...
+					...
+					defalut:
+						...
+				}
+				
+				-实例3：
+					func TypeJudge(item ...interface{}) {//可以传入任意长度任意类型的变量
+						for _,x := range item{
+							switch x.(type) {
+							case int:
+								fmt.Printf("%v这是个int类型",x)
+							case float64:
+								fmt.Printf("%v这是个float64类型",x)
+							case []int:
+								fmt.Printf("%v这是个切片类型",x)
+							default:
+								fmt.Printf("%v--这个判断不出来了",x)
+							}
+						}
+					}
+				-数组... 			将数组内容打散
+
+  16.项目开发
+	-项目开发的流程：
+		需求分析--设计阶段--实现代码<-->测试阶段--实施阶段--维护阶段
+
+  17.文件操作
+	-文件 是数据源(保存数据的地方)的一种
+	-流：
+		-数据在数据源(文件)和程序(内存)之间经历的路径
+		-输入流：数据源-->程序
+		-输出流：程序-->数据源
+	-文件操作使用到工具包os
+		-os.File封装了所有文件相关操作
+		-File是个结构体
+	-操作文件流程
+		-读取文件方法一
+			os.open()-->bufio.NewReader()-->file.close()
+			-bufio.NewReader()			带缓冲的读取一个文件,返回读取的内容信息
+			-read.ReadString('\n')		当读取到换行符结束,返回内容,错误信息
+			-io.EOF						读到末尾了
+			-实例：
+				file,_ := os.Open("E:/go_test/image/110.txt") //开始
+				defer file.Close()	//结束
+				read := bufio.NewReader(file)	//实现file的缓存(分次读取)
+				for{
+					str,err := read.ReadString('\n') //读取内容遇到\n结束
+					if err == io.EOF{	//读到末尾结束
+						break
+					}	
+					fmt.Print(str)	//打印读取的内容
+				}
+		-读取文件方法二(小文件)
+			-ioutil.ReadFile("地址")	将文件全部读取,返回内容,错误信息
+			-实例：
+				content,_ := ioutil.ReadFile("E:/go_test/image/110.txt")
+				fmt.Printf("%v",string(content)) //string()转换为字符输出时
+		-写文件方法一
+			-os.openFile(文件名,打开方式,权限操作(linux有效))(*file,error)
+					O_RDONLY	 // 只读模式打开文件
+					O_WRONLY 	 // 只写模式打开文件
+					O_RDWR    	 // 读写模式打开文件
+					O_APPEOpenFileND	 // 写操作时将数据附加到文件尾部
+					O_CREATE  	 // 如果不存在将创建一个新文件
+					O_EXCL    	 // 和O_CREATE配合使用，文件必须不存在
+					O_SYNC    	 // 打开文件用于同步I/O
+					O_TRUNC   	 // 如果可能，打开时清空文件
+			-bufio.NewWriter()			带缓冲的写一个文件,返回读取的内容信息
+			-xx.WritrString("字符串")	将字符串写入到缓存中去
+			-xx.Flush()					将缓存写入到文件中去
+			-实例:
+				filePath := "E:/go_test/image/110.txt"
+				file,_ := os.OpenFile(filePath, os.O_CREATE | os.O_WRONLY ,0666)
+				str := "Hello World~~!\n"
+				write := bufio.NewWriter(file)
+				write.WriteSting(str)
+				write.Flush()
+		-写文件方法二
+			-参考ioutil读的方法
+			-如果没有就创建新文件
+			-ioutil.WriteFile("地址",内容,权限操作(linux有效))
+		-判断文件是否存在
+			-os.Stat("地址")			返回fil和err
+				如果返回的err为nil说明文件存在
+			-os.IsNotExist("错误信息")	根据错误信息判断,返回true文件不存在
+			
+		-拷贝文件(小文件)
+			-实例：
+				filePath := "E:/go_test/image/110.txt"
+				data,_ := ioutil.ReadFile(filePath)
+				ioutil.WriteFile("E:/go_test/image/111.txt",data,006)
+		-拷贝文件(大文件)
+			-os.copy(write句柄,read句柄)	返回written和错误信息
+			-实例:
+				oldFile := "E:/go_test/image/640.gif"
+				newFile := "E:/go_test/image/740.gif"
+				redFile,_ := os.OpenFile(oldFile,os.O_RDONLY,0006)
+				read := bufio.NewReader(redFile)//读取句柄缓存
+				wriFile,_ := os.OpenFile(newFile,os.O_CREATE | os.O_WRONLY ,0006)
+				write := bufio.NewWriter(wriFile)//写入句柄缓存
+				io.Copy(write,read)//拷贝
+		-判断文本中数字或者字母的个数
+			1先读取文件,定义保存数字和字母的结构体
+			2循环读取每列字符 遇到io.EOF循环结束
+				str,err := read.ReadString('\n') //读取内容遇到\n结束
+				if err == io.EOF{	//读到末尾结束
+					break
+				}
+			3遍历每段字符串
+				for _,v := range str{}
+			4每当遇到数字，字母的时候记录一次
+				switch  {
+					case v >= "A" && v <= "z":
+						count.zimu ++
+					case v >= "0" && v <= "9":
+						count.shuzi ++
+				}
+				
+  18.命令行参数
+	-根据输入的命令行参数获得值：
+		os.args
+	-根据指令参数(flag包)
+		flage.stringVar(&user,"u","","说明")
+			-&user		接受用户命令行中输入的 -u 后面的参数
+				//-u root  就会获得 root
+			-"u"		指定参数-u
+			-""			默认值	
+			-"说明"		说明
+		-实例：
+			var user string 
+			var password string 
+			flage.stringVar(&user,"u","","说明1")
+			flage.stringVar(&password,"p","","说明2")
+			fmt.Printf("%v，%v",user)
+			//假如用户输入 mysql -u root -p 123
+			  获得结果 root，123
+
+  19.JSON
+	-Json序列化操作	
+		-概念：将键值对(结构体，map，切片)转换成json字符串
+		-引入encoding/json工具包
+		-json.Marshal(...)			将任意类型转换成json字符串,返回data,err
+			-需要string(data)，转成字符串格式
+		 -实例：
+			var a map[int]string
+			a = make(map[int]string)
+			// a = make(mapmap[int]string)
+			a[1] = "zhangsan"
+			a[2] = "klis"
+			data,_ := json.Marshal(a)
+			fmt.Printf("%v",string(data))
+		-结构体,指定json序列化后key的名字(设定tag标签,反射机制)
+			-实例：
+				type Student struct{
+					Name string `json:"name"`
+				} 
+			*结构体key值必须大写，因为转json是其他包的方法,私有属性传不进去
+			*不会报错,但是传不进去的数据会丢失
+	-json反序列化操作
+		-概念：将 json字符串 转换成 键值对(结构体，map，切片)
+		-json.Unmarshal([]byte(str),&键值对变量)			将json字符串转换成任意类型,返回err
+			-需要将str转成字节切片[]byte(str)
+			-实例：
+				type Student struct{
+					Id  string 
+					Name string `json:"name"`
+				} 
+				func main()  {
+					var a Student
+					str := "{\"Id\":\"123\",\"name\":\"zhangsan\"}"
+					err := json.Unmarshal([]byte(str), &a)
+					if err != nil {
+						fmt.Println(err)
+					}
+					fmt.Println(a)  //{123 zhangsan}
+				}
+			-反序列化map类型,接受的变量不需要make,反序列化可以自动make
+		-json.Decoder(io.reader)		同Unmarshal,反序列化,使用于流读取的时候，返回一个decoder
+			-decoder.Decode(interface{})	将输入流读取到json编码中 返回err
+			-实例：
+				cfg := &IMPublicConfig{}
+				file, err := os.Open("c:/pwd/123.json")
+				if nil != err {
+					return nil, err
+				}
+				decoder := json.NewDecoder(file)
+				if err = decoder.Decode(cfg); nil != err {
+					return nil, err
+				}
+				return cfg, nil	
+
+	
+  20.单元测试
+	-可以测试代码是否正确，且在保证代码正常运行，
+	-testing和自带的go test命令来实现单元测试和性能测试
+	-单元测试：	发现程序上的设计和实现逻辑错误
+	-性能测试：	发现程序设计的问题，使程序在高并发的同时保持稳定
+	-使用方式:
+		1） 创建xx_test.go文件
+		2） 引用"testing" 文件
+		3） 写函数名为func TestXxxx(t *testing.T){} 
+				1. 在里面写你要调用的函数
+				2. t.Fatalf()		输出运行错误信息
+				3. t.Logf()			输出运行正确信息
+		4）   go test -v 运行测试						运行正确或错误,都输出日志
+				go test									运行正确无日志,错误有日志
+				go test -v xx.test.go xx.go		
+				go test -v 测试文件 被测试文件			测试单个文件
+				go test -v -test.run 测试方法			测试单个方法
+				
+	-实例：
+		package main
+		import "testing"
+		func TestHello(t *testing.T)  {
+			res := play()
+			t.Fatalf(res)  	//错误时的信息,可以在此做判断
+			t.Logf(res)		//成功时的信息
+		}
+	-注意事项：
+		-在go文件里面没有main函数也能正常运行
+		-测试函数名必须以TestXxxx命名,Xxxx叫啥无所谓 首X必须大写
+		-测试方法是否私有无所谓,都可以被测试
+  
+  21.gotoutine协程  *并发*
+	-概念：
+		-进程：	一个程序一次执行过程，是系统进行资料分配和调度的基本单元
+		-线程：	进程的执行实例，是程序执行的最小单元，比进程更小的基本单元
+		-一个进程可以控制多个线程，同一个进程的多个线程可以并发执行
+		-并发：	多线程程序在单核上运行	//多个线程轮流运行，	其实只有一个cpu运行
+		-并行：	多线程程序在多核上运行	//多个线程各自运行	多CPU同时工作
+		-携程：	给线程再细化更轻量的线程，让单个线程可以控制多个携程
+	-携程的特点：
+		1、有独立的栈空间
+		2、共享程序的堆空间
+		3、调度由用户控制
+		4、协程时轻量级的线程
+		5、可以轻松开启上万个协程
+	-开启协程方法：
+		go 需要执行的代码
+		-配合time.Sleep()和
+	-实例：
+		func main()  {
+			go export1()
+			for index := 0; index < 5; index++ {
+				fmt.Println("lalala")
+				time.Sleep(time.Second)
+			}
+			
+		}
+		func export1(){
+			for index := 0; index < 5; index++ {
+				fmt.Println("yeyeye")
+				time.Sleep(time.Second)
+			}
+		}
+		
+	*注意事项：
+		-主线程退出了，协程及时没有完成也会退出
+		-主线程与协程输出的顺序会不稳定,因为协程创建需要时间。
+	-MPG模式
+		-M：操作系统的主线程(物理线程)
+		-P：协程执行需要的上下文
+		-G:	协程
+	-golang设置运行的CPU数
+		-导入包 runtime
+		-使用runtime.NumCPU() 获取当前系统有几个CPU(逻辑CPU)
+		-再使用runtime.GOMAXPROCS(数量)设置使用的CPU数量
+	-查看资源竞争问题：
+		-运行程序时,加上 -race 
+			-实例：	go build -race hello.go
+	-防止某个协程发生错误,影响其他程序运行
+		-defer + recover 配合
+		-格式：	
+			defer func(){
+				if err:= recover();err !=nil{
+					...
+				}
+			}()
+		-加入到协程里面					
+			
+  22.channel 管道	*锁*
+	-在同时对一个资源进行协程write操作时,会出现资源竞争的关系
+	-为保证不出现资源竞争,需要给资源加锁（当一个协程工作时,其他协程不工作）
+	-sync包（低水平锁）
+		-提供低水平程序线程互斥锁
+		-声明全局变量锁
+			lock sync.Mutex
+				-lock  		全局的互斥锁
+				-sync		工具包
+				-Mutex		互斥
+			lock.Lock()		加锁
+			lock.Unlock()	解锁
+		-实例：	
+			var a = make(map[int]int)
+			var lock sync.Mutex
+			func Factorial(n int) {
+				res := 1
+				for i := 1; i <= n; i++  {
+					res *= i
+				}
+
+				lock.Lock()
+				a[n] = res
+				lock.Unlock()
+			}
+			func main() {
+				for i := 1;i < 20 ;i++  {
+					go Factorial(i)
+				}
+				time.Sleep(time.Second * 3)	 //设置主线程休眠时间
+				lock.Lock()
+				fmt.Println(a)	//此处加互斥锁,告知程序底层资源竞争
+				lock.Unlock()	//防止报错
+			}
+	-channel（高水平锁）
+		-特点：	
+			1、本质是一个 数据结构-队列
+			2、数据是先进先出
+			3、线程安全，多goroutine访问不需要加锁
+			4、channel有类型
+		-格式：	
+			-创建channel：
+				var 变量名 chan 数据类型
+				
+					-channel 是引用类型
+					-channel 必须初始化才能写入数据,即make()后
+					-管道是有类型的,是什么类型才能写入什么类型
+			
+			-向channel写入数据	
+				管道名 <- 数据
+				-实例：	
+					intChan <- 10 
+					
+			-从channel读取数据
+				变量 = <-管道名
+				-实例：
+					num := <-intChan
+					
+			-channel的关闭
+				close(管道名)
+				-实例：
+					close(intChan)
+				-关闭的channel只能读不能写
+				
+		-实例1：(普通使用)
+			var intChan chan int
+			intChan = make(chan int,3)
+			intChan <- 1
+			intChan <- 2
+			intChan <- 3
+			b :=  <- intChan
+			fmt.Println(b)	//1
+			b = <- intChan
+			fmt.Println(b)	//2
+			
+			//intChan 是个地址	 地址里面存放的也是地址->指向管道
+			//因此将intChan传入函数,他们调用的是同一个管道
+		-实例2：(涉及多类型)
+			var intChan chan interface{}
+			intChan = make(chan interface{},3)
+			intChan <- 1
+			intChan <- "231"
+			newCat := Cat{Name:"小白"}
+			intChan <- newCat
+			<- intChan
+			b := <- intChan
+			fmt.Println(b)	//2
+			c := <- intChan
+			d := c.(Cat)	//类型断言,将空接口转成Cat类型
+			fmt.Println(d.Name) //小白	
+			
+		*注意事项一*
+			-管道长度不能超过容量,不然会爆掉
+			-一定要make()初始化
+			-如果没有数据也不能取数据
+		-创建只读只写的channel
+			-只写：
+				-格式：
+					var 变量名 chan<- 数据类型
+				-实例：
+					var intChan	chan<- int
+					intChan = make(chan int,10)
+					
+			-只读：
+				-格式：
+					var 变量名 <-chan 数据类型
+				-实例：
+					var intChan	<-chan int
+					intChan = make(chan int,10)			
+		-channel 的遍历
+			-不能使用普通for循环,要使用for .. range ..
+			-遍历管道前,一定要关闭管道
+			-格式：	
+				for 接受变量 := range 管道名{}
+			-实例：
+				var a chan int
+				a = make(chan int ,10)
+				for i:=0; i< 10; i++{
+					a <- i*2
+				}
+				close(a)
+				for v:=  range a{
+					fmt.Println(v)
+				}
+				
+		-channel配合协程
+			-特点：让程序自己控制自己执行时间
+			-思路：主程序设定一个管道,当协程的工作完后,给管道一个提示,让主程序关闭
+			-实例1：
+				func writeData(intChan chan int) {//写入管道
+					for i:=0;i<50;i++{
+						intChan <- i
+						fmt.Println(i)
+					}
+					close(intChan)
+				}
+				func readData(intChan chan int,exitChan chan bool) {//读取管道
+					for{
+						v,ok := <-intChan
+						if !ok{
+							break
+						}
+						fmt.Println("readData 的数据：",v)
+					}
+					exitChan <- true
+					close(exitChan)	//当读取完成存入exitChan数据
+				}
+				func main() {
+					intChan := make(chan int, 50)
+					exitChan := make(chan bool , 1)
+					go writeData(intChan)
+					go readData(intChan,exitChan)
+					for{//创建一个管道
+						a := <- exitChan
+						if a { //获取exitChan状态改变,主程序退出
+							break
+						}
+					}
+				}		
+			-实例2：
+				var a = make(map[int]int)	//接受map结果
+				var lock sync.Mutex 	//低级互斥锁
+				func Factorial(n int, exitChan chan bool) {
+					res := 1
+					for i := 1; i <= n; i++  {
+						res *= i
+					}
+					fmt.Println(n,"的阶乘结果",res)
+					lock.Lock()
+					a[n] = res
+					lock.Unlock()
+					if n == 19 {
+						exitChan <- true
+						close(exitChan)
+					}
+				}
+				func main() {
+					var exitChan chan bool
+					exitChan = make(chan bool, 1)
+					for i := 1;i < 20 ;i++  {
+						go Factorial(i,exitChan)
+					}
+					for{
+						_,ok := <- exitChan
+						if !ok{
+							break
+						}
+					}
+				}
+		-管道阻塞机制：
+			-当读取管道 速度慢 时,协程的 管道 写入会在达到达到容量时等待另外一边读取
+			*但是没有读取管道,会直接报错
+	-Select
+		-当一个管道不知道什么时候关闭时使用
+		-格式：
+			select{
+				case v := <-管道名1：
+					取到了做什么
+				case v := <-管道名2：
+					取到了做什么
+				defalut
+					取不到了做什么
+					break
+			}
+	
+  23.反射
+	-适配器函数：
+		-在一个函数里面传去另一个函数名,参数然后他会去调用另一个参数
+	-基本介绍：
+		1、反射可以在运行时动态获取变量各种信息，比如变量的类型，类别
+		2、如果是结构体变量，还可以获取结构体本身的信息
+		3、通过反射，可以调用变量的值和方法
+		
+	-reflect包
+		-reflect.TypeOf(变量名)			获取变量类型,返回reflect.Type类型
+			-type名.Field(X)			获取对应键的第X个字段
+				-xxx.Tag				获取其Tag标签（也是个结构体）
+					-Tag.Get("json")	获取Tag标签的json的值	
+				-实例(获取Tag标签)：
+					var a Student =Student{
+						Name:"zhangsan",
+						Id:17,
+					}
+					typ := reflect.TypeOf(a)
+					val := reflect.ValueOf(a)
+					num := val.NumField()
+					for i := 0; i<num;i++  {
+						c := typ.Field(i)
+						a:= c.Tag
+						b := a.Get("json")
+						fmt.Println(b)
+					}
+	
+		-reflect.ValueOf(变量名)		获取变量值,返回reflect.Value类型
+			-value名.Interface()		将reflectvalue类型转成interface{}类型
+			-value名.int()				将reflectvalue类型转成int类型
+			...
+			-value名.Kind()				获取reflectvalue类型的类别
+				//包名.Student 类型   stuct 类别
+			-value名.Elem()				获取value持有的指针指向的类型或者值
+				-当传入的是指针类型的数据时使用,不然类别是ptr
+			-value名.SetString("...")	将指针指向的值进行改变
+				-实例：
+					var str string = "Tom"
+					fs := reflect.ValueOf(&str)
+					fs.Elem().SetString("jack")
+					fmt.Println(str)	
+			-value名.Method(X)			获取结构体的第X方法
+				*方法排序是按方法名(ASCII码)来排序的*
+				-获取的方法.Call()		调用方法
+			-value名.NumField()			获取rv的字段数
+			-value名.Field(X)			获取对应值的第X个字段,可以查看,类型是value
+			-value名.FieldByName("..")	获取指定了名字的字段
+			-value名.NumMethod()		获取结构体有几个方法
+		-reflect.New(指向的类型)		返回一个value类型，该值有一个指向的类型的新申请的零值指针
+			-实例(通过反射创建结构体):
+				var (
+					model *Student
+					st reflect.Type
+					vl reflect.Value
+				)
+				st = reflect.TypeOf(model)	//获取类型
+				st = st.Elem()	//获取指向的类型
+				fmt.Println(st)
+				vl = reflect.New(st)	//创建一个指向st类型的指针,本身为val类型
+				fmt.Println(vl)
+				vl = vl.Elem()	//获取指针指向的vl的值
+				fmt.Println(vl)
+				vl.Field(0).SetString("lalala")	//给第一个值赋值
+				vl.Field(1).SetInt(15)	//给第二个值赋值
+				fmt.Println(vl)
+		-reflect.Swapper(切片)			返回一个切片内值交换的方法
+			-swap(i,j)					让切片中索引i与索引j交换
+			-实例：
+				swap := reflect.Swapper([]int{0,1,2,3})
+				rand.Seed(time.Now().Unix())
+				for i := 3; i >= 0; i-- {
+					j := rand.Intn(3)
+					swap(i, j)
+				}
+	
+			
+	-变量、interface{}和reflect.Value是可以相互转换
+		-interface{} 转换成 reflect.Value
+			变量 := reflect.ValueOf(空接口名)
+		-reflect.Value 转换成 interface{}
+			变量 := Value类型名.Interface()
+	
+  24.网络编程
+	-网络编程分为：TCP编程和http编程
+		-TCP socket 编程基于Tcp/ip协议
+		-http编程	
+	-TCP/IP模型	
+		-应用层，传输层，网络层，链路层
+	-传输过程：
+		数据包->应用层->传输层->网络层->链路层->网卡->网关->路由器-
+		->路由器->网关->网卡->链路层->网络层>传输层->应用层->数据
+	-追包：
+		windows命令: tracert 网址	查看本地数据传输到指定网址的经过
+	-端口：
+		-只要做服务程序,都必须监听一个端口
+		-该端口就是其他程序和该服务通讯的通道
+		-一台电脑有65535个端口
+		-一个端口只能被一个程序监听
+		windows指令： netstat -anb			查看监听端口的pid连接信息
+					  netstat -an			查看本机有哪些端口在监听
+					  telnet 网址 端口号	查看一个网址的端口号是否被监听
+		-端口号分类：
+			-0是保留端口
+			-1-1024是固定端口
+				22	SSH远程登录协议
+				23	teInet使用
+				21	ftp使用
+				25	smtp服务使用
+				80	iis使用
+				7	echo服务	
+			-1025-65535是动态端口
+				可以自行使用
+		-tcp链接是长链接,如果不主动关,会等很久才关闭
+			-http短连接,数据传输完就结束
+	-net包
+		-网络相关的工具包
+		-创建一个服务器端端口：
+			-net.Listen(协议,监听地址)		返回在一个本地网络地址laddr上监听的Listener
+				-Listener名.Addr()			返回该接口的网络地址
+				-Listener名.Accept()		等待并返回下一个连接到该接口的连接,返回一个Conn,err
+				-Listener名.Close()			Close关闭该接口
+			-Conn名	
+				-Conn名.Write(字节)				Write从连接中写入数据,返回n字节数量,err错误类型	
+				-Conn名.Close()					关闭该连接
+				-Conn名.SetWriteDeadline(未来时间)	写入超时报错(未来时间-现在时间=超时时间)
+						-这里时间可以写time.Now().Add(time.second) 意思：比现在多1s
+						-到未来时间还没写入完就会报错超时
+				-Conn名.Read(字节)				Read从连接中读取数据	
+				-Conn名.SetDeadline(时间)		规定时间内未读到数据即超时,返回Err
+				-Conn名.RemoteAddr().String()		连接的客户端IP
+				-Conn名.LocalAddr().String()		连接的本地IP
+		-Dial函数和服务端建立连接
+			-net.Dial(协议,连接的地址加端口)	
+			
+  25.golang操作reids数据库	
+	-首先安装git
+	-安装redis第三方库
+	-redigo库
+		-在gopath路径下执行安装指令：
+			go get github.com/garyburd/redigo/redis(这里有问题)
+		-使用：
+			引入包：github.com/garyburd/redigo/redis
+		-连入redis服务器
+			-reidis.Dial("协议","地址+端口")	返回conn和err
+			-Conn名.Close()					关闭服务器
+			-Conn名.Do(Redis指令)			进行redis操作,返回是否成功(如果获取,获得结果需要内置的类型断言)和err
+			-redis.Int()					类型断言,返回值,err
+			-redis.String()					类型断言,返回值,err
+			-redis.Float()					类型断言,返回值,err
+			-redis.ErrNil					查询结果没有该数据
+			-redis.Strings()				类型断言,返回[]string,err
+			...
+		-实例：
+			n, err := redis.Dial("tcp","localhost:6379")
+			if err != nil{
+				fmt.Println("连接错误err：",err)
+				return
+			}
+			defer n.Close()
+			_,err = n.Do("set","key1","1000")
+			if err !=nil {
+				fmt.Println("存值失败",err)
+				return
+			}
+			r,err := redis.String(n.Do("get","key1"))
+			fmt.Print(r)
+		-连接池redis.Pool
+			-类似于长连接的服务器与数据的链接,减少反应时间
+			-实例：
+				var pool *redis.Pool
+				func init()  {
+					pool=&redis.Pool{
+						MaxIdle:8, 			//最大空闲数量
+						MaxActive:0, 	 	//表示和数据库的最大连接数,0表示无限
+						IdleTimeout:60, 	//表示最大空闲时间
+						Wait:true,			//true等待,flase报错
+						Dial: func() (redis.Conn, error) {
+							return redis.Dial("tcp","localhost:6379")
+							c.Do("SELECT", 0)	//选择仓库
+						},
+						TestOnBorrow:func(c redis.Conn, t time.Time) error {
+							_, err := c.Do("PING")	//检查空闲连接的状态
+							return err
+						},
+					}
+				}
+				func main() {
+					conn := pool.Get()	//从pool中取出连接来使用
+					defer conn.Close()
+				}		
+			-pool.Close()			关闭连接池,将不能使用
+	-gopkg.in/redis.v4库
+		-go get gopkg.in/redis.v4
+		-import "gopkg.in/redis.v4"
+		-创建redis客户端
+			func createCilent() *redis.Client{
+			cliet := redis.NewClient(&redis.Options{
+				Addr:"地址",
+				Password :"",
+				DB:0,
+			})
+			pong,err := client.Ping().Result()
+			return cliet
+			}
+			client.set(key,value)			类似于redis指令
+			
+  26.xorm库操作--关系型数据库（mysql..）
+	-特性：
+		1) 数据表结构与Go语言结构相互转换，
+		2) 无视对go结构的修改与删除，只有判断是否满足数据库结构来新增
+		3) 方便链式操作
+		4) session事务与回滚
+		5) xorm操作与sql操作可以混合使用
+		6) 基于LRU规则的缓存
+		7) 数据表乐观锁，多个数据提交时版本混乱提醒
+	-安装方式：
+		go get github.com/go-xorm/xorm
+	-定义模型
+		-go中xorm是定义结构和tag标签来定义模型
+		-实例：
+			type Account struct{
+				Id       int64		--->这里没有tag标签，就会被默认成主键
+				Name     string `xorm:"unique"`	 -->唯一
+				Balance float64
+				Version  int    `xorm:"version"` -->乐观锁
+			}
+	-创建xorm引擎---初始化函数
+		-启动驱动
+			-目前支持五种驱动：
+				Mysql----->	github.com/Go-SQL-Driver/MySQL
+				MyMysql--->	github.com/ziutek/mymysql/godrv
+				SQLite---->	github.com/mattn/go-sqlite3
+				Postgres-->	github.com/lib/pq
+				MsSql----->	github.com/lunny/godbc
+			-实例：
+				import _ "github.com/Go-SQL-Driver/MySQL"(只需初始化)
+		-导入xorm
+			-实例：
+				import "github.com/go-xorm/xorm"
+		-启动：
+			-实例：
+				=======var x *xorm.Engine======
+				x, err = xorm.NewEngine("mysql", "root:111111@/sys?charset=utf8s")	
+			-输入引擎名,数据库表文件;返回：xorm.Engine和err
+		-go与数据库表 结构同步	
+			-x.Sync(new(结构体)) （x为启动引擎的返回值）
+		-实例:
+			var x *xorm.Engine
+			func init(){
+				var err error
+				x,err = xorm.NewEngine("mysql","root:111111@/sys?charset=utf8")//mysql登录信息
+				if err != nil {
+					log.Fatalf("fail to craete Engine,%v",err)
+				}
+				if err = x.Sync(new(Account));err!=nil{
+					log.Fatalf("fail to sync database,%v",err)
+				}
+			}
+		-x.SetMaxOpenConns(X)		设置最大打开的连接数X，默认值为0表示不限制。
+		-x.SetMaxIdleConns(X)		设置闲置的连接数。
+		-x.SetConnMaxLifetime(X)	设置连接最大生存时间
+	-插入数据	insert	
+		-x.Insert(结构体实例指针)  	可同时插入多条数据
+			-实例：
+				x.Insert(&Account{Name:"张三",Balance:125.0})
+		-x.InsertOne(结构体实例指针)	插入一条数据
+		-该记录必须是未存在的，否则会返回错误：
+	-获取数据	get	
+		-方法一:(根据Id)
+			a := &Account{}
+			x.Id(id号).Get(a) 	//返回 是否拥有bool和err
+			-a是一个空的指针结构体，用来接受数据
+			*该方法值对有Id为主键的数据表
+		-方法二：(根据where判断)
+			-实例：
+				a := new(Account)
+				has, err := x.Where("name=?", "adn").Get(a)
+		-方法三：(Account结构体存在的非空数据获取)
+			-实例：	
+				a := &Account{Id:1}
+				has, err := x.Get(a)
+	-修改数据	update
+		-实例：
+			a.name = "lisi"
+			has,err = x.Update(a) //返回has,err
+	-删除数据 	delete 	
+		-实例:
+			_,err := x.Delete(&num{Id:1})	删除id=1的人
+			//传入一个结构体实例指针,返回has,err
+	-批量获取数据	Find
+		-实例：
+			num :=&[]Num{
+			}
+			err :=x.Desc("id").Find(num) 	//Desc(...)根据id号排序
+	-条件方法
+		-Where(...)			与Mysql的Where语句一样，以下方法
+		-Desc(...)		降序	->输入的字段是数据库的字段<-
+		-Asc(...)		升序
+		-Cols("XX")		只获取XX字段的内容
+		-Omit("XX")		忽略XX字段的内容
+		-Limit(X,Y)		查询X条数据,然后忽略2个条数据(分页查询)
+		
+	***XORM高级用法***
+	-事务与回滚		Session
+		-创建session对象：
+			sess := x.NewSession()	返回一个结构类型,sess能操作x能完成的很多操作
+		-启动事务：
+			sess.Begin()
+		-通过session操作数据库
+			sess.Update(...)
+		-回滚事务,(发生错误时)	
+			sess.RollBack()
+		-提交事务,(成功时)
+			sess.Commit()
+	-统计记录条数	Count
+		-n,err := x.Count(new(Num))	//传入匿名的结构体实例(等于需要表),返回数量与err
+		-也可以配合条件方法,进行筛选
+			例：x.Where("id<10").Count(new(Num))
+	-迭代查询:
+		-方法一 Iterate
+			//func里面返回的 idx 索引和 bean 任何类型 进行类型断言来使用 
+			x.Iterate(new(Num),func(idx int,bean interface{}){
+				fmt.Printf("%d,%v\n",idx,bean.(*Num))
+				....//根据查询到的数据来进行使用。。
+			})
+			//返回err
+			-实例：
+				err := x.Iterate(new(Num),func(idx int,bean interface{})(err error){
+					fmt.Printf("%d,%#v\n",idx,bean.(*Num))
+					if idx >100{
+						err = errors.New("da")
+					}
+					return 
+				})
+				fmt.Println(err)
+			-可以叫条件方法
+			
+		-方法二 Row
+			-1.rows,err := x.Rows(new(Num))		放入匿名结构体,返回rows结构体和err
+			-2.rows.Close()	 		****用完后一定要关闭rows****
+			-3.rows.Next() 			 判断是否还有下个数据,返回bool
+			-4.rows.Scan(new(Num))	 将接受到的数据获取到并赋给结构体实例，返回err
+			-实例：
+				rows,err := x.Rows(new(Num))
+				if err != nil{
+					log.Fatal("迭代失败")
+				}
+				defer rows.Close() //一定要设置退出
+				a := new(Num)
+				for rows.Next() {
+					err := rows.Scan(a)
+					if err!=nil{
+						fmt.Println("获取迭代数据失败")
+						return
+					}
+					fmt.Println(a)
+				}
+	-日志记录：
+		-开启日志：
+			x.ShowSQL = true
+		-将日志保存在文件
+			f,err := os.Create("sql.log")
+			if err !=nil{
+				fmt.Println(err)
+			}
+			x.Logger = xorm.NewSimpleLogger(f)
+	-LRU缓存
+		-设置默认的缓存
+			cacher := xorm.NewLRUCacher(xorm.NewMemoryStore(),1000) 
+			//1000指缓存大小
+			x.SetDefaultCacher(cacher)	//保存默认设置
+	-事件钩子
+		-一共6种,插入前,插入后,修改前,修改后,删除前,删除后
+		-BeforeInsert()
+			-插入数据之前被调用
+			-func(a *Account)BeforeInsert(){
+				...
+			}
+		-AfterInsert()
+			-插入数据之后被调用
+			-func(a *Account)AfterInsert(){
+				...
+			}
+	-语句：	
+		engine.Query(...)			根据SQL语句查询
+		engine.Exec(...)			根据SQL语句修改
+		engine.Ping()				检测数据库是否alive	
+		engine.SetMaxOpenConns(X)		设置最大打开的连接数X，默认值为0表示不限制。
+		engine.SetMaxIdleConns(X)		设置闲置的连接数。
+		engine.SetConnMaxLifetime(X)	设置连接最大生存时间
+			
+			
+  26.protobuf---序列化+结构体
+	-官网下载protobuf.
+	-安装库：
+		go get -u github.com/golang/protobuf/{protoc-gen-go,proto}
+	-protobuf文件的写法:(XX.proto)
+		syntax = "proto3"; //指定proto版本
+		package pb;
+
+		message user {
+		 int32 id = 1;
+		 string name = 2;
+		}
+
+		message multi_user {
+		 repeated user users = 1;
+		}
+	-编译成go文件命令:
+		protoc --go_out=. XX.proto
+		
+	-编译成grpc的pb.go：
+		protoc --go_out=plugins=grpc:. message.proto
+		protoc --go_out=plugins=grpc:E://roomcardserver/src/grpc message.proto
+		filemgr.exe --action upload --bucket 66server --key layout.json --file E://roomcardserver/src/layout.json
+		filemgr.exe --action upload --bucket 66server --key layout_card.json --file E://roomcardserver/src/layout_card.json
+	-会在同级目录生成：XX.pb.go 文件
+	-使用：	
+		-引用该文件：import "文件地址目录"
+		-例子：
+			 package main
+				import (
+				 "log"
+				 "test/protobuf/pb"
+
+				 "github.com/golang/protobuf/proto"
+				)
+				func main() {
+				 user1 := pb.User{
+				 Id:   *proto.Int32(1),
+				 Name: *proto.String("Mike"),
+				 }
+				 user2 := pb.User{
+				 Id:   2,
+				 Name: "John",
+				 }
+				 users := pb.	{
+				 Users: []*pb.User{&user1, &user2},
+				 }
+				 // 序列化数据
+				 data, err := proto.Marshal(&users)
+				 if err != nil {
+				 log.Fatalln("Marshal data error: ", err)
+				 }
+				 println(users.Users[0].GetName()) // output: Mike
+				 // 对已序列化的数据进行反序列化
+				 var target pb.MultiUser
+				 err = proto.Unmarshal(data, &target)
+				 if err != nil {
+				 log.Fatalln("Unmarshal data error: ", err)
+				 }
+				 println(target.GetUsers()[1].Name) // output: John
+				}
+	-Protobuf数据类型
+		-普通类型都差不多
+		-enum枚举	
+		-修饰类型：	
+			-Required	必须字段,必须设置的字段,否则编码异常
+			-Optional	可选字段,可设可不设
+			-Repeated	可选,可以包含多个元素,类似数组
+		-...
+	-ptypes包+ptypes/Any包
+		-ptypes.MarshalAny(proto.Message)	将protobuf的类型转换成any.Any类型
+		-ptypes.Empty(*any.Any)				根据any.Any new一个proto实例
+		-ptypes.UnmarshalAny(*any.Any,&proto.Message)	将Any解析成proto.Message类型
+		
+  27.go mod 跳出gopath 自动安装依赖
+	-在项目文件夹下go mod init packagename
+	-只是方便不用gopath指定到当前目录来引用东西,引用的东西会被写到go.mod里面
+	-但前提是gopath里面有这些东西
+	-go mod tidy -v 将三方库的引用整理一下
+	-go mod init 初始化go.mod
+	-使用go.mod后使用自定义包：
+		因为go.mod后项目不能放在gopath下面,以下为引用实例：
+			go.mod :
+				module go_test
+			main.go：
+				import "go_test/src/message"
+  
+  28.更改goproxy代理
+	-环境变量，用户变量里面直接修改，编译器的也需要一起修改
+	-set GOPROXY=https://mirrors.aliyun.com/goproxy/
+	-再去go get 就能好好生生下载了
+	
+  29.xorm reverse将数据库表结构直接转换成golang的结构体
+	-安装源码：
+		go get github.com/go-xorm/cmd/xorm
+	-mysql驱动安装：
+		go get -u github.com/go-sql-driver/mysql
+	-编译驱动：
+		项目目录下，
+		go build -tags mysql
+	-反转数据库结构，生成代码：
+		在项目目录下建立templates/goxorm文件夹
+		这个文件下建立config和struct.go.tpl文件.
+		模板内容可以根据你自己的需要修改
+		-config内容如下：
+			lang=go
+			genJson=1
+			prefix=
+		-struct.go.tpl内容如下：
+		
+			package {{.Models}}
+
+			{{$ilen := len .Imports}}
+			{{if gt $ilen 0}}
+			import (
+				{{range .Imports}}"{{.}}"{{end}}
+			)
+			{{end}}
+
+			{{range .Tables}}
+			type {{Mapper .Name}} struct {
+			{{$table := .}}
+			{{range .ColumnsSeq}}{{$col := $table.GetColumn .}} {{Mapper $col.Name}}	{{Type $col}} {{Tag $table $col}}
+			{{end}}
+			}
+
+			{{end}}
+	-执行命令：(项目目录下,*只能在goland的运行,cmd运行不了？*)
+		xorm reverse mysql 账号:密码@地址/数据库名?charset=utf8 templates/goxorm
+	
+  30.goland调试模式
+	-F9 	进入下一个断点位置
+	-F7 	进入该步骤的内部查看源码	
+		
+  31.uuid库
+  	库地址：github.com/satori/go.uuid，
+  	该软件包提供了通用唯一标识符（UUID）的纯Go实现。支持创建和解析UUID。
+	-uuid.NewV4() 来获取一个随机的uuid---几乎不会出现重复的情况
+	
+  32.go自带的sql库
+	库：database/sql，
+	sql包提供了保证SQL或类SQL数据库的泛用接口。
+	连接mysql需要先调用Mysql的驱动
+	import _ "github.com/go-sql-driver/mysql"
+	-连接： sql.Open("数据库名","连接信息")		返回DB,err
+		-关闭连接： DB.close()
+		-检查连接：	DB.Ping()		返回err
+		-查询数据： DB.Query("SELECT ...")		返回rows结果集可以查找符合的整个信息，err
+			-rows.Close()			关闭rows结果集，防止连接泄露
+			-rows.Scan(&渲染数据)	返回Err	
+			-rows.Next()			查询下一行
+			-rows.Err()				返回的错误，必须有rows.Close
+		-单行查询：	DB.QueryRow()	对比query只查询单条数据
+		-插入更新删除：	DB.Exec()	返回结果,err
+		-事务开始：	DB.Begin()		返回Tx,err
+			-Tx.Exec()				事务更新插入删除
+			-Tx.Query()				事务查询，返回rows，err
+			-Tx.QueryRow()			事务查询单条
+			-Tx.Commit()			事务提交
+			-Tx.RollBack()			放弃事务,并回滚
+  
+  33.grpc库
+	库："google.golang.org/grpc"
+	google开发的远程过程调用库。
+	组件之间使用grpc通信，虽然各组件之间相互独立，但是跨组件调用函数也能如调用自身的函数一样迅速。
+	模式为：server/client,同时Protobuf定义类型,实现相互调用
+	|-----转向grpc.txt-----|
+	
+  34.socket.io库
+	库： "github.com/graarh/golang-socketio"
+	socket.io特点: socket连接+当socket连接失败时降级成http轮训
+	-服务器端：
+		-gosocketio.NewServer(...)		启动socketio服务,返回server,err
+			-transport.GetDefaultWebsocketTransport()
+		-server.on("方法名",调用的方法...)
+			-调用的方法第一个参数必须带c *gosocketio.Channel,第二个是与客户端同一数据格式
+			-例：
+				c.On("serverMsg", func(c *gosocketio.Channel,msg []byte) {
+					fmt.Println("server get clientMsg success！")
+					request := &pb.MysqlRBTMessage{}
+					err := proto.Unmarshal(msg,request)
+					if err != nil{
+						fmt.Println("序列化失败")
+					}
+					fmt.Println(*request)
+				})
+		-server.GetChannel("id")		通过client的id获得连接,返回channel,err
+			-channel.Emit("方法名",数据)	发送数据给client,客户端指定方法接受
+			-channel.Ack("方法名",数据)		发送ack给client,客户端指定方法接受
+		-server.BroadcastToAll("方法",数据)	向所有客户端发送数据,客户端指定方法接受
+		-server.BroadcastTo("房间","方法",数据)		让客户端加入房间
+
+		-设置监听信息与地址
+			-http.NewServeMux()					返回一个serverMux,等于一个监听
+			-serveMux.Handle("模式", server)	根据监听模式执行server
+				-例：serveMux.Handle("/socket.io/", server)
+			-http.ListenAndServe(":端口", serveMux)		设置监听地址
+		
+	-客户端：
+		可以使用websocket连接，也可以使用socketio连接
+		-gosocketio.Dial("连接信息",...)	连接server,返回client,err
+			-transport.GetDefaultWebsocketTransport()
+		-client.close()						关闭连接
+	-loop.go文件里面 queueBufferSize设置为单次最大消息队列大小，默认500
+	-更多操作看源码...
+
+  35.websocket库
+	库："github.com/gorilla/websocket"
+	-服务器端：	
+		-http.ListenAndServe(地址, nil)			首先打开监听的地址与端口
+		-http.HandleFunc("/", 执行的函数)		监听/执行的函数
+			-执行的函数带2个参数：
+				-w http.ResponseWriter
+				-r *http.Request
+		-http.HandleFunc("/ws", 执行的函数)		监听/ws执行的函数
+		-websocket.Upgrader{}					获取一个升级器实例
+			-upgrader.Upgrade(w,r,nil)			获得客户端连接的conn,返回conn,err
+				-conn.Close()					关闭连接
+				-conn.ReadMessage()				读取连接的数据,返回消息类型,消息,错误信息
+				-conn.WriteMessage(消息类型,消息)	给连接发送数据,返回错误
+	-客户端：	
+		-websocket.DefaultDialer.Dial(url, nil)	连接websocket,返回conn,响应状态,error
+			-url例子：ws://localhost:8000/ws
+		-conn.Close()						关闭连接
+		-conn.ReadMessage()				读取连接的数据,返回消息类型,消息,错误信息
+		-conn.WriteMessage(消息类型,消息)	给连接发送数据,返回错误
+		
+  36.结构体调用接口的情况	
+	一个结构体的键类型为接口:
+		type lala stuct{
+			name Hello
+		}
+		type A interface{
+			NameGet() 
+		}
+	调用根据他来调用所有实现了Hello的接口
+		type a string
+		type b string
+		func (a *a) NameGet() {
+			fmt.Println(a)
+		}
+		func (b *b) NameGet() {
+			fmt.Println(b)
+		}
+	通过赋值给结构体的实例,可以调用Hello的对应的方法
+		type Hello struct {
+			name A
+		}
+
+		func main() {
+			var dasda a
+			hello := &Hello{name:&dasda}
+			hello.name.NameGet()
+		}
+		
+  37.列表型方法封装与调用
+	-第一步：
+		创建一个全局map变量,键是代号,值是方法。
+			handleMsgMap := make(map[int]func())
+	-第二步：
+		建立一个新增方法的方法
+			SetHandle(代码,方法){
+				handleMsgMap[代码] = 方法
+			}
+		建立一个获取方法的方法
+			GetHandle(代码)方法{
+				return 方法
+			}
+	-第三步：
+		初始化的时候新增方法
+			SetHandle(代码1,方法1)
+			SetHandle(代码2,方法2)
+			SetHandle(代码3,方法3)
+			SetHandle(代码4,方法4)
+	-第四步：
+		获取方法
+			hand := GetHandle(代码)
+		使用方法
+			hand()
+	-目的，将方法都放在init里面，方便调用,与浏览
+		
+  38.golang的模拟Http请求
+	-第一步：
+		创建io.Reader消息的内容：
+			bytes.NewBuffer()	参数[]byte,返回实现了io.reader接口的buffer
+	-第二步：	
+		请求：
+			http.NewRequest(申请方法,地址,消息内容)	返回response
+	-第三步：
+		读取：
+			ioutil.ReadAll(response.Body)	返回byte和err
+	
+  39.golang启动http服务：
+	第一步：
+		监听端口:
+			http.ListenAndServe(端口号,处理事件)	处理事件一般为nil
+		处理事件：
+			http.HandleFunc(http模式,处理事件)	
+		事件：
+			func httpHandler(w http.ResponseWriter, r *http.Request) {}			
+	第二步：	
+		事件内部设置：
+			//设置访问控制的来源
+			w.Header().Set("Access-Control-Allow-Origin", "*")
+			//设置访问控制的方法
+			w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST")
+	第三步：	
+		读取申请来的数据:
+			ioutil.ReadAll(r.Body) 			返回byte和err
+		
+  40.redis分布式锁
+	-第三方库："github.com/go-redsync/redsync"
+	-1.先创建redis连接池
+		&redis.Pool{
+			MaxIdle:     10,
+			IdleTimeout: 180 * time.Second, // Default is 300 seconds for redis server
+			Dial: func() (redis.Conn, error) {
+				return redis.Dial("tcp", url)
+			},
+			TestOnBorrow: func(c redis.Conn, t time.Time) error {
+				_, err := c.Do("PING")
+				return err
+			},
+		}
+	-2.转成数组[]redis.pool{}
+		pools := []redsync.Pool{
+			&redis.Pool,
+		}
+	-3.根据pool数组新建redis锁
+		redsync.New(pools) 		返回Redsync
+	-4.用返回的Redsync来使用分布式锁
+		Redsync.NewMutex(锁名,选项...)	返回Mutex
+	-5.选项：
+		redsync.SetExpiry(时间)		设置给定到期时间
+		redsync.SetTries(次数)		设置尝试获取锁的次数
+		redsync.SetRetryDelay(时间)	设置尝试获取锁的等待时间
+	-6.使用Mutex解锁：
+		Mutex.Unlock()				返回成功与否
+
+  41.消息队列MQ
+	-概念：一个存放消息的容器,使用该消息时,就从消息里面取出来使用
+	-作用：	平缓峰值：比如高并发直接对数据库操作,使用MQ,将其转为异步处理
+			减少耦合：增加MQ为中间组件,减少其余程序的直接调用
+			队列特性：先进先出,避免之前消息没处理完,之后的消息将其覆盖
+	-basic.consume	消费者,当有给他发送的msg到达queue时,直接发送给他
+	-basic.get		只获得一条发送给他的msg,然后他会关闭订阅
+		-**：不应该循环get代替consume
+	-AMQP		高级消息队列协议
+	-AMQP库: "github.com/streadway/amqp"
+		-通用-
+		-amqp.Dial(amqp的地址)		先连接到amqp服务器返回conn,err
+			-conn.Close()			关闭连接
+			-conn.Channel()			获取一个消息通道,返回Ch,err
+				-ch.Close()			关闭这个通道
+		-发送-
+		-ch.Publish(交换,队列名字,强制,即使,amqp.Publishing)
+			-amqp.Publishing{
+				ContentType:""			// 消息内容的类型
+				ContentEncoding:""		// 消息内容编码
+				DeliveryMode:uint8		// 暂时或者持续
+				Body:[]byte				//消息内容
+			}
+			-例：
+				-amqp.Publish("", queueName, false, false, amqp.Publishing{
+					ContentType: "text/plain",
+					Body:        msg,
+				})
+		-接受-
+		-ch.Cancel(消费者,是否不等待)										消费者退出通道队列
+			-参数：consume		消费者名字
+			-参数：noWait		不阻塞,不阻塞的话发送后不需要确认,直接下一个
+			-例：
+				-ch.Cancel(uuid,false)
+			
+		-ch.QueueDeclare(队列名字,持久化,自动删除,私人,不阻塞,参数)			绑定新消费者
+			-参数：name：		队列名
+			-参数：durable		是否持久化
+				-配合自动删除,保证服务器,重启消息队列不删除,不常使用
+			-参数：autoDelete	是否自动删除
+			-参数：exclusive	是否私人queue只为一个consume服务
+			-参数：noWait		是否不阻塞
+		-ch.Qos(预计数,预大小,是否全局)										设置接收端为接收消息预留的大小
+			-参数：PrefetchCount	预留长度
+			-参数：PrefetchSize		预留大小
+			-参数：Global			是否全局设置
+		-ch.Consume(队列名,消费者名,自动确定,私人,noLocal,不阻塞,参数)		返回Delivery管道,err
+			-参数：autoAck			是否自动确定
+			-例：
+				msgList, err := ch.Consume(queueName, uuid, false, false, false, false, nil)
+				for msg := range msgList {
+					fmt.println(msg.body)
+				}
+		
+  42.MD5加密
+	-1.生成一个hash实例:
+		md5.New()	返回h
+	-2.写入需要加密的[]btye
+		h.Write([]byte(string))
+	-3.将切片附加到其外的切片上,并将加密结果转为string
+		hex.EncodeToString(h.sum(nil))
+	-实例：
+		h := md5.New()
+		h.Write([]byte("密码"+"盐"))
+		hex.EncodeToString(h.sum(nil))
+	
+  43.golang的Gin框架
+	-第三方库："github.com/gin-gonic/gin"
+	-获取Enigine实例-
+		-gin.Default() 				获取一个Engine的实例,返回router
+		-gin.New()					获取一个Engine的实例,无中间件,返回router
+	-获取参数-	
+		-router.Run(addr)					监听addr端口,不传就监听8080端口
+		-router.GET("...",回调函数)			根据指定get请求,调用指定回调函数				
+			-获取get参数：
+			-c.DefaultQuery(键,默认值)		获取参数的键,与键不对应,返回默认值
+			-c.Query(键)					获取参数的键,没有默认值	
+				-c.Request.URL.Query().Get(键) 的简写
+			
+		-router.POST("...",回调函数)		根据指定post请求,调用指定回调函数
+			-获取post参数:
+			-c.PostForm(键)					获取参数的键,没有默认值	
+			-c.DefaultPostForm(键,默认值)	获取参数的键,与键不对应,返回默认值
+			*post回调也能接受get+post混合的类型*
+		-router.PUT("...",回调函数)			根据指定put请求,调用指定回调函数
+		-router.DELETE("...",回调函数)		根据指定delete请求,调用指定回调函数
+		-router.PATCH("...",回调函数)		根据指定patch请求,调用指定回调函数
+		-router.HEAD("...",回调函数)		根据指定head请求,调用指定回调函数
+		-router.OPTIONS("...",回调函数)		根据指定options请求,调用指定回调函数
+			-func(c *gin.Context){...}		回调函数样式
+			-匹配格式：
+				-/XXX		只有/XXX才能进入
+				-/:XXX		/XXX,/AAA,/1...都可以,但不匹配/
+				-/*XXX		以上都匹配
+			-c.Param(XXX)						获取用户输入的XXX参数
+			-c.String(状态码,格式化,变量)		将格式化内容写入响应的Body中
+			-c.JSON(状态码,gin.H{...})			返回一个json类型
+	-上传文件-
+		-单文件
+		-router.MaxMultipartMemory = int64		设置表单上传大小,
+			-c.FormFile("...")					接受上传的文件,返回fileHeader和err															
+				-f.Filename						获取文件名字
+				-f.Header						获取文件的头
+				-f.Size							获取文件的大小
+				-f.Open()						打开文件,返回file
+		-单文件保存
+		-c.SaveUploadedFile(f,地址)			将文件上传到指定路径
+		*上传的文件名,可能含有非法字符,应该有服务器端统一*
+		-多文件
+			-c.MultipartForm()					获取上传的多个文件,返回form,err
+				-form.File["..."]				根据上传参数获取[]*fileHeader
+				-form.RemoveAll()				删除所有表单相关
+		-多文件保存：
+			for _,file := range form.File["..."]	{
+				c.SaveUploadedFile(file,地址)
+			}
+	-路由分组-
+		-router.Group("/组名")			创建组,返回routerGroup
+			-g.post()					接受post对应组的参数,调用函数
+			...
+		-例：	
+			v1 := router.Group("/v1")
+			{
+				v1.POST("/login", loginEndpoint)
+			}
+			v2 := router.Group("/v2")
+			{
+				v2.POST("/login", loginEndpoint)
+			}
+	-使用中间件-
+			-router.Use(gin.Recovery())		使用回复中间件,将从紧急情况回复
+			-router.Use(gin.Logger())		使用日志打印中间件
+		-路由添加中间件
+			-r.GET("/benchmark", 中间件, 处理函数)
+		-理由组添加中间件
+			g := r.Group("...")		
+			g.Use(中间件)
+			{
+				g.post("...",处理函数)
+			}
+	-日志-
+		-默认日志输出
+			-f, _ := os.Create("gin.log")
+			 gin.DefaultWriter = io.MultiWriter(f)
+		-自定义日志输出,方法一：
+			router.Use(gin.LoggerWithFormatter(
+				func(p gin.LogFormatterParams) string {
+					return fmt.Sprintf("%s",
+						p.ClientIP,
+					)
+			}))
+		-自定义日志输出,方法二：（使用logrus）	
+			-根据logrus实例-
+	-模型绑定-
+		-将request.body绑定到结构体中.
+		-绑定时需要根据绑定类型设置tag.
+		-绑定方法：
+			-当确定绑定内容时：
+				-MustBindWith()	
+				-BindJson()
+			-当不确定绑定内容时：(一般使用这个)
+				-ShouldBindJSON()
+				-ShouldBind()
+		-实例：
+			type Login stuct{
+				User string `json:"user" binding:"required"`
+				Password string `json:"password" binding:"-"`
+			}
+			var json Login
+			if err:=c.ShouldBindJSON(&json);err != nil {
+				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
+				return
+			}
+		-结构体标签binding：
+			binding:"required"	标记为必须
+			binding:"-"			标记为随意
+		-结构体能绑定uri-
+			-例:
+				type Person struct {
+					ID string `uri:"id" binding:"required,uuid"`
+					Name string `uri:"name" binding:"required"`
+				}
+
+				func main() {
+					route := gin.Default()
+					route.GET("/:name/:id", func(c *gin.Context) {
+						var person Person
+						if err := c.ShouldBindUri(&person); err != nil {
+							c.JSON(400, gin.H{"msg": err})
+							return
+						}
+						c.JSON(200, gin.H{"name": person.Name, "uuid": person.ID})
+					})
+					route.Run(":8088")
+				}
+		-结构体能绑定HTML复选框-
+			-结构体例：用form
+				type myForm struct {
+					Colors []string `form:"colors[]"`
+				}
+		-绑定Post参数-
+			-结构体例：用form
+				type LoginForm struct {
+					User     string `form:"user" binding:"required"`
+					Password string `form:"password" binding:"required"`
+				}
+	-输出格式渲染-	
+		-意思：将数据转换成特定的格式,如json、proto、xml...
+		-XML渲染
+			-例：
+				c.XML(http.StatusOK, gin.H{"message": "hey", "status": http.StatusOK})
+		-YAML渲染
+			-例：
+				c.YAML(http.StatusOK, gin.H{"message": "hey", "status": http.StatusOK})
+		-Json渲染
+			-例：
+				c.JSON(http.StatusOK, 返回的json结构体实例)
+		-ProtoBuf渲染
+			-例：
+				c.ProtoBuf(http.StatusOK,  返回的proto结构体实例)
+		-SecureJSON渲染-
+			-作用：防止json劫持,如果返回的数据是数组,在其前面加while(1);
+			-例：	
+				c.SecureJSON(http.StatusOK, 返回的值)
+			*注意该字可以为任何类型,或值*
+			-例1：	
+				c.SecureJSON(http.StatusOK, 1)
+		-JSONP-
+			-作用：使用JSONP可以跨域传输，如果参数中存在回调参数，那么返回的参数将是回调函数的形式
+			-例：	
+				data := map[string]interface{}{
+					"foo": "bar",
+				}
+				c.JSONP(http.StatusOK, data)
+			-结果：
+				http://localhost:8080/JSONP?callback=call123
+				输出:   call123({"foo":"bar"})
+		-AsciiJSON-
+			-作用：会将返回的数据中的非ascii转换成uicode编码
+			-例：	
+				data := map[string]interface{}{
+					"lang": "GO语言",
+					"tag":  "<br>",
+				}
+				c.AsciiJSON(http.StatusOK, data)
+			-结果：	
+				{"lang":"GO\u8bed\u8a00","tag":"\u003cbr\u003e"}
+		-PureJSON-
+			-作用：一般情况json会将Html字符替换成unicode字符,pureJson可以将其原样输出Html
+			-例：	
+				c.PureJSON(200, gin.H{
+					"html": "<b>Hello, world!</b>",
+				})
+			-结果：	
+				{"html":"<b>Hello, world!</b>"}
+	-设置静态文件路径-
+		-意思：访问静态文件需要先设置路径
+		-三种方式：
+			-route.Static("/assets", "./assets")
+			-route.StaticFS("/assets", http.Dir("./assets"))
+			-route.StaticFile("/assets", "./assets")
+	-返回第三方获取的数据-
+		-意思：将从其他服务器获取到的数据返回
+		-例：	
+			res, err := http.Get("XXX")
+			if err != nil || res.StatusCode != http.StatusOK {
+				c.Status(http.StatusServiceUnavailable)
+				return
+			}
+			reader := res.Body
+			contentLength := res.ContentLength
+			contentType := res.Header.Get("Content-Type")
+
+			extraHeaders := map[string]string{
+				"Content-Disposition": `attachment; filename="gopher.png"`,
+			}
+			c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
+			//c.DataFromReader(状态码,内容长度,内容类型,内容本身,真实的头信息)
+	-Html渲染-
+		-意思：将本地的html页面通过请求渲染给请求方
+		-两种方式:
+			-templates下面所有X.tmpl或html文件,匹配就使用
+			route.LoadHTMLGlob("templates/*")
+			-templates下面指定X.html或tmpl,匹配使用
+			router.LoadHTMLFiles("templates/XXX.html", "templates/XXX.html")
+		-例1：
+			route.LoadHTMLGlob("templates/*")
+			route.GET("/index", func(c *gin.Context) {
+				c.HTML(http.StatusOK, "index.tmpl", gin.H{
+					"title": "Main",
+				})
+			})
+		-例1的templates模板
+			-位置：templates/index.tmpl
+			<html>
+				<h1>
+					{{ .title }} //这里会被渲染成Main
+				</h1>
+			</html>
+		-自定义模板渲染-
+			-自定义渲染分割符
+				route.Delims("{[{", "}]}")
+			-自定义模板渲染器
+				html := template.Must(template.ParseFiles("file1", "file2"))
+				route.SetHTMLTemplate(html)
+			-自定义模板函数
+				-例：
+					route.Delims("{[{", "}]}")
+					route.SetFuncMap(template.FuncMap{
+						"函数名": 定义的函数,
+					})
+					route.LoadHTMLFiles("./testdata/template/raw.tmpl")
+					route.GET("/raw", func(c *gin.Context) {
+						c.HTML(http.StatusOK, "raw.tmpl", map[string]interface{}{
+							"参数名": 函数的参数,
+						})
+					})
+				-raw.tmpl模板:
+					Date: {[{.now | 定义的函数}]}
+				-结果：
+					Date: XXXXX
+	-重新定向-	
+		-意思：将访问的链接跳转到其他链接上去,或者是路由跳转
+		-链接重定向- 
+			-c.Redirect(http.StatusMovedPermanently, 跳转到的连接)
+		-路由重定向-	
+			-route.HandleContext(链接)
+			-例：	
+				r.GET("/test", func(c *gin.Context) {
+					c.Request.URL.Path = "/test2"
+					r.HandleContext(c)
+				})
+				r.GET("/test2", func(c *gin.Context) {
+					c.JSON(200, gin.H{"hello": "world"})
+				})
+	-自定义http配置：
+		-方法一：
+			router := gin.Default()
+			http.ListenAndServe(":8080", router)
+		-方法二：
+			 s := &http.Server{
+				Addr:           ":8080",
+				Handler:        router,
+				ReadTimeout:    10 * time.Second,
+				WriteTimeout:   10 * time.Second,
+				MaxHeaderBytes: 1 << 20,
+			}
+			s.ListenAndServe()
+		
+  44.golang wechat接口调用
+	-第一步：根据app_id,app_secret(来源官方),code(来源用户)获取token
+		-例：	
+			// 拼接url,然后http获取token
+			u, err := url.Parse("https://api.weixin.qq.com/sns/oauth2/access_token")
+			if err != nil {
+				log.Fatal(err)
+			}
+			paras := &url.Values{}
+			//设置请求参数
+			paras.Set("appid", obj.AppId)
+			paras.Set("secret", obj.AppSecret)
+			paras.Set("code", code)
+			paras.Set("grant_type", "authorization_code")
+			u.RawQuery = paras.Encode()
+			resp, err := http.Get(u.String())
+			// 解析消息
+			jMap := make(map[string]interface{})
+			err = json.NewDecoder(resp.Body).Decode(&jMap)
+			// 将解析到的消息断言获取出来
+			accessToken, _ := jMap["access_token"].(string)
+			expiresIn, _ := jMap["expires_in"].(int64)
+			refreshToken, _ := jMap["expires_in"].(string)
+			openid, _ := jMap["openid"].(string)
+			scope, _ := jMap["scope"].(string)
+			unionId, _ := jMap["unionid"].(string)
+			
+	-第二步：根据accessToken与openId获取玩家信息
+		-例：	
+			// 拼接url,然后http获取用户Id
+			u, err := url.Parse("https://api.weixin.qq.com/sns/userinfo")
+			if err != nil {
+				log.Fatal(err)
+			}
+			paras := &url.Values{}
+			//设置请求参数
+			paras.Set("access_token", accessToken)
+			paras.Set("openid", openId)
+			u.RawQuery = paras.Encode()
+			resp, err := http.Get(u.String())
+			// 解析消息
+			jMap := make(map[string]interface{})
+			err = json.NewDecoder(resp.Body).Decode(&jMap)
+			// 将解析到的消息断言获取出来
+			openid, _ := jMap["openid"].(string)
+			nickname, _ := jMap["nickname"].(string)
+			sex, _ := jMap["sex"].(int32)
+			province, _ := jMap["province"].(string)
+			city, _ := jMap["city"].(string)
+			country, _ := jMap["country"].(string)
+			unionid, _ := jMap["unionid"].(string)
+			headimgurl, _ := jMap["headimgurl"].(string)
+		
+  45.golang 获取ucloud文件
+	-例：
+		c := new(ufsdk.Config)
+		c.PublicKey = publicKey
+		c.PrivateKey = privateKey
+		c.BucketName = bucketName
+		c.FileHost = fileHost
+
+		req, err := ufsdk.NewFileRequest(c, nil)
+		if err != nil {
+			LogError("UCloud NewFileRequest error", err)
+			return nil, err
+		}
+		fileWriter := new(bytes.Buffer)
+		err = req.DownloadFile(fileWriter, remoteFileKey)
+		if err != nil {
+			LogError("UCloud DownloadFile error", err)
+			return nil, err
+		}
+		returnStr := fileWriter.String()
+		returnBytes := fileWriter.Bytes() //make([]byte, fileWriter.Len())
+		//fileWriter.Read(returnBytes)
+		//fileWriter.Bytes()
+		jMap := make(map[string]interface{})
+		err = json.NewDecoder(fileWriter).Decode(&jMap)
+		if err != nil {
+			return nil, errors.New("UCloud response json parse err :" + err.Error())
+		}
+
+		_, exists := jMap["ErrMsg"]
+		if exists {
+			return nil, errors.New("UCloud response json parse err :" + returnStr)
+		}
+
+		return returnBytes, nil
+		
+  46.golang Facebook登录
+	-需要的官方申请：AppId,AppSecret
+	-第一步,获取token与openId
+	-地址：https://graph.facebook.com/v6.0/oauth/access_token
+	-例：
+		// 定义类型	
+		type exchangeToken struct {
+			AccessToken string `json:"access_token"`
+			TokenType   string `json:"token_type"`
+			ExpiresIn   int64  `json:"expires_in"`
+
+			Error struct {
+				Message   string `json:"message"`
+				Type      string `json:"type"`
+				Code      int    `json:"code"`
+				FBTraceID string `json:"fbtrace_id"`
+			} `json:"error"`
+		}
+		// 拼接url
+		u, err := url.Parse("https://graph.facebook.com/v6.0/oauth/access_token")
+		if err != nil {
+			log.Fatal(err)
+		}
+		paras := &url.Values{}
+		// 设置请求参数
+		paras.Set("client_id", obj.AppId)
+		paras.Set("redirect_uri", redirectUri)
+		paras.Set("client_secret", obj.AppSecret)
+		paras.Set("code", code)
+		u.RawQuery = paras.Encode()
+		resp, err := http.Get(u.String())
+		// 关闭资源
+		if resp != nil && resp.Body != nil {
+			defer resp.Body.Close()
+		}
+		// 解析内容
+		var exTkn exchangeToken
+		err = json.NewDecoder(resp.Body).Decode(&exTkn)
+	-第二步,根据openId与token获取用户Info
+	-地址:https://graph.facebook.com/v6.0/v6.0/me
+	-例：
+		// 定义类型
+		type userData struct {
+			Id     string `json:"id"`
+			Name   string `json:"name"`
+			Email  string `json:"email"`
+			Gender string `json:"gender"`
+
+			Error struct {
+				Message   string `json:"message"`
+				Type      string `json:"type"`
+				Code      int    `json:"code"`
+				FBTraceID string `json:"fbtrace_id"`
+			} `json:"error"`
+		}
+		// 拼接url
+		u, err := url.Parse(obj.fbMeAPI)
+		if err != nil {
+			log.Fatal(err)
+		}
+		paras := &url.Values{}
+		// 设置请求参数
+		paras.Set("fields", "birthday,gender,email,name,location,address")
+		u.RawQuery = paras.Encode()
+		resp, err := http.Get(u.String())
+		// 解析内容
+		var facebookUserData userData
+		err = json.NewDecoder(resp.Body).Decode(&facebookUserData)
+	-第三步根据用户id获取用户照片：
+	-地址示例：https://graph.facebook.com/2768660213253677/picture?type=large&redirect=false
+	-例：
+		// 定义类型
+		type headImageData struct {
+		Data struct {
+			Height       int64  `json:"height"`
+			IsSilhouette bool   `json:"is_silhouette"`
+			Url          string `json:"url"`
+			Width        int64  `json:"width"`
+		} `json:"data"`
+
+			Error struct {
+				Message   string `json:"message"`
+				Type      string `json:"type"`
+				Code      int    `json:"code"`
+				FBTraceID string `json:"fbtrace_id"`
+			} `json:"error"`
+		}
+		// 拼接url
+		u, err := url.Parse(https://graph.facebook.com + "/" + userId + "/picture")
+		if err != nil {
+			log.Fatal(err)
+		}
+		paras := &url.Values{}
+		// 设置请求参数
+		paras.Set("type", "large")
+		paras.Set("redirect", "false")
+		u.RawQuery = paras.Encode()
+		resp, err := http.Get(u.String())
+		// 解析内容
+		var headImg headImageData
+		err = json.NewDecoder(resp.Body).Decode(&headImg)
+	
+  47.golang base64图片验证码
+	-库："github.com/mojocn/base64Captcha"
+	-获取默认存储store
+		-base64Captcha.DefaultMemStore
+	-验证码diver
+		-base64Captcha.DefaultDriverDigit	获取默认数字验证码driver
+		-base64Captcha.NewDriverDigit()		获取自定义数字验证码driver
+		-base64Captcha.DefaultDriverAudio	获取默认语音验证码driver
+		-base64Captcha.NewDriverAudio()		获取自定义语音验证码driver
+		-base64Captcha.NewDriverMath()		获取自定义数学(+-x%)验证码driver
+		-base64Captcha.NewDriverString()	获取自定义字符串(abc123)验证码driver
+	-生成验证码c
+		-base64Captcha.NewCaptcha(driver, store)	生成验证码实例
+	-获取验证id及b64s
+		-c.Generate()						获取验证id及b64s
+	-验证验证码
+		-store.Verify(id, Val, true)		根据验证码id,输入的值验证验证码是否输正确
+
+
+  48.golang http操作大全 *补全*
+  
+	-get请求：(3个都相等)
+		- http.Get("url")				// 封装完好的get请求
+		
+		- clt := http.Client{}			// 获取一个http的Client
+		  res,err := clt.Get("url")		// 用clt发送http请求
+		  
+		- req,err := http.NewRequest("GET", "url", nil)		// 获取http申请 
+		  res,err := http.DefaultClient.Do(req)				// 使用client的方式执行请求
+	
+	-post请求：
+		- data := url.Values{}								// 消息本体
+		  body := strings.NewReader(data.Encode())			// 将消息转为io流
+		  resp, err := http.Post(url,content-type, body)	// 发送请求
+		  
+		- var r http.Request								// 实例一个http请求	
+		  r.ParseForm()										// 初始化表单
+		  r.Form.Add(k, val)								// 为请求本体充填数据
+		  body := strings.NewReader(r.Form.Encode())		// 将消息转为io流
+		  http.Post(url, content-type, body)				// 发送请求
+		  
+		- data := url.Values{}								// 获取url内容
+		  http.PostForm("xxxx", data)						// 发送请求
+		
+		- data := url.Values{}								// 获取url内容
+		  clt := http.Client{}								// 获取一个客户端连接
+		  clt.PostForm("xxxx", data)						// 发送请求
+	
+	-request添加header
+		- req, err := http.NewRequest("请求","url",body)	// 实例一个请求
+		  req.Header.Add(k,val)								// 添加一个header
+		  clt := http.Client{}								// 实例一个客户端			
+		  clt.Do(req)										// 执行操作
+	
+	-response获取响应内容
+		- ct,err := ioutil.ReadAll(resp.Body)				// io获取响应本体
+		  res := string(ct)									// 用对应的解析
+	
+	-Cookie的使用
+		- url, err := url.Parse(url)						// 解析地址成url类型
+		  jar, err := cookiejar.New(nil)					// 实例化jar
+		  jar.SetCookies(url, cookies)						// 给url设置cookies
+		  clt := http.Client{Jar:jar}						// 实例一个客户端
+		  clt.Get(url)										// 发送请求
+		  
+	-使用代理
+		- &http.Transport{Proxy : http.ProxyFromEnvironment}	// 获取环境变量http_proxy代理-返回ts
+		
+		- url_i := url.URL{}
+		  url_proxy, err := url_i.Parse(代理地址)
+		  &http.Transport{Proxy : http.ProxyURL(url_proxy)}		// 根据url地址获取代理-返回ts
+		
+		- clt := http.Client{Transport:ts}						// 根据代理进行请求
+		  clt.Get(url)
+	
+	-url.Value{}	// 连接参数类型
+	-url.Url{}		// 连接地址类型	
+	-http.DetectContentType(body)	获取http连接头信息的ContentType
+	
+	
+
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	

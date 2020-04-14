@@ -1,0 +1,24 @@
+syntax = "proto3"; //指定proto版本
+
+//package proto;
+
+//import "google/protobuf/any.proto";
+
+
+message InternalArray {
+    repeated int64 internal_array = 1;
+}
+
+// 消消乐-图
+message ClearJoyImage{
+    // 单排-宽度
+    int32 Width = 1;
+    // 高度
+    int32 Height = 2 ;
+    // 本体
+    repeated int64 Body = 3;
+}
+
+message reply{
+    ClearJoyImage image = 1;
+}

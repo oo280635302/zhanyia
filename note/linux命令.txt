@@ -1,0 +1,327 @@
+ 
+ 1.linux常用终端命令
+	1. 放大窗口 ctrl + ; 
+	2. 缩小窗口 ctrl - ;
+	3. 清屏  clear;
+	4. 查看当前文件夹的内容 ls;
+		- -a 显示所有文件
+		- -l 以列表方式显示文件的详细信息
+		- -h 配合-l以人性化的方式显示文件大小
+		- -lh == -l -h
+		- ls 通配符
+		   -* 任意个人字符
+		   -? 代表任意一个字符
+		   -[] 表示可以匹配字符组的任意一个
+		   -[a]  可以匹配a的任意一个
+		   -[a-e] 可以匹配a到e的任意个
+	5. 查看当前所在文件夹 pwd;
+	6. 切换文件夹 cd[目录];
+		- . 代表当前目录
+		- ..代表上级目录
+		- ~ 回到家目录
+	    - -  切换最近两次目录
+	7. 创建文件 touch[文件名];
+		- touch .文件名  创建一个隐藏文件
+		-如果文件以及存在，那就会改变修改时间
+	8. 创建目录 mkdir[目录名];
+		- -p 创建多个递归目录  例：mkdir -p a/b/c
+	9. 删除指定文件 rm[文件名];
+		- -r删除文件夹包括其所有内容
+		- -f强制删除,包括不存在的文件
+	11.拷贝和移动文件
+	    -cp 复制文件 例: cp 原文件 目标文件
+			-i 覆盖文件提示  （y覆盖，n不覆盖）
+			-r 复制一个目录
+	    -mv  移动文件  //  mv  原文件 目标文件
+			-i 覆盖文件提示  （y覆盖，n不覆盖）
+			-重命名: mv 原名字 新名字
+			-覆盖文件： mv 原文件  目标文件
+	    -tree 查看路径的树状图
+			-d 只显示目录
+	12.查看文件内容
+	    -cat 文件名   查看文件内容，创建文件，文件合并，追加文件内容
+			-b  对非空输出行编号
+			-n  输出所有行的编号
+		-more 文件名  分屏显示文件内容
+	    -grep 搜索文本文件名  搜索文本文件内容
+			-n  显示匹配行的行号
+			-v  显示不包含匹配文本的所有行
+			-i  忽略大小写
+			-搜素内容有空格，用引号引起来
+			^X  行首  搜索X开头行
+			X$  行尾  搜索$结尾行
+	13.自动补全 tab  上/下建
+		-退出选择  ctrl + c 
+	14.相对路径与绝对路径
+		-相对：前面不是/或者-,
+		-绝对：前面是/或者-
+	15.其他
+		-echo 文字内容   终端输出（console.log）
+		-重定向> 和 >>
+			- >：表示输出，会覆盖文件原有的内容
+			- >>：表示追加
+		- 管道 |：  输出命令|输入命令
+	16.超级用户命令
+		-sodu
+	17.查看当前系统的版本信息
+		-cat /proc/version
+		
+  2.linux终端命令格式
+	-[]  表示内容可选;
+	-命令名 [选项] [];
+	-程序名  文件名 ：用指定程序打开指定文件
+	  //  gedit config 用gedit(linux文本)打开config文件
+	
+  3.查阅命令帮助信息
+	-命令 --help;
+	-man 命令;
+		-空格 显示手册下一页
+		-enter 滚动手册页的一行
+		-b  回滚一屏
+		-f  前滚一屏
+		-q  退出
+		-/word 搜索Word字符串
+		
+  4.远程管理常用命令
+	-关机\重启  shutdown 选项 时间
+		// shutdown -r now 现在重新启动
+		-r 重新启动
+		-c 取消
+	-查看或配置网卡信息
+		-ifconfig 查看/配置计算机当前的网卡配置信息
+		-ping ip地址  检查ip地址是否连接正常
+			-ctrl + c 结束检查
+	-远程登录和复制文件
+		-服务器端口 SSH服务器 22
+					web服务器 80
+					HTTPS    443
+					FTP服务器 21
+		-ssh [-p 端口号] user@remote
+			-p 默认端口22可以不输入 ,
+			-user 远程机器上的用户名,如果不指定就默认当前用户名
+			-remote 是远程机器的地址,有IP/域名/别名
+		-scp 远程拷贝文件
+			-scp -P port 文件名 user@remote:Desktop/文件名
+			 将本地文件拷贝到远程家目录的Desktop文件下
+			*如果后面跟的不是绝对路径,则以用户的家目录作为参照目录
+			
+			-scp -P port user@remote:Desktop/文件名 文件名
+			 将远程文件拷贝到本地当前目录上
+			-r  若原文件是目录  则复制整个目录
+			*Windows 用ssh文件要:putty、pscp；或者Filezilla进行FTP传输端口是21
+		-ssh高级
+			-~/.ssh  保存ssh配置信息 
+			-免密登录
+				-ssh-keygen 生成SSH钥匙
+				-ssh-copy-id user@remote
+				-其生成的配置文件名有两种：
+						-id_rsa_pub  公钥
+						-id_rsa      私钥
+						-本地使用私钥加密/解密
+						-服务器使用公用加密/解密
+						-非对称加密算法
+			-配置别名
+				-在ssh创建config文件
+				-在config文件中输入：
+					Host 别名
+						HostName ip地址
+						User     用户名
+						port     端口
+		-exit 退出
+
+  5.权限,查询命令	
+	-用户权限命令		
+		-权限有：读    r  red	  4
+				 写    w  write   2
+				 执行  x  excute  1
+		 例：drwxr-xr-x 2 ltw ltw 4096 7月 23 09:42 下载
+		     其中 rwx|r-x|r-x  代表 用有者|组|其他用户 的权限	
+		     后面跟的数字 2 代表其硬链接数	
+		-硬连接数：有多少种方式可以访问到当前文件/目录	
+		           文件基本为1，目录取决与其子目录数量
+		-chmod 修改用户/组 对文件/目录的权限
+		   格式：chmod +/-rwx 文件名|目录名  
+				//chmod +rwx  123.txt  让123.txt拥有rwx权限
+		-执行文件： ./文件名	
+		-超级用户 sudo命令进入超级用户
+	-组的管理
+		-添加/删除/确认组的信息
+			-groupadd 组名     添加组
+			-groupdel 组名     删除组
+			-cat /etc/group    确认组的信息
+			-chgrp 组名 文件/目录名   修改文件/目录的所属组
+				-R 递归修改(目录下面有其他文件时,)
+		-与群组相关文件保存地址：/etc/group
+	-用户管理
+		-userad 新建用户名                添加新用户
+			-m 自动建立用户家目录
+			-g 组 指定用户所在的组(默认同名组) 
+		-password 用户名                  设置用户密码
+		-userdel -r 用户名                删除用户
+			-r 会自动删除用户家目录
+		-cat /etc/passwd | grep 用户名    确定用户信息
+		-与用户相关的文件保存地址：/etc/passwd
+		-修改用户密码的程序： /user/bin/passwd
+			-用户名:密码:uid:gid:全名:家目录
+		-查看用户信息
+			-id [用户名]    查看用户uid和gid信息
+			-who		    查看当前所有登录的用户列表
+			-whoami         查看当前登录的账号名
+		-usermod 组 用户名      设置用户的组
+			-g  修改主组
+			-G  修改附加组
+		-usermod -s /bin/bash 用户名  修改用户登录Shell
+			-shell 就是终端命令 ubuntu指定的是dash(简洁高速)
+		*Which 查看执行命令所在位置
+			-/bin  二进制执行文件目录,主要具体应用
+			-/sbin 系统管理员二进制代码目录,只要用于系统管理
+			-/usr/bin    后期安装的软件
+			-/usr/sbin	  超级用户的一些管理程序
+		-切换用户su
+			-su - 用户名  切换用户,(因为有-号)同时切换到~/
+			-exit        退出当前登录账号
+		-修改文件权限
+			-chown   修改拥有者
+			格式: chown 用户名 文件名|目录名
+			-chgrp   递归修改组
+			格式：chgrp -R 组名 文件名|目录名
+			-chmod   递归修改权限
+			格式：chmod -R 755 文件名|目录名
+				-4 r
+				-2 w
+				-1 x
+	-查询系统信息
+		-查询日期
+			-date 查看系统时间
+			-cal  查看日历 
+				-y 查看一年的日历
+		-磁盘信息
+			-df -h        显示磁盘剩余空间
+			-du -h[目录]  显示目录下文件大小
+				-h 以人性化方式显示
+		-进程信息
+			-ps aux  查看进程的详细状况
+				-a 显示终端上的所有进程
+				-u 显示进程的详细状态
+				-x 显示没有控制终端的进程
+			-top     动态显示运行中的进程且排序
+			-kill [-9] 进程代号  终止指定代号的进程
+				-9 强行终止
+	-其他命令
+		-查找文件 find 
+		  格式：find [路径] -name "条件"
+		-软连接 ln (类似于快捷方式)
+		   格式：ln -s 原文件 链接文件
+			-s 没有建立的是硬链接
+			原文件使用绝对路径
+		-硬链接 ln 原文件 链接文件	
+			-想真正删除数据,需要把数据的文件名与所有硬链接删除掉
+		-打包压缩 
+			-打包 tar
+				-打包文件：
+				 格式：tar -cvf 打包文件.tar 被打包的文件/路径
+				-解包文件:
+				 格式：tar -xvf 打包文件.tar
+			-压缩
+				1、gzip
+				-压缩文件：
+				 格式：tar -zcvf 打包文件.tar.gz 被压缩的文件/路径
+				-解压缩文件
+				 格式：tar -zxvf 打包文件.tar.gz 
+				-解压缩到指定路径
+				 格式：tar -zxvf 打包文件.tar.gz -C 目标路径
+					-C解压缩到指定目录
+				2、bzip2
+				-压缩文件：
+				 格式：tar -jcvf 打包文件.tar.bz2 被压缩的文件/路径
+				-解压缩文件
+				 格式：tar -jxvf 打包文件.tar.bz2 
+				-解压缩到指定路径
+				 格式：tar -zxvf 打包文件.tar.gz -C 目标路径
+					-C解压缩到指定目录
+		-软件安装
+			1.通过apt安装/卸载软件
+				-安装软件
+				  sudo apt install 软件包
+				-卸载软件
+				  sudo apt remove 软件名
+				-更新软件名
+				  sudo apt upgrade
+
+  -查看python解释器的位置:which python
+  
+	-pip安装第三方模块
+		-Python2
+			$ sudo pip install pygame
+			$ sudo pip uninstall pygame
+		-Python3
+			$ sudo pip3 install pygame
+			$ sudo pip3 uninstall pygame
+
+  6.linux修改环境变量	
+	-第一步：sudo vim /etc/profile
+	-第二步：按I进入vim编辑模式
+			 末尾加环境变量,如下类似的
+			 export GOROOT=/usr/local/go
+			 export GOPATH=/home/bruce/goProject 
+			 export GOBIN=$GOPATH/bin
+			 export PATH=$PATH:$GOROOT/bin
+			 export PATH=$PATH:$GOPATH/bin
+	-第三步：按ESC退出编辑模式
+			 按：进入输入命令模式
+			 按x退出vim
+	-第四步：source /etc/profile	更新
+	 
+  7.ssh 
+	-开启ssh让别人连接我
+		sudo /etc/init.d/ssh start
+	-查看是否开启ssh
+		sudo ps -e | grep ssh
+	-关闭ssh
+		sudo service ssh stop
+	-重启ssh
+		sudo service ssh restart
+	-查看服务状态
+		sudo service ssh status
+
+  8.常用文件操作命令	
+	# 创建文件夹：md 文件夹名
+	# 创建空的文件：type nul>文件名
+	# 创建有内容文件：echo "内容">文件名
+	# 查看文件内容：type +文件名
+	# 查看目录及子文件：dir
+	# 删除空文件夹：rd 文件夹名
+	# 删除文件及所有子文件：rd /s/q 文件夹名
+	# 删除文件：del 文件名
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+		
+			

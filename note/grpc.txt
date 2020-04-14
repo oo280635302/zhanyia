@@ -1,0 +1,203 @@
+ 
+  1.GRPC简介
+	-gRPC  是一个高性能、开源和通用的 RPC（远程过程调用） 框架
+	-优点：
+		不同语言的客户端和服务器，不同环境都可以使用.proto来进行通信，
+		并且还可以帮助序列化，方便组件化开发，各组件之间使用grpc来进行数据传输。
+  
+  2.protobuf
+	-enum 枚举
+		-意思是：举例，创建一个有默认值得字段。
+		-第一个必须默认值为0。
+		-要想值能重复，需要加入选项：option allow_alias = true;
+		例1：
+			enum Corpus {
+				UNIVERSAL = 0;
+				WEB = 1;
+			}
+	-repeated 重复的
+		计算器，计算这个字段有多少个
+		例1：
+			message{
+				repeated string name = 1
+			}
+	-Any	所有类型
+		-Any类型允许包装任意的message类型
+		例1：
+			message Response {
+				google.protobuf.Any data = 1;
+			}
+		-ptypes包+ptypes/Any包
+			-ptypes.MarshalAny(proto.Message)	将protobuf的类型转换成any.Any类型
+			-ptypes.Empty(*any.Any)				根据any.Any new一个proto实例
+			-ptypes.UnmarshalAny(*any.Any,&proto.Message)	将Any解析成proto.Message类型
+  
+	-Oneofs 只能一个字段
+		-如果你有一些字段同时最多只有一个能被设置，任何一个字段被设置，其它字段会自动被清空（被设为默认值）
+		-例1：
+			message SampleMessage {
+			  oneof test_oneof {
+				string name = 4;
+				SubMessage sub_message = 9;
+			  }
+			}
+		-注意：oneof块中的字段不支持repeated
+	-Map	map类型
+		-就是golang的map类型，其他的object类型
+		-例1：
+			message Lala{
+				map<string, int64> field = 1;
+			}
+	综合理解：golang做的定义数据类型和序列化的方式。
+	
+  3.golang的grpc第三方库
+	-下载：
+		go get google.golang.org/grpc
+	-在proto里面定义 rpc服务 的request和reply方法
+		-例子:	
+		service GRPCComponent{
+			rpc HandleMessage(HandleMessageRequest)returns (HandleMessageReply){}
+		}
+		message HandleMessageRequest {...}
+		message HandleMessageReply {...}
+	-使用
+		-然后会生成GRPCComponentClient和GRPCComponentServer接口
+	-grpc客户端连接
+		-grpc.Dial(ip,opt)			参数ip地址与设置,返回conn,err
+		  -opt设置：
+			-grpc.WithBlock()		一直进行连接直到连接成功,或者连接超时才返回conn和err
+			-grpc.WithInsecure()	非传输安全的grpc连接
+			-grpc.WithKeepaliveParams(...)	参数:keepalive.ClientParameters 保持连接的配置
+				-例子：
+					kacp = keepalive.ClientParameters{
+						Time:                10 * time.Second, 
+						Timeout:             time.Second,      
+						PermitWithoutStream: true,             
+					}
+		-proto.NewGRPCComponentClient(conn)	初始化客户端,返回GRPCComponentClient
+			-c.HandleMessage(上下文,HandleMessageRequest)	grpc传输返回reply和err
+	-grpc服务器端
+		-net.Listen("tcp",port)		tcp监听某端口,返回listen和err
+		-grpc.NewServer(opt)		创建grpc服务器,返回Server和err
+			-grpc.KeepaliveEnforcementPolicy()		*执法者*参数opt
+				-例子：
+					kaep = keepalive.EnforcementPolicy{
+						MinTime:             5 * time.Second, // 最小心跳时间
+						PermitWithoutStream: true,            // 及时没有流也允许ping
+					}
+			-grpc.keepalive.ServerParameters()		连接参数选项opt
+				-例子：	
+					kasp = keepalive.ServerParameters{
+						MaxConnectionIdle:     15 * time.Second, //空闲时间超过时限就发送离开请求
+						MaxConnectionAge:      30 * time.Second, //连接超过时限就发送离开请求
+						MaxConnectionAgeGrace: 5 * time.Second,  //关闭连接之前,等待X秒使挂起的rpc完成
+						Time:                  5 * time.Second,  //每5秒ping一次
+						Timeout:               1 * time.Second,  //如果连接中断等待1s进行ping确认
+					}
+			-proto.RegisterGRPCComponentServer(server,实现了HandleMessage结构体实例)	注册方法给服务器提供服务
+			-server.Serve(listen)			grpc处理监听端口
+	-HandleMessage方法-->调用实例：		服务器接收客户端数据进行操作的方法
+		-[1] 解析request请求,获取组件名,方法名
+		-[2] 解析内容和外层信息
+		-[3] 通过内容实例获取反射[]value 切片
+			-[]reflect.Value{reflect.ValueOf(实例),...}
+		-[4] 通过组件名和方法名反射调用方法,传入参数,返回返回值
+			-reflect.ValueOf(组件名).MethodByName(方法名).Call([]value) 返回value类型
+		-[5] 通过类型断言转成interface再转成protoMessage
+			-reply[].Interface().(proto.Message)		
+			
+  4.context 上下文包
+	-context包专门用来简化处理单个请求的多个管道之间与请求域的数据、取消信号、截止时间等相关操作
+		-context.Background()		获取一个空的上下文,返回ctx
+			-ctx.Deadline()			返回该ctx应该结束的时间 与 是否有结束时间
+			-ctx.Done()				在ctx被取消时,返回一个关闭的协程
+			-ctx.Err()				返回ctx为什么被取消
+			-ctx.Value(...)			让协程共享数据
+		-context.TODO()				同background,不过返回的ctx可以用静态工具验证是否正确传递
+		-context.WithValue(父级ctx,键,值)	给context添加一对键值,返回有该键值的ctx
+		-context.WithCancel(父级ctx)		返回子级ctx,父级ctx的取消函数
+			*只有创建函数才能调用取消函数,不要将其传递出去*
+		-context.WithDeadline(父ctx,结束时间)	指定结束时间关闭父ctx,返回子ctx	
+		-context.WithTimeout(父ctx,持续时间)	指定持续时间后关闭父ctx,返回子ctx
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		

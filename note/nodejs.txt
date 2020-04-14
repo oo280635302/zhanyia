@@ -1,0 +1,233 @@
+----------------------------------Node.js---------------------------------------
+	运行Node.js文件
+		node 文件名
+		
+	1.全局对象
+		-__filename    当前正在执行的脚本
+		-__dirname     当前执行脚本所在的目录
+		-setTimeout(cb, ms)  指定的毫秒(ms)数后执行指定函数(cb)
+		-clearTimeout(t)     停止一个之前通过 setTimeout() 创建的定时器
+		-setInterval(cb, ms) 不停调用指定的毫秒(ms)数后执行指定函数(cb)
+		-clearInterval(t)    函数来清除定时器	
+	****重点回调函数*******
+	**回调函数	不会影响主函数中的执行（不用的上一行回调才执行主函数）   
+		
+	2.es6写法
+    ()=>{}   等于传统的  function(){}
+		  //settimeout(()=>{
+		  console.log("你好")
+		  },3000
+		  )//
+	
+	-setInterval 每隔 X ms输出一次(settimeout的for循环)
+	-两个参数相加 ${a+b}
+	
+	3.模块
+	 -发送的js里面写:module.exports = 要发送的东西 (是个obj)
+	 -接受的js里面写：require(接受的文件地址);  
+		 //module.exports{
+			a=a,
+			b=b,
+			c=c
+		 }
+	 -类似于ajax,不过可以传Function
+	
+	4.事件
+	 -首先从核心库里面调用事件库 var 名字 = require("events");
+	 -on() : 绑定事件
+	 -emit() : 直接用js触发事件（验证的方法）
+	 **Nodejs里面有很多核心库**
+		-库名：util 很多功能的库
+			-util.inherits(子继承,父继承);  继承
+	 -forEach() 循环一个方法
+	
+	5.读写文件（同步，异步）
+	 -调用库 require("fs");
+	 -fs.readFileSync("要读取的文本",编码)；  （同步）读取文本
+	 -fs.writeFileSync("文本名",内容);   （同步）向指定文本加入内容
+	 -同步，异步概念：
+		-同步：代码一步一步执行
+		-异步：遇到异步的,先执行主函数，后期主函数执行完和有触发情况的才触发
+	 -fs.readFile("要读取的文本",编码,回调函数)；  （异步）读取文本
+	 -fs.writeFile("文本名",内容,回调函数);   （异步）向指定文本加入内容	
+	 **同步加Sync ,不要回调函数**
+	 **异步不要Sync ,加回调函数**
+	 回调函数有两个值（err,data）
+	 
+	6.创建删除目录
+	 -调用库 require("fs");
+	 -fs.unlink("文件名",回调函数);  删除一个文件（异步）
+	 -fs.unlinkSync("文件名");  删除一个文件（同步）
+	 -fs.mkdirSync("文件名");  创建一个目录（同步）
+	 -fs.rmdirSync("文件名");  删除一个目录（同步）
+	
+	7.流和管道
+	 -Stream 流
+	  -fs.createReadStream();    创建一个读的流
+	  -流.setEncoding("utf8");   给流加入编码
+	  -fs.createWriteStream();   创建一个写的流
+	   //var wirteData = "你好";
+	     流.write(writeData,"utf8");
+		 流.end();
+		 流.on("finish",function(){
+		     console.log("finish");
+		 })
+	 -pipe 管道！
+	  -读的流.pipe(写的流);
+	  
+	8.Web服务器
+	 -调用库 require("http");
+	 -变量名.createServer(function(request,response){
+	    response.writeHead(状态码,{内容类型});  //给浏览器传头部内容的类型
+		response.write("内容");  //给浏览器的内容
+		response.end();    //结束
+	 })
+	 
+	 变量名.listen(端口号)   //使变量的内容被某个端口号监听
+	 
+	 -响应一个纯文本
+		-内容类型:  {'Content-Type':'text/plain'}
+	 -响应一个JSON给客户端
+		-内容类型:  {'Content-Type':'application/json'}
+		**同时将对象转换成JSON字符串：JSON.stringify(对象名);
+		-JSON.parse 将字符串转换成原来的样子（对象，字符串，数字...）
+	 -响应一个HTML页面
+		-内容类型:  {'Content-Type':'text/html'}
+		-单纯的读取HTML格式
+		
+		 // 变量名.createServer(function(request,response){
+			response.writeHead(状态码,内容类型);  //给浏览器传头部内容的类型
+			var a ='<html>' + .....   //用加号串联起来的html内容
+			response.end(a);    //结束
+		 //})
+	
+		-用流的方式来读取、
+		 // var fs =require("fs");
+			var http = require("http");
+			var x = http.createServer(function(request,response){
+			  response.writeHead('Content-Type':'text/html');        //给浏览器传头部内容的html类型;
+			  var myRead fs.createReadStream(__dirname+"/XX.html")   //一个外部HTML文件的读取流;
+			  myRead.pipe(response);    //通过管道的方式读取到响应当中去,(不需要end());
+		 // })	
+	 
+	9.模块化思维组织代码 
+	 -先将代码组成一个function 名字	(){};
+	 -在exports.名字 = 名字
+	 -最后另外的页面require();   变量.名字() 使用它
+	 
+	10.路由
+	 -createServer()的function里面还有个参数是request,
+	 -request.url  获取页面请求的路径信息
+	 -可以根据request.url获取的内容来判断需要打开的内容
+	  if(request.url === "/" && request.url === "/home" ){}  // "/"和"/home" 都代表家页面
+	 
+	 -重构路由
+		-建立空对象,给其添加值与方法
+		// var 对象名 ={}；
+		   对象名[值名] = 方法
+		-1. 将路由信息放在外部的JS文件里面,
+		-2. 使用函数参数将路由信息传出去（a）
+		  function shuchu(route) {
+              var onRequest = function (request, response) {
+              route(request.url);
+			  }}
+		-3. 使用对象获取路由信息（b）
+		   function route(pathname) {
+               console.log("route." + pathname);
+              }
+		-4. 根据a.shuchu的方法带上b.route链接起来
+		   a.shuchu(b.route);
+		-5.请参考F盘里面的0001Web-0001文件夹
+	
+	11.网站传递数据给服务器
+		-get
+		 //www.baidu.com/video?p=15     ?之后的是属性p和值15传递给服务器
+			-如何将?之后的值获取到
+			//url.parse(www.baidu.com/da?d=1,true).query  结果：d=1
+		-post
+			-post传递的数据不显示在路径上面
+			-获取数据的方法一
+			 // var  data ="";
+			    request.on("error",function(err){
+					console.log(err)
+				}).on("data",function(chunk){
+					data += chunk
+				}).on("end",function(){
+				  if(request.method =="POST"){
+					querystring.parse(data) //将获取的值解析
+					route(data)
+				  }
+			 // })
+			 -获取数据的方法二
+			 // var  data = [];
+			    request.on("error",function(err){
+					console.log(err)
+				}).on("data",function(chunk){
+					data.push(chunk);
+				}).on("end",function(){
+				  if(request.method =="POST"){
+					if(data.length >1e6){request.connection.destroy()}
+					data =Buffer.concat(data).toString();
+					route(querystring.parse(data));
+				  }
+			 // })
+			 
+		-request.method 输出传递的数据的状态		
+		-request.connection.destroy() 将请求取消掉
+			
+	12.url库的用法
+		-引用 var url =require("url");
+		-三种方法
+			-parse 将URL解析成一下几部分
+				-href：原始url
+				-protocal：url协议
+				-host：主机
+				-host中又包含以下信息：
+				-auth：用户认证
+				-port：端口
+				-hostname：主机名
+				-pathname：跟在host之后的整个文件路径
+				-search：url中HTTP GET信息，包含了？
+				-query：跟search类似，不包含？
+				-hash：片段部分，也就是URL#之后的部分
+				    -true  返回结果对象
+					-false 返回结果字符串
+			-format 根据某个对象生成URL字符串
+			-resolve 用于拼接URL，它根据相对URL拼接成新的URL
+		// url.parse(www.baidu.com/da?d=1).pathname  结果：/da
+	
+	13.querystring库
+	 	-引用var querystring= require("querystring");
+		-querystring.parse(XX)将数据进行解析成对象
+		-更多参考百度
+	
+	14.包管理NPM
+		-下载需要的npm包   npm install XX 
+		-安装带命令的包：  npm install -g XX 
+			-g代表全局的意思
+		-npm 下载地址可以使用各大国内市场的镜像
+	 -yarn  也是包管理
+	 -package.json 获取所有安装的包的名称和信息
+		-npm init  初始化项目,同时生成package.json 
+		-开发环境依赖的包下载  npm install --save-dev XX 
+		-普通包下载  npm install --save XX 
+		-在package.json里面记录有包的名字后npm install 可以直接下载记录的包
+	 
+	15.nodemon
+	 -可以监控文件的改变,自动重启nodejs
+	 -下载： npm install -g nodemon
+	 -使用： nodemon 文件名
+		
+	 
+	 
+	 
+	 
+	 
+	 
+	 
+	
+	 
+
+	
+	
+	

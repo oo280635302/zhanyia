@@ -1,0 +1,4 @@
+ctrl+/ 注释当前行    
+ctrl+shift+/  注释所选内容
+ctrl+z  返回上一步
+shift+ctrl+z 前进下一步
