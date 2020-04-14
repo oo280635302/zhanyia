@@ -8,6 +8,7 @@ import (
 	"time"
 	"zhanyia/src/must"
 	"zhanyia/src/program"
+	pb "zhanyia/src/proto"
 )
 
 func main() {
@@ -45,6 +46,15 @@ func main() {
 	program.FullMap(writeMap)
 	// 日志输出二维图
 	program.PrintDoubleMap(writeMap)
+
+	// 将图谱转成二维数组
+	a := &pb.ClearJoyImage{
+		Width:  2,
+		Height: 2,
+		Body:   []int64{1, 3, 5, 1},
+	}
+	n := program.ImageToSqArray(a)
+	program.PrintDoubleMap(n)
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
