@@ -15,18 +15,7 @@ func main() {
 	// 创建must组件实例
 	must.Init()
 	rand.Seed(time.Now().UnixNano())
-	//common.AllGlobal["Mq"].(*must.Mq).BindReportQueue()
-	//
-	//a := "HelloWord"
-	//msg, err := json.Marshal(a)
-	//if err != nil {
-	//	fmt.Println("main Marshal has err", err)
-	//}
-	//
-	//err = common.AllGlobal["Mq"].(*must.Mq).SendReport(msg)
-	//if err != nil {
-	//	fmt.Println("main SendReport has err", err)
-	//}
+
 	// 制作新的空白地图
 	writeMap := program.MakeMap(5, 3)
 	// 日志输出二维图
