@@ -1,2 +1,5 @@
 # Default ignored files
 /memo
+/src/log
+.idea/
+./go.mod

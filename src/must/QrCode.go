@@ -29,7 +29,7 @@ func init() {
 // 获取一张二维码
 func GetQrCode() {
 	// 生成二维码信息
-	qrCode, _ := qr.Encode("http://blog.csdn.net/wangshubo1989", qr.H, qr.Auto)
+	qrCode, _ := qr.Encode("lalalala", qr.H, qr.Auto)
 
 	// 设定二维码尺寸
 	qrCode, _ = barcode.Scale(qrCode, 256, 256)

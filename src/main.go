@@ -1,21 +1,49 @@
 package main
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"os/signal"
 	"syscall"
 	"time"
+	"zhanyia/src/common"
 	"zhanyia/src/must"
 	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
 func main() {
-	// 创建must组件实例
-	must.Init()
 	rand.Seed(time.Now().UnixNano())
 
+	// 创建must组件实例
+	must.Init()
+	mustComponent()
+
+	common.LogDeBug("run start")
+	// 持久化
+	signalChan := make(chan os.Signal, 1)
+	signal.Notify(signalChan,
+		syscall.SIGINT,
+		syscall.SIGILL,
+		syscall.SIGFPE,
+		syscall.SIGSEGV,
+		syscall.SIGTERM,
+		syscall.SIGABRT)
+	<-signalChan
+
+	// 重定向回控制台
+	fmt.Println("bye bye")
+}
+
+// 必备组件
+func mustComponent() {
+	// 日志组件
+	common.Log = common.AllGlobal["Log"].(*must.Log)
+}
+
+// 地图相关
+func mapSpace() {
 	// 制作新的空白地图
 	writeMap := program.MakeMap(5, 3)
 	// 日志输出二维图
@@ -44,15 +72,4 @@ func main() {
 	}
 	n := program.ImageToSqArray(a)
 	program.PrintDoubleMap(n)
-
-	// 持久化
-	signalChan := make(chan os.Signal, 1)
-	signal.Notify(signalChan,
-		syscall.SIGINT,
-		syscall.SIGILL,
-		syscall.SIGFPE,
-		syscall.SIGSEGV,
-		syscall.SIGTERM,
-		syscall.SIGABRT)
-	<-signalChan
 }
