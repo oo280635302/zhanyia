@@ -55,19 +55,33 @@ canvas :https://github.com/hustcc/canvas-nest.js  棍棍跟着走
 	-Windows商城搜索linux,安装即可
 	-windows程序与linux程序会互用
 		
+12.堆栈
+    - 在程序中的意思
+        -堆      未知内存大小,需要程序员自己创建释放的数据类型      eg:slice
+        -栈      已知使用内存大小,不需要程序员开辟内存空间的数据类  eg:int
+	- 在数据结构上的意思
+        -堆      随意取放
+        -栈      后进先出(桶)
+		-队列    先进先出(管道)
 		
+13.跨域
+    - 同源协议
+        -防止一个域javaScript脚本和其他域的内容进行交互
+        -限制：无法读取非同源 缓存cookie,本地存储localStorage,索引数据库indexedDB,文档模型Dom
+               无法向非同源地址发送ajax请求
+    - 同域
+        -协议,域名,端口 一致 称为同域
+    - 解决跨域问题
+        -同主域,不同子域 ,浏览器会检测document.domain设置是否相同
+		-发送窗口协议window.postMessage
+		-JSONP
+		-CORS
+
+14.守护进程
+    - 守护进程是为了保护另外一个进程的持久化
+        eg:进程A监控进程B，发现进程B异常退出的时候就自动重启进程B
 		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
-		
+15.
 		
 		
 		

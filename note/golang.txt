@@ -302,12 +302,13 @@
 		-runtime.GOOS				获取当前是什么操作系统
 		-runtime.GOARCH				获取当前系统架构
 		-runtime.Caller(0)			返回当前参数在文件的位置
-		
+		-runtime.GC()               执行垃圾回收,可能会使程序卡顿
+
 	-strings
-		-strings.Trim(字符串,"需要去掉的字")			将字符串中的某字去掉
+		-strings.Trim(字符串,"需要去掉的字")			    将字符串中的某字去掉
 		-strings.Replace(s ,old ,new string,n int)		返回将s中前n个不重叠old子串都替换为new的新字符串，如果n<0会替换所有old子串。
 		-strings.Split("字符串","分隔符")				将字符串根据分隔符分隔
-		-strings.ContainsAny(待检测, 用于检测的字符)	检测字符串中是否有哪些字符
+		-strings.ContainsAny(待检测, 用于检测的字符)	    检测字符串中是否有哪些字符
 		-strings.ToUpper(str)							将字符串全部转成大写
 		-strings.ToLower(str)							将字符串全部转成小写
 		-regexp.MatchString(正则, 被检测字符串)			检测字符串是否符合正则要求
