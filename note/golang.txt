@@ -357,6 +357,14 @@
 			-参数：目录地址
 	-path 		path实现了对斜杠分隔的路径的实用操作函数。
 		-path.Join(地址,下级地址名)		将地址path合并在一起
+	-syscall    系統操作相關包
+	    -syscall.LoadDLL("XX.dll")      加载dll文件
+	        -dll.FindProc("xx")         获取指定方法
+	            -func.Call(arg)         执行方法
+        -syscall.NewLazyDLL("xx.dll")   读取dll文件
+            -dll.NewProc("xx")          获取指定方法
+                -func.Call(arg)         执行方法
+
 
 	-导入包
 		-同一目录的文件 package 名字 必须一样

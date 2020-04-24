@@ -4,7 +4,6 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
-	"runtime"
 	"syscall"
 	"time"
 	"zhanyia/src/must"
@@ -45,7 +44,7 @@ func main() {
 	}
 	n := program.ImageToSqArray(a)
 	program.PrintDoubleMap(n)
-	runtime.Caller()
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

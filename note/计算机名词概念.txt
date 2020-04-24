@@ -81,7 +81,10 @@ canvas :https://github.com/hustcc/canvas-nest.js  棍棍跟着走
     - 守护进程是为了保护另外一个进程的持久化
         eg:进程A监控进程B，发现进程B异常退出的时候就自动重启进程B
 		
-15.
+15.dll文件
+    -动态库
+
+16.
 		
 		
 		
