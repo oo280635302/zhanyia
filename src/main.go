@@ -14,14 +14,8 @@ import (
 )
 
 func main() {
-	newStack := common.Stack{
-		MaxTop: 100,
-		Top:    -1,
-	}
-	newStack.Push(1)
-	newStack.Push(2)
-	newStack.Push(3)
-	newStack.List()
+	fmt.Println(common.StackAdd("312312332132132132132132132132121421.412", "2321312321312.4111"))
+
 }
 
 func realMain() {

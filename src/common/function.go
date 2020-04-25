@@ -2,6 +2,7 @@ package common
 
 import (
 	"os"
+	"regexp"
 	"time"
 )
 
@@ -61,4 +62,27 @@ func LogDeBug(a ...interface{}) {
 	Log.LogDebug(a...)
 }
 
-//
+// 判断字符串是不是浮点数
+func JudgeStringIsFloat(val string) bool {
+	pattern := `^(\d+).\d+$`
+	result, _ := regexp.MatchString(pattern, val)
+	return result
+}
+
+// 判断字符床是不是纯数字
+func JudgeStringIsInt(val string) bool {
+	pattern := `^(\d+)$`
+	result, _ := regexp.MatchString(pattern, val)
+	return result
+}
+
+// 反转字符串
+func ReverseString(s string) string {
+	runes := []rune(s)
+
+	for from, to := 0, len(runes)-1; from < to; from, to = from+1, to-1 {
+		runes[from], runes[to] = runes[to], runes[from]
+	}
+
+	return string(runes)
+}

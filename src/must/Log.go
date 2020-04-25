@@ -19,7 +19,9 @@ type Log struct {
 // 创建Mq实例
 func init() {
 	common.AllGlobal["Log"] = &Log{}
-	common.AllGlobal["Log"].(*Log).loadLogDir()
+	if common.OpenDev {
+		common.AllGlobal["Log"].(*Log).loadLogDir()
+	}
 }
 
 // 创建日志目录
