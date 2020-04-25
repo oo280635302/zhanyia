@@ -237,12 +237,52 @@
 		-setsockopt								设置sd选项参数
 		-getsockopt								获取sd选项参数
 	-tcp将字节转换成网络字节-然后进行传输
-		
-		
-		
-			
-			
-			
+
+  13.udp滑窗式传输协议机制
+        GBN
+            -ack(n) 确认到序列号n的分组均被正确接收
+            -设置有timer timeout(n):重传序列号大于等于n,还没收到的ack所有分组
+            -接收机制：
+                -发送拥有最高序列号的被正确接收的ack
+                -乱序到达的分组直接丢弃,然后重新确认最大序列号分组
+        SR
+            -比GBN多了接受方的窗口
+            -将接收到的标记
+            -等于发送/接受双窗口,但相互并不知道位置
+            -缺陷：
+                -当窗口尺寸较大,但是序列号少时,出现接收方接受成功,发送方没收到确认消息,重发序列号正好而又错误的数据
+                -解决方法：
+                    发送方窗口+接收方窗口 <= 序列号数
+
+  14.tcp协议
+    -特点:
+        点对点:一个接收 一个发送
+		流水线机制：介于gbn,sr之间的机制
+		可靠m,按序
+		全双工full-duplex:同一链接可以传输双向数据流
+	-tcp段结构
+	    source port,dest port,sequence name,ack name...
+	-序列号和ack
+	    序列号是segment第一个字节的编号
+	    序列号累计确认
+        乱序到达的segment无处理
+    -tcp实现的可靠数据
+        -概述
+            -流水线机制
+            -累计确认
+            -单一重传定时器
+            -出发重传事件：超时，收到重复ack
+        -合理设置定时器时间
+            关键参数：RTT(round-trip time 往返时延)
+            采样多个SampleRTT，求平均值,作为估计值EstimatedRTT
+            devRTT = SampleRTT与EstimatedRTT的差值绝对值
+            最终：TimeoutInterval = EstimatedRTT + 4devRTT
+        -tcp中如果发生超时,会使超时间隔加长
+        -通过重复ack检测分组丢失
+            -sender收到receiver的3个相同ack就假定数据丢失，重发
+            -快速重传,在定时器超时前发送
+        -
+
 			
 			
 			

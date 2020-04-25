@@ -14,6 +14,17 @@ import (
 )
 
 func main() {
+	newStack := common.Stack{
+		MaxTop: 100,
+		Top:    -1,
+	}
+	newStack.Push(1)
+	newStack.Push(2)
+	newStack.Push(3)
+	newStack.List()
+}
+
+func realMain() {
 	rand.Seed(time.Now().UnixNano())
 
 	// 创建must组件实例

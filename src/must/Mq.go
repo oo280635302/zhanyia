@@ -15,11 +15,11 @@ type Mq struct {
 // 创建Mq实例
 func init() {
 	common.AllGlobal["Mq"] = &Mq{}
-	conn, err := amqp.Dial("amqp://admin:123456@127.0.0.1:5672/")
-	if err != nil {
-		panic(err)
-	}
-	common.AllGlobal["Mq"].(*Mq).MQConnection = conn
+	//conn, err := amqp.Dial("amqp://admin:123456@127.0.0.1:5672/")
+	//if err != nil {
+	//	panic(err)
+	//}
+	//common.AllGlobal["Mq"].(*Mq).MQConnection = conn
 }
 
 const (
