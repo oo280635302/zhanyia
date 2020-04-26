@@ -14,11 +14,6 @@ import (
 )
 
 func main() {
-	fmt.Println(common.StackAdd("312312332132132132132132132132121421.412", "2321312321312.4111"))
-
-}
-
-func realMain() {
 	rand.Seed(time.Now().UnixNano())
 
 	// 创建must组件实例

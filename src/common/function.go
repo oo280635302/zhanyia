@@ -3,6 +3,7 @@ package common
 import (
 	"os"
 	"regexp"
+	"strings"
 	"time"
 )
 
@@ -64,7 +65,7 @@ func LogDeBug(a ...interface{}) {
 
 // 判断字符串是不是浮点数
 func JudgeStringIsFloat(val string) bool {
-	pattern := `^(\d+).\d+$`
+	pattern := `^(\d+)\.\d+$`
 	result, _ := regexp.MatchString(pattern, val)
 	return result
 }
@@ -85,4 +86,43 @@ func ReverseString(s string) string {
 	}
 
 	return string(runes)
+}
+
+// 将任意数字 转成 整数及其小数位数
+func TakeEveryNumToInt(num string) (string, int) {
+	nums := strings.Split(num, ".")
+	if len(nums) == 1 {
+		return nums[0], 0
+	} else if len(nums) == 2 {
+		return nums[0] + nums[1], len(nums[1])
+	}
+	return "", -1
+}
+
+// 去除字符串数字多余的0
+func RmStringNumRemainZero(a string) string {
+	if JudgeStringIsFloat(a) {
+		for k, v := range a {
+			if v == 46 {
+				break
+			}
+			if a[k] == 48 && a[k+1] != 46 {
+				a = a[1:]
+			}
+		}
+		for i := len(a) - 1; i > 0; i-- {
+			if a[i] != 48 {
+				break
+			}
+			a = a[:i]
+		}
+		return a
+	}
+	for _, v := range a {
+		if v != 48 {
+			break
+		}
+		a = a[1:]
+	}
+	return a
 }
