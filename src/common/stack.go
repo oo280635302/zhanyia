@@ -103,6 +103,7 @@ func (s *Stack) List() {
 }
 
 // 栈整数加法运算
+// 1000/ms
 func StackIntegerAdd(num1 string, num2 string) string {
 
 	// 数字1,数字2栈,结果栈
@@ -139,6 +140,7 @@ func StackIntegerAdd(num1 string, num2 string) string {
 }
 
 // 栈小数加法运算
+// 1000/ms
 func StackDecimalAdd(num1 string, num2 string) (string, bool) {
 	// 小数位数对齐
 	diffDigit := len(num1) - len(num2)
@@ -159,7 +161,7 @@ func StackDecimalAdd(num1 string, num2 string) (string, bool) {
 }
 
 // 栈加法运算
-// 200次/ms
+// 200/ms
 func StackAdd(num1 string, num2 string) string {
 	x := JudgeStringIsFloat(num1)
 	y := JudgeStringIsFloat(num2)
@@ -186,7 +188,7 @@ func StackAdd(num1 string, num2 string) string {
 }
 
 // 栈乘法运算
-// 100次/ms
+// 100/ms
 func StackMulti(num1 string, num2 string) string {
 	// 将浮点数 转成 正数 并获取他的小数位数
 	rNum1, decimal1 := TakeEveryNumToInt(num1)
