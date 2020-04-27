@@ -713,7 +713,28 @@
             4.二叉树的遍历
             5.图像的深度优先搜索法
 	    -实例：
-	        -
+            type Stack struct {
+                //MaxTop int    // 栈的最大数量
+                Top      int   // 栈顶
+                Arr      []int // 栈数据
+            }
+            // 入栈
+            func (s *Stack) Push(val int) {
+                s.Top++
+                s.Arr = append(s.Arr, val)
+            }
+
+            // 出栈
+            func (s *Stack) Pop() (int, error) {
+                // 没有就不出了
+                if s.Top == -1 {
+                    //fmt.Println("stack empty")
+                    return -1, errors.New("stack empty")
+                }
+                val := s.Arr[s.Top]
+                s.Top--
+                return val, nil
+            }
 	
 	6.二叉搜索树(BST)
 		-基本概念：
@@ -730,6 +751,8 @@
 			遍历 < BST <= 红黑数；其性能的好坏取决于数据插入的顺序,不能保证
 		-搜索模式：
 			搜一个树,先对比节点,比节点小进入左子节点,比节点大进入右子节点,以此推论
+
+	7.堆排序
 		
 ---------------------------------------算法-------------------------------------------
 	

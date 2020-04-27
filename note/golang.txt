@@ -3084,7 +3084,23 @@
 	-备注：
 	    解析其他人的二维码会有奇怪的错误
 
-	
+  50.pprof 性能分析工具包
+    -库：net/http/pprof"
+    -性能数据监听demo：
+        import (
+            "log"
+            "net/http"
+            _ "net/http/pprof"
+        )
+
+        func main() {
+            go func() {
+                http.ListenAndServe("0.0.0.0:6060", nil)
+            }()
+        }
+    -访问页面：
+        http://127.0.0.1:6060/debug/pprof/
+    -
 	
 	
 	
