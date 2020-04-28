@@ -1,0 +1,5 @@
+package program
+
+func Init() {
+
+}

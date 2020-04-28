@@ -25,3 +25,7 @@ func init() {
 		},
 	}
 }
+
+func (r *Redis) HGet() {
+
+}

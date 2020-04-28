@@ -22,3 +22,27 @@ message ClearJoyImage{
 message reply{
     ClearJoyImage image = 1;
 }
+
+// 房间信息
+message RoomInfo {
+    // 房间uuid
+    string RoomUuid = 1;
+    // 房间短位id
+    string RoomShortId =2;
+    // 房间玩家
+    repeated RoomPlayerInfo RoomPlayerInfo = 3;
+    // 房间地主索引
+    int64 RankIndex =4;
+}
+
+// 房间玩家信息
+message RoomPlayerInfo {
+    // 玩家uuid
+    string PlayerUuid = 1;
+    // 玩家shortId
+    string PlayerShortId = 2;
+    // 玩家金额
+    int64 Balance =3;
+    // 玩家保险箱金额
+    int64 SafeBal = 4;
+}

@@ -9,7 +9,6 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
@@ -49,24 +48,24 @@ func mustComponent() {
 // 地图相关
 func mapSpace() {
 	// 制作新的空白地图
-	writeMap := program.MakeMap(5, 3)
+	writeMap := common.MakeMap(5, 3)
 	// 日志输出二维图
-	program.PrintDoubleMap(writeMap)
+	common.PrintDoubleMap(writeMap)
 
 	// 填充新的二维图
-	program.FullMap(writeMap)
+	common.FullMap(writeMap)
 	// 日志输出二维图
-	program.PrintDoubleMap(writeMap)
+	common.PrintDoubleMap(writeMap)
 
 	// 降沉
-	program.IconFall(writeMap)
+	common.IconFall(writeMap)
 	// 日志输出二维图
-	program.PrintDoubleMap(writeMap)
+	common.PrintDoubleMap(writeMap)
 
 	// 填充新的二维图
-	program.FullMap(writeMap)
+	common.FullMap(writeMap)
 	// 日志输出二维图
-	program.PrintDoubleMap(writeMap)
+	common.PrintDoubleMap(writeMap)
 
 	// 将图谱转成二维数组
 	a := &pb.ClearJoyImage{
@@ -74,6 +73,6 @@ func mapSpace() {
 		Height: 2,
 		Body:   []int64{1, 3, 5, 1},
 	}
-	n := program.ImageToSqArray(a)
-	program.PrintDoubleMap(n)
+	n := common.ImageToSqArray(a)
+	common.PrintDoubleMap(n)
 }
