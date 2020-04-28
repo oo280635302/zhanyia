@@ -381,9 +381,56 @@
         -通过重复ack检测分组丢失
             -sender收到receiver的3个相同ack就假定数据丢失，重发
             -快速重传,在定时器超时前发送
-        -
+    -tcp流量控制
+        -概念：为防止传输给receiver数据太快,以至于数据处理不过来
+        -速度匹配机制
+        -机制：
+            rcvWindows里的spare room（buffer可用空间）
+            接受方告诉发送方
+            发送方限制自己发送数据
+    -tcp连接管理
+        -建立连接前：初始化一些tcp变量 3次handShark
+            -当第二次握手时,客户端会开辟预工作空间
+                -掌握这种方法,可进行攻击
+        -关闭连接：客户端主动发送关闭请求
+    -拥塞控制原理
+        -概念：解决数据太多，网络无法处理的问题
+        -表现：分数丢失,分组延迟过大
+        -控制方法：
+            -端到端(tcp使用)
+                网络层不需要显示的提供支持
+                端系统通过观察delay和loss网络行为判断是否拥塞
+            -网络辅助
+                路由器向发送方显式的反馈网络拥塞信息
+                简单的拥塞指示,根据指示控制发送速率
+                -ABR available bit rate
+                    -弹性服务
+                    -根据可用带 宽,调整传输速率
+                    -发送拥塞-最低的保障速率
+                -RM cells  resource management
+                    -发送方发送
+                    -交换机设置RM cell位
+                        -NI rate不增长
+                        -CI 拥塞指示
+                    -由接收方返回给发送方
+        -tcp拥塞控制机制：
+            -限制发送速率
+                rate = congWin/RTT
+                congWin 动态调整改变发送速率,反映感知的网络拥塞
+            -当timeout 或 3个重复ack 发送方降低速率
+            -AIMD 慢增长-遇问题减半
+                原理：谨慎探测可用带宽,逐渐增加发送速率,当发送loss速率减半
+                additive increase multiplicative decrease
+            -SS 慢启动
+                原理：连接开始时数额小，指数性增长
+            -Threshold 变量
+                -当CongWing是Loss前1/2时,指数性增长切换为线性增长？
+            -Loss事件处理：
+                -非严重处理：遇到3个重复ack congWin 减半 调整为线性增长
+                -严重处理：timeout事件 congWin设为1 调整为指数增长
+    -tcp性能：
 
-			
+
 			
 			
 			
