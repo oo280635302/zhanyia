@@ -46,3 +46,30 @@ message RoomPlayerInfo {
     // 玩家保险箱金额
     int64 SafeBal = 4;
 }
+
+// 订单详细信息
+message OrderDetailReply {
+    //玩家的shortID
+    string shortId = 3;
+    uint64 auto_id = 4;
+    string uuid = 5;
+    string player_uuid = 6;
+    string txn_id = 7;
+    //订单金额
+    float order_amount = 8;
+    //订单状态
+    OrderStatus order_state = 9;
+    //商品类型
+    ProductType product_type = 10;
+    //商品数量
+    int64 product_num = 11;
+    //商品uuid
+    string product_uuid = 12;
+    //支付通道编号
+    PayMentChannel channel = 13;
+    int64 create_time = 14;
+    int64 update_time = 15;
+    string remark = 16;
+    //订单币种
+    Currency Currency = 17;
+}

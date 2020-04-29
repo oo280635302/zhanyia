@@ -23,6 +23,8 @@ func main() {
 	must.Init()
 	mustComponent()
 
+	common.AllGlobal["Mysql"].(*must.Mysql).Query()
+
 	fmt.Println("run start")
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
