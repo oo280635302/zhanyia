@@ -3100,7 +3100,15 @@
         }
     -访问页面：
         http://127.0.0.1:6060/debug/pprof/
-    -
+
+  51.github信息整合
+      https://github.com/jaywcjlove/golang-tutorial （Go语言快速入门 ）
+      https://github.com/Shitaibin/golang_step_by_step （Golang入门教程的文章、示例代码）
+      https://github.com/astaxie/build-web-application-with-golang （A golang ebook intro how to build a web with golang ）
+      https://github.com/rubyhan1314/Golang-100-Days （Golang - 100天从新手到大师 ）
+      https://github.com/jiujuan/go-collection （Golang从入门到跑路）
+      https://github.com/overnote/over-golang （Golang笔记：[进度80%]Go语法、Go并发思想、Go与web开发、Go微服务设施等 ）
+      https://github.com/yinggaozhen/awesome-go-cn （一个很棒的Go框架、库和软件的中文收录大全。）
 	
 	
 	
