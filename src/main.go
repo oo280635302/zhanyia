@@ -9,21 +9,18 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
-	t := time.Now()
-	tm1 := time.Date(t.Year(), t.Month(), t.Day(), 0, 0, 0, 0, t.Location())
-	fmt.Println(tm1.Unix())
+	fmt.Println(program.MergeTwoLists(&program.ListNode{Val: 10}, &program.ListNode{Val: 11}))
 
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
-
-	common.AllGlobal["Mysql"].(*must.Mysql).Query()
 
 	fmt.Println("run start")
 	// 持久化
