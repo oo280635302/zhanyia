@@ -970,8 +970,10 @@
             拒绝服务攻击使得通信信道不能保证可用性
         -SSL
             -SSL安全套接字 TLS传输层安全 IPSec端到端的安全机制
-            -
 
+  26.VPN技术 virtual private network
+    -虚拟专用网
+    -利用 中间服务器  来对外访问
 
 
 

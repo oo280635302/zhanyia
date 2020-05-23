@@ -4,7 +4,9 @@ canvas :https://github.com/hustcc/canvas-nest.js  棍棍跟着走
 翻墙软件：ssr ，网址：clssr.cn
 		  expressVPN 网址：www.expressVPN.com
 搭建一个本地服务器环境：访问HTTP协议：phpstudy
-编辑器live Templates自定义写法 
+编辑器live Templates自定义写法
+抓包：share wire
+百度文库转pdf：冰点软件
 
 1.文件的概念：	
 	-分类：文本文件,二进制文件
