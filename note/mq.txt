@@ -24,4 +24,93 @@
     -是分布式的基于发布/订阅模式的消息队列
     -同一个消息可以被多个消费者消费
     -接受数据根消费者决定,使用长轮询的请求数据
-    -
+
+  2.kafka安装部署
+    -教程:https://www.cnblogs.com/lnice/p/9668750.html
+    -运行：
+        -先运行: cmd 运行zkserver
+        -运行kafka: .\bin\windows\kafka-server-start.bat .\config\server.properties
+    -测试：
+        -先创建topic：
+            kafka-topics.bat --create --zookeeper localhost:2181 --replication-factor 1 --partitions 1 --topic test
+        -创建produce:
+            kafka-console-producer.bat --broker-list localhost:9092 --topic test
+        -创建consumer:
+            kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning
+        -生产者发送的消息 所有消费者都会收到
+
+  3.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

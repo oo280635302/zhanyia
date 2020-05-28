@@ -3110,9 +3110,48 @@
       https://github.com/overnote/over-golang （Golang笔记：[进度80%]Go语法、Go并发思想、Go与web开发、Go微服务设施等 ）
       https://github.com/yinggaozhen/awesome-go-cn （一个很棒的Go框架、库和软件的中文收录大全。）
 	
-	
-	
-	
+  52.kafka的使用
+    -库地址:github.com/Shopify/sarama + "github.com/bsm/sarama-cluster"
+    -先用cluster 获取配置,设置配置
+        -获取默认配置:
+            kafkaConfig := cluster.NewConfig()
+        -生产者配置设置:
+            kafkaConfig.Producer
+                -MaxMessageBytes    最大消息字节大小 - 默认1000 000
+                -RequiredAcks       确认机制
+                    -NoResponse     无响应 默认
+                    -WaitForLocal   只等待本地提交
+                    -WaitForAll     等待消息的所有提交包括异步
+                -Timeout            消息接收的最大时长   - 默认 10s
+                -Compression        消息的压缩方式       - 默认 无压缩
+                -CompressionLevel   消息压缩的级别       - 默认 编解码级别
+                -Partitioner        分区选择方式
+                    -NewRoundRobinPartitioner   轮询
+                    -NewRandomPartitioner       随机
+                    -NewManualPartitioner       自定义参数
+                -Idempotent         是否幂等
+                -Return             消息回调
+                    -Successes      成功回调
+                    -Errors         失败回调
+                -Flush              消息处理效率  -默认尽可能快的处理
+                -Retry              重试方式
+        -消费者配置设置:
+            kafkaConfig.Consumer
+                -Group              群组管理
+                -Offsets            偏移量
+        -群组设置：
+            -kafkaConfig.Group
+                -Notifications      平衡通知将返回
+                -PartitionStrategy  分区策略
+                    -cluster.StrategyRoundRobin     轮询
+                    -cluster.StrategyRange          随机
+        -管道协程大小设置：
+            -kafkaConfig.ChannelBufferSize
+    -获取生产者
+        -sarama.NewAsyncProducer(地址数组, &kafkaConfig.Config)     获取异步生产者
+        -sarama.NewSyncProducer(地址数组, &kafkaConfig.Config)      获取同步生产者
+    -获取消费者
+        -
 	
 	
 	
