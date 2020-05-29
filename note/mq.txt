@@ -24,6 +24,8 @@
     -是分布式的基于发布/订阅模式的消息队列
     -同一个消息可以被多个消费者消费
     -接受数据根消费者决定,使用长轮询的请求数据
+    -使用zookeeper 设定/保存kafka集群信息
+    -kafka消息存在磁盘 - 默认7day 意味着消息持久化
 
   2.kafka安装部署
     -教程:https://www.cnblogs.com/lnice/p/9668750.html
@@ -39,7 +41,8 @@
             kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning
         -生产者发送的消息 所有消费者都会收到
 
-  3.
+  3.kafka的命令行操作
+    -
 
 
 

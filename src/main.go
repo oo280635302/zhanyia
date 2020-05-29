@@ -9,25 +9,35 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
+var Data chan int
+var count chan int
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
-
-	fmt.Println(program.MergeTwoLists(&program.ListNode{Val: 10}, &program.ListNode{Val: 11}))
 
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
 
-	//
-	a := &pMergedAB{}
-	var length *LenMerged
-	MergedStructAB1([]*ProA{{'a', 'a', 1}, {'c', 'a', 3}}, 1, []*ProB{{'a', 'a', 1}}, 1, a, length)
+	Data = make(chan int, 0)
+	count = make(chan int, 1000000)
+
+	go cs()
+
+	for i := 0; i < 1000000; i++ {
+		go func() {
+			Data <- 1
+		}()
+	}
+
+	//jieXi()
 
 	fmt.Println("run start")
+	time.Sleep(time.Second * 2)
+	fmt.Println(len(count))
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -41,6 +51,16 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func cs() {
+	for {
+		select {
+		case <-Data:
+			//fmt.Println(data)
+			count <- 1
+		}
+	}
 }
 
 // 必备组件
