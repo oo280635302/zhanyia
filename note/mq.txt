@@ -40,16 +40,118 @@
         -创建consumer:
             kafka-console-consumer.bat --bootstrap-server localhost:9092 --topic test --from-beginning
         -生产者发送的消息 所有消费者都会收到
+    -kafka配置项：
+        -文件 server.properties
+        -broker.id - 结点id
+        -delete.topic.enable  开启后能真正删除topic，关闭只是做删除标记
+        -zookeeper.connect 连接的zookeeper的连接地址
 
-  3.kafka的命令行操作
-    -
+  3.kafka的工作流程和文件存储机制
+    -工作流程：
+        -producer发送数据给 -> kafka的leader -> 然后kafka的数据被复制到flower上备份 -> 发送给consumer
+        -leader和对应的flower不在同一broker里面
+        -offset 偏移量(下标) 消费者根据偏移量来判断自己需要获取的数据是哪个
+        -kafka集群不能保证全局的数据顺序，但能保证每个broker的顺序
+    -文件存储机制：
+        -topic的数据存储
+            -单个topic 可以有多个partition 分区
+            -一个partition有多个segment数据分区
+            -segment有.log文件存储数据和.index文件提供索引
+                -.log名字的命名
+                    -以数据的偏移量值命名
+                -.index的索引内容
+                    -消息当前文件的offset（真实offset-第一条消息真实offset） -> 对应消息在.log的物理偏移量
 
+  4.kafka的生产者
+    -分区的好处：
+        -1.可以根据当前partition分区的机器性能来分配数据的处理大小
+        -2.可以提升并发量
+    -分区的原则：
+        -Producer生产的数据必须有topic与value
+        -然后可以根据key来使用分区
+        -同时可以integer partition指定发送的分区,这时key将没用
+        -在有integer时根据指定分区来发送消息
+        -无Integer,有key时 根据key的hash值取余选择partition
+        -无integer,无key时，使用round-robin轮询发送数据
+    -数据可靠性保证：
+        -当producer发送数据时需要收到服务器ack才算成功
+        -服务器发送ack需要等所有副本同步完成
+            -优点：副本需要数少：选举leader时 能容忍n台故障 需要n+1个副本
+            -缺点：延迟较高
+        -ISR
+            -in-sync replica set动态与leader保持同步的follower的集合
+            -机制：当ISR中的follower长时间没有ack时将会被踢掉一段时间，
+                  当leader故障时,从isr选举新的leader
+        -acks级别：
+            - 0   低级  不用等待ack - broker故障就会丢失数据
+            - 1   中级  只等待leader保存成功就返回ack - 同步前leader故障,数据丢失
+            - -1  高级  等待副本同步完成返回ack - 在同步完成后,发送ack前leader故障，数据重复
+        -故障处理
+            -HW high watermark 所有副本最小的LEO
+            -LEO log end offset 每个副本的最后一个offset
+            -follower故障:
+                当follower故障恢复后，会将hw后的数据截断，从leader那里同步
+            -leader故障：
+                所有副本的数据截断hw后的，从新的leader那里同步数据
+        -exactly once
+            -保证数据不重复
+            -kafka使用幂等机制保证每条消息只发送一次
+            -idempotence开启该机制 会自动默认 acks 为-1
 
+  5.kafka消费者
+    -消费方式：
+        消费者主动pull
+        -缺点：当没有数据时consumer可能会陷入循环
+            -解决方法：kafka有个timeout参数,当没有数据时将会等待该时长后才返回
+    -分区策略：
+        -round-robin
+            -轮询分配数据
+        -range
+            -根据消费者比例使用
+    -高效率读写数据 -实现所使用的方法
+        -顺序写磁盘
+        -零复制技术
+            -跳过了用户层，直接将数据通过网络层传输
 
+  6.zookeeper在kafka的作用
+    -kafka集群里面有个broker会被选举为controller：
+        负责管理集群broker的上下线
+        所有topic分区副本分配和leader选举的工作
+    -zookeeper协助kafka的controller来进行管理
 
+  7.kafka API
+    -producer API
+        -消息发送流程
+            -采用异步发送的方式
+                -main线程将数据发送给recordAccumulator线程共享变量
+                -sender线程不断从recordAccumulator拉取消息发送给kafka
+                -main主线程：   producer -> interceptors拦截器 -> serializer序列器 -> partition分区器
+                -batch.size与lister.ms参数 设定sender线程从recordAccumulator拉取数据的 最小大小与时间
+            -采用同步发送的方式
+                -发送数据 阻塞等待 数据返回 及异步发送
+    -consumer API
+        -offset
+            -消费者收到数据后设置offset以便下次来取
+            -手动提交offset
+                -能保证数据被正确消费
+            -自动提交offset
+                -不能保证数据是否被正确消费
 
+  8.kafka拦截器
+    -作用：将producer发送的数据，经过拦截器时，修改其部分内容,比如加固定头信息类似
+    -configure
+        -获取配置信息和初始化数据时调用
+    -onSend
+        -用户在该方法中对消息做修改
+        -最好不要修改topic和分区
+    -onAcknowledgement
+        -确认消息的是否被拦截器处理成功
+    -close
+        -关闭interceptor,资源清理
 
-
+  9.kafka监控软件
+    -kafka monitor
+    -kafka manager
 
 
 
