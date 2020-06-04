@@ -2,18 +2,24 @@ package main
 
 import (
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"math/rand"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	pb "zhanyia/src/proto"
+
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
-var Data chan int
-var count chan int
+type AStudent struct {
+	Key string
+	Val int
+}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -21,23 +27,42 @@ func main() {
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
+	fmt.Println(time.Unix(1588262400, 0).Format("2006-01-02"))
 
-	Data = make(chan int, 0)
-	count = make(chan int, 1000000)
+	goSqlOp()
+	var sm sync.Map
+	var w sync.WaitGroup
+	var lock sync.Mutex
 
-	go cs()
+	w.Add(1000)
+	for i := 0; i < 1000; i++ {
 
-	for i := 0; i < 1000000; i++ {
 		go func() {
-			Data <- 1
+			lock.Lock()
+			if val, ok := sm.Load(1); ok {
+
+				a := val.(*AStudent)
+				a.Val++
+				sm.Store(1, a)
+
+			} else {
+				sm.Store(1, &AStudent{Val: 1})
+			}
+			lock.Unlock()
+
+			w.Done()
 		}()
 	}
+	w.Wait()
 
-	//jieXi()
+	sm.Range(func(key, value interface{}) bool {
+		a := value.(*AStudent)
+		fmt.Println(key, a.Val)
+		return true
+	})
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
-	fmt.Println(len(count))
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -53,14 +78,44 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func cs() {
-	for {
-		select {
-		case <-Data:
-			//fmt.Println(data)
-			count <- 1
-		}
+func ArrSpilt() {
+	a := make([]int, 0)
+	for i := 0; i < 1001; i++ {
+		a = append(a, i)
 	}
+
+	lens := len(a) / 100
+	if lens%100 != 0 {
+		lens++
+	}
+
+	for i := 0; i < lens; i++ {
+		end := i*100 + 100
+		if i == lens-1 {
+			end = len(a)
+		}
+		fmt.Println(i*100, end)
+	}
+}
+
+func cs(sm *sync.Map) {
+	for i := 0; i < 100; i++ {
+		sm.Store(i, i)
+	}
+}
+
+func goSqlOp() {
+	db, err := gorm.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
+	if err != nil {
+		fmt.Println("连接数据库失败", err)
+		return
+	}
+
+	newDb := db.Table("a_students").Where("val = 1").Update(map[string]interface{}{
+		"key": "321",
+		"a_b": "425",
+	})
+	fmt.Println(newDb.Error)
 }
 
 // 必备组件

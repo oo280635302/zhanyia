@@ -126,3 +126,42 @@ func RmStringNumRemainZero(a string) string {
 	}
 	return a
 }
+
+// 起止时间戳
+type StartEndTimeStamp struct {
+	start int64
+	end   int64
+}
+
+type Unit int32
+
+const (
+	Hour Unit = 1
+	Day  Unit = 2
+)
+
+// 获取X年X月X日 -> X年X月X日 的所有时间戳  天/小时
+func getAllTimeStamp(sYear, sMonth, sDay, eYear, eMonth, eDay int, uint Unit) []*StartEndTimeStamp {
+	start := time.Date(sYear, time.Month(sMonth), sDay, 0, 0, 0, 0, time.Local).Unix()
+	end := time.Date(eYear, time.Month(eMonth), eDay, 0, 0, 0, 0, time.Local).Unix()
+	var addT int64
+	if uint == 1 {
+		addT = 60 * 60
+	} else if uint == 2 {
+		addT = 60 * 60 * 24
+	}
+	arr := make([]*StartEndTimeStamp, 0)
+
+	for {
+		//到最后结束
+		if start == end {
+			break
+		}
+		oneData := &StartEndTimeStamp{}
+		oneData.start = start
+		start += addT
+		oneData.end = start
+		arr = append(arr, oneData)
+	}
+	return arr
+}

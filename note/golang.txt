@@ -324,7 +324,9 @@
 		-bytes.NewBuffer(xx)	初始化一个可接受字节切片的buffer缓冲
 	
 	-sync包
-		-sync.map				一种能保证读取线程安全的类map类型,自带锁,效率高。	
+		-sync.map				一种能保证读取线程安全的类map类型,自带锁,效率高。
+		    -使用场景: 数据量大的 地方
+		    -注意点: map并发读写是安全的 但是数据本身不一定安全
 			-scmp.Store(X)		存储
 			-scmp.Load(X)		获取
 			-scmp.Delete(X)		删除
