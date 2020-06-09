@@ -614,92 +614,8 @@
 					}
 					fmt.Println(head.id,"最后出局")
 				}
-		
-	4.排序Sort
-		-冒泡排序：	
-			-概念：两个数相互对比,调换位置
-	
-		-选择排序：	
-			-概念：选择最小的数与第一个数交换,然后选除了第一个的最小数与第二个数交换...
-			-实例：(从大到小选择排序)
-				func sort(arr *[5]int) {
-					for j:= 0;j< len(arr);j++{
-						max,maxIndex := arr[j],j
-						for i:= j+1;i< len(arr);i++{
-							if max < arr[i]{
-								max = arr[i]
-								maxIndex = i
-							}
-						}
-						arr[j],arr[maxIndex] = arr[maxIndex],arr[j]
-					}
-				}
-		-插入排序：（效率优于选择排序）
-			-概念：将数组分成有序的和无序的两部分，才开始有序的只有第一个，将无序的提一个数据出来，
-				   与前面有序依次的进行比较，每次比较没符合规则有序数据就往后移且覆盖后一个数据，直
-				   到找到符合规则的就插入到其后面那个数据中(该数据已经copy过一次了)。
-			-实例：	
-				func insertSort(arr *[5]int) {
-					for i:=1; i < 5;i++{
-						insertVal := arr[i] //无序列表中提取出来的第一个数
-						insertIndex := i -1	//有序列表最后一个数据索引
-						for insertIndex >= 0 && arr[insertIndex] < insertVal{
-							//有序列表后移
-							arr[insertIndex+1] = arr[insertIndex]
-							insertIndex--
-						}
-						if insertIndex+1 != i{
-							//插入无序的数进入有序
-							arr[insertIndex+1] = insertVal
-						}
-					}
 
-				}
-		-快速排序：
-			-冒泡排序的改进
-			-概念：
-				找一个基准数,交换他们的位置,使基准左边都小于等于基准右边,分隔开,递归分隔的
-				左右数组,直到排序成功。
-			-实例：	
-				func QuickSort(left int,right int,arr *[10]int)  {
-					l :=left
-					r :=right
-					pivot := arr[(left+right)/2]
-
-					for ;l<r; {
-						for ;arr[l] < pivot;{
-							l++
-						}
-						for ;arr[r] > pivot;{
-							r--
-						}
-						if l>=r{
-							break
-						}
-						arr[l],arr[r] = arr[r],arr[l]
-						if arr[l] == pivot{
-							r--
-						}
-						if arr[r] == pivot{
-							l++
-						}
-					}
-					fmt.Println(l,r)
-					if l==r {
-						l++
-						r--
-					}
-					fmt.Println(l,r)
-					if left<r{
-						QuickSort(left,r,arr)
-					}
-					if right > l{
-						QuickSort(l,right,arr)
-					}
-				}
-		-1W数比较，选择排序：9s，插入排序：2s，快速排序：0.12s（打印的情况）
-		
-	5.栈stack --别名：堆栈
+	4.栈stack --别名：堆栈
 		-概念：一个先入后出的有序列表
 				限制线性表中元素的插入和删除只能在线性表的同一段进行的一种特殊线性表。
 				允许插入和删除的一段为变化的一端--称为 栈顶。
@@ -742,7 +658,7 @@
                 return val, nil
             }
 	
-	6.二叉搜索树(BST)
+	5.二叉搜索树(BST)
 		-基本概念：
 			-二叉拥有的属性有：left 左子结点;right 右子结点;p 父结点;key 该结点的属性
 			-根结点为：整颗数唯一一个父结点为null的结点
@@ -758,7 +674,7 @@
 		-搜索模式：
 			搜一个树,先对比节点,比节点小进入左子节点,比节点大进入右子节点,以此推论
 
-	7.堆排序
+	6.堆排序
 		
 ---------------------------------------算法-------------------------------------------
     1.栈、队列、堆 数据结构应用于实例
@@ -782,7 +698,7 @@
         -1.设计一个栈,支持基本的栈操作,其内部存储数据结构是标准的队列：
             -思路 在q.push的时候 用个临时队列接收,再将真实队列的数据插在他后面
         -2.使用栈实现队列
-            -
+
 
 				
 				

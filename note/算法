@@ -1,0 +1,118 @@
+
+-------------------------------------------------算法-------------------------------------------------
+
+-------将已有数据进行排序的算法------------
+	1.排序Sort
+		-冒泡排序：
+			-概念：两个数相互对比,调换位置
+
+		-选择排序：
+			-概念：选择最小的数与第一个数交换,然后选除了第一个的最小数与第二个数交换...
+			-实例：(从大到小选择排序)
+				func sort(arr *[5]int) {
+					for j:= 0;j< len(arr);j++{
+						max,maxIndex := arr[j],j
+						for i:= j+1;i< len(arr);i++{
+							if max < arr[i]{
+								max = arr[i]
+								maxIndex = i
+							}
+						}
+						arr[j],arr[maxIndex] = arr[maxIndex],arr[j]
+					}
+				}
+		-插入排序：（效率优于选择排序）
+			-概念：将数组分成有序的和无序的两部分，才开始有序的只有第一个，将无序的提一个数据出来，
+				   与前面有序依次的进行比较，每次比较没符合规则有序数据就往后移且覆盖后一个数据，直
+				   到找到符合规则的就插入到其后面那个数据中(该数据已经copy过一次了)。
+			-实例：
+				func insertSort(arr *[5]int) {
+					for i:=1; i < 5;i++{
+						insertVal := arr[i] //无序列表中提取出来的第一个数
+						insertIndex := i -1	//有序列表最后一个数据索引
+						for insertIndex >= 0 && arr[insertIndex] < insertVal{
+							//有序列表后移
+							arr[insertIndex+1] = arr[insertIndex]
+							insertIndex--
+						}
+						if insertIndex+1 != i{
+							//插入无序的数进入有序
+							arr[insertIndex+1] = insertVal
+						}
+					}
+
+				}
+		-快速排序：
+			-冒泡排序的改进
+			-概念：
+				找一个基准数,交换他们的位置,使基准左边都小于等于基准右边,分隔开,递归分隔的
+				左右数组,直到排序成功。
+			-实例：
+				func QuickSort(left int,right int,arr *[10]int)  {
+					l :=left
+					r :=right
+					pivot := arr[(left+right)/2]
+
+					for ;l<r; {
+						for ;arr[l] < pivot;{
+							l++
+						}
+						for ;arr[r] > pivot;{
+							r--
+						}
+						if l>=r{
+							break
+						}
+						arr[l],arr[r] = arr[r],arr[l]
+						if arr[l] == pivot{
+							r--
+						}
+						if arr[r] == pivot{
+							l++
+						}
+					}
+					fmt.Println(l,r)
+					if l==r {
+						l++
+						r--
+					}
+					fmt.Println(l,r)
+					if left<r{
+						QuickSort(left,r,arr)
+					}
+					if right > l{
+						QuickSort(l,right,arr)
+					}
+				}
+		-1W数比较，选择排序：9s，插入排序：2s，快速排序：0.12s（打印的情况）
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

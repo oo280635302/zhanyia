@@ -11,6 +11,7 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -27,9 +28,9 @@ func main() {
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
-	fmt.Println(time.Unix(1588262400, 0).Format("2006-01-02"))
 
-	goSqlOp()
+	fmt.Println(program.RemoveDuplicates([]int{1, 1}))
+	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
 	var lock sync.Mutex
@@ -54,12 +55,6 @@ func main() {
 		}()
 	}
 	w.Wait()
-
-	sm.Range(func(key, value interface{}) bool {
-		a := value.(*AStudent)
-		fmt.Println(key, a.Val)
-		return true
-	})
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
@@ -110,12 +105,12 @@ func goSqlOp() {
 		fmt.Println("连接数据库失败", err)
 		return
 	}
-
-	newDb := db.Table("a_students").Where("val = 1").Update(map[string]interface{}{
-		"key": "321",
-		"a_b": "425",
-	})
-	fmt.Println(newDb.Error)
+	//db.LogMode(true)
+	//a := &AStudent{}
+	db.Exec("update `students` set `key` = `key`-"+fmt.Sprintf("%0.1f", 3.54)+" where val = ? ", 120)
+	e := db.Table("students").Where("`key` = 1").Update("val", 120, "key", 123)
+	fmt.Println("1", e.RowsAffected)
+	fmt.Println(e.Error)
 }
 
 // 必备组件

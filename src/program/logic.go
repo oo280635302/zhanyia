@@ -134,3 +134,38 @@ type ListNode struct {
 	Val  int
 	Next *ListNode
 }
+
+// 把数字翻译成字符串
+// 递归玩法 - 每2位数 查下他可以变化的方式，可以就继续变化就探索他的变化，没有就丢弃1位
+func TranslateNum(num int) int {
+	// 当数字不能在被分解了 就返回
+	if num < 10 {
+		return 1
+	}
+	var res int
+	// 如果是 10-25 是 可以被解析的值 ， 就多1种变化
+	// 如果 其他就 只有1种变化
+	if num%100 <= 25 && num%100 > 9 {
+		res += TranslateNum(num / 100)
+		res += TranslateNum(num / 10)
+	} else {
+		res += TranslateNum(num / 10)
+	}
+
+	return res
+}
+
+// 删除排序数组中的重复项
+// 双指针 36 4.6
+func RemoveDuplicates(nums []int) int {
+	r, l := 0, 1
+	for l < len(nums) {
+		if nums[r] == nums[l] {
+			nums = append(nums[:r], nums[r+1:]...)
+		} else {
+			r++
+			l++
+		}
+	}
+	return len(nums)
+}
