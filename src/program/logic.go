@@ -156,7 +156,7 @@ func TranslateNum(num int) int {
 }
 
 // 删除排序数组中的重复项
-// 双指针 36 4.6
+// 双指针 36ms 4.6mb
 func RemoveDuplicates(nums []int) int {
 	r, l := 0, 1
 	for l < len(nums) {
@@ -166,6 +166,18 @@ func RemoveDuplicates(nums []int) int {
 			r++
 			l++
 		}
+	}
+	return len(nums)
+}
+
+// 移除元素
+// 反向遍历 0ms,2.1mb
+func RemoveElement(nums []int, val int) int {
+	for i := len(nums) - 1; i >= 0; i-- {
+		if nums[i] == val {
+			nums = append(nums[:i], nums[i+1:]...)
+		}
+		fmt.Println(nums, i)
 	}
 	return len(nums)
 }

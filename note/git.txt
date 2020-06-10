@@ -55,11 +55,15 @@
   8.忽略提交
 	.gitignore	创建该文件 配置忽略提交的文件
 	
-	
-	
-	
-	
-	
+  9.分支:
+    git branch -a                        查看所有分支
+    git branch                           查看当前使用分支
+	git checkout 分支名                   切换分支
+	git merge                            合并分支
+	git checkout -b 新分支名              从当前分支拉+复制内容 到新分支
+	git push origin 新分支名              把新建的分支push到远端
+	git branch --set-upstream-to=origin/新分支名        将本地分支与远程分支关联
+
 	
 	
 	

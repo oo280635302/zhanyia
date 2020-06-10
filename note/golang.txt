@@ -3152,9 +3152,28 @@
     -获取生产者
         -sarama.NewAsyncProducer(地址数组, &kafkaConfig.Config)     获取异步生产者
         -sarama.NewSyncProducer(地址数组, &kafkaConfig.Config)      获取同步生产者
-    -获取消费者
-        -
-	
-	
-	
+    -消费者监听
+        -cluster.NewConsumer(集群ip, kafka组id, 消息主题, 消费者的配置)  获取消费者consumer
+    -消费消息
+        select{
+        case msg := <-consumer.Messages():
+            // 处理消息函数
+        case ntf := <-consumer.Notifications():
+            // 处理通知函数
+        case err = <-consumer.Errors():
+            // 处理错误函数
+        }
+
+  53.golang操作excel库
+    -库："github.com/360EntSecGroup-Skylar/excelize"
+    -打开excel文件：
+        excelize.OpenFile("D:/excelMe.xlsx")    返回f, err
+    -获取指定sheet的rows：
+        f.GetRows("Sheet1") 返回rows,err
+        -rows 是个 二位切片
+        -第一层是 行  第二层是 列
+    -删除sheet
+        -f.DeleteSheet()
+    -批量写入数据
+        -f.Write()
 	

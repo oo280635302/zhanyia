@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.RemoveDuplicates([]int{1, 1}))
+	fmt.Println(program.RemoveElement([]int{5, 2, 3, 4, 5}, 5))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
