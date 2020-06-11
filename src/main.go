@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"time"
@@ -29,7 +30,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.RemoveElement([]int{5, 2, 3, 4, 5}, 5))
+	fmt.Println(program.StrStr("adsadsa", "aaaac"))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup

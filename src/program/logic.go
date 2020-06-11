@@ -1,6 +1,8 @@
 package program
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // 罗马数值转普通数字
 // 枚举型
@@ -180,4 +182,85 @@ func RemoveElement(nums []int, val int) int {
 		fmt.Println(nums, i)
 	}
 	return len(nums)
+}
+
+// 重复字符串
+// 滑动窗口 双指针 循环头为左指针 右指针才做指针+1开始	8 ms 2.6 MB
+func LengthOfLongestSubstring(s string) int {
+	n := len(s)
+	ls := 0
+	for i := 0; i < n; i++ {
+		r := i + 1
+		m := [128]int{}
+		m[s[i]]++
+		for r < n && m[s[r]] == 0 {
+			m[s[r]]++
+			r++
+		}
+		ls = Max(ls, r-i)
+	}
+	return ls
+}
+func Max(x, y int) int {
+	if x < y {
+		return y
+	}
+	return x
+}
+
+// 实现strStr()
+// KMP算法
+func StrStr(haystack string, needle string) int {
+	lenRoot := len(haystack)
+	lenTmpl := len(needle)
+	if lenTmpl == 0 {
+		return 0
+	}
+
+	next := KMPNext(needle)
+	for i, j := 0, 0; i < lenRoot; { //i=haystack j=needle
+		// 找到 第一次不匹配的位置
+		for j < lenTmpl && i < lenRoot && haystack[i] == needle[j] {
+			i++
+			j++
+		}
+		// 当这是j已经被匹配完了 就返回
+		if j == lenTmpl {
+			return i - j
+		}
+		// 当i被匹配完了，就说明没有
+		if i == lenRoot {
+			return -1
+		}
+
+		// i 每次都会往后移动
+		// j 根据返回值 重新定位要开始匹配的位置
+		if j > 0 {
+			j = next[j-1]
+		} else {
+			i++
+		}
+	}
+	return -1
+}
+func KMPNext(s string) []int {
+	lenth := len(s)
+	next := make([]int, lenth)
+	next[0] = 0
+	i, j := 1, 0
+	for i < lenth {
+		if s[i] == s[j] {
+			next[i] = j + 1 // 一下个匹配位置为下一位
+			i++
+			j++
+		} else {
+			if j == 0 {
+				next[i] = 0 // 重头开始匹配
+				i++
+			} else {
+				j = next[j-1] // 回退
+			}
+		}
+	}
+	return next
 }
