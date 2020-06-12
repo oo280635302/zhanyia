@@ -262,5 +262,6 @@ func KMPNext(s string) []int {
 			}
 		}
 	}
+	fmt.Println(next)
 	return next
 }
