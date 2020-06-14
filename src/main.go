@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.StrStr("aaaaac", "aabc"))
+	fmt.Println(program.CountAndSay(4))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup

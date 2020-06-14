@@ -2,6 +2,7 @@ package program
 
 import (
 	"fmt"
+	"strconv"
 )
 
 // 罗马数值转普通数字
@@ -264,4 +265,48 @@ func KMPNext(s string) []int {
 	}
 	fmt.Println(next)
 	return next
+}
+
+// 搜索插入位置
+// 思路：二分/tree  或者直接 遍历  均为 4ms,3.1mb
+func SearchInsert(nums []int, target int) int {
+	// 左右指针
+	left, right := 0, len(nums)-1
+	// 中间值
+	mid := 0
+	// 当做 左<右 时能继续寻找
+	for left <= right {
+		mid = (left + right) / 2
+
+		if nums[mid] > target {
+			right = mid - 1
+		} else if nums[mid] == target {
+			return mid
+		} else if nums[mid] < target {
+			left = mid + 1
+		}
+	}
+	return left
+}
+
+// 外观数列
+// 思路：递归/循环 4ms/6.3mb
+func CountAndSay(n int) string {
+	if n == 1 {
+		return "1"
+	}
+	// 获取上一n-1的外观数列
+	pre := CountAndSay(n - 1)
+	res := ""
+	count := 1
+	for i := 0; i < len(pre); i++ {
+		if i+1 < len(pre) && pre[i] == pre[i+1] {
+
+			count++
+		} else {
+			res += strconv.Itoa(count) + string(pre[i])
+			count = 1
+		}
+	}
+	return res
 }
