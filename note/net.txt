@@ -438,10 +438,28 @@
                 -非严重处理：遇到3个重复ack congWin 减半 调整为线性增长
                 -严重处理：timeout事件 congWin设为1 调整为指数增长
     -tcp的三次握手 -- 建立连接
-        -
+        -步骤：
+            1.客户端 标记为 SYN(同步序列编号Synchronize Sequence Numbers) 请求建立连接
+              seq = x,进入syn-sent 阶段
+            2.服务器 收到消息 正常建立连接发送标记为 SYN,ACK=x+1,seq=y的ACK确认消息,
+              进入syn-rcvd阶段
+            3.客户端 接受到正常的ack消息后,发送ACK消息,seq=x+1,ack=y+1
+
     -tcp的四次挥手 -- 断开连接
         -步骤：
-            1.
+            1.客户端 发送FIN标志位消息,seq=U,然后进入fin-wait-1阶段
+              不能发送数据,但是可以接受数据
+            2.服务器 发送ACK消息,seq=V,ACK=U+1
+              服务器进入close-wait阶段,服务器去为关闭连接做准备
+              客户端进入fin-wait-2阶段
+              --让客户端也知道服务器端已收到关闭连接的消息--
+            3.服务器 做好准备后,发送FIN与ACK=U+1的标识符,seq=w
+              服务器进入LAST-ACK阶段
+            4.客户端 收到消息发送ACK=w+1,seq=u+1,然后进入time-wait阶段
+              服务器关闭连接
+            --time-wait阶段2msl,然后关闭连接---
+            等待原因：确认服务器正确接收到最后的消息，因为服务器1msl没收到ACK消息
+            会再次发送fin,因此等待2msl
   15.网络层服务
     -主机对主机的传输
     -核心功能：
