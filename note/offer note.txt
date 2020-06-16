@@ -184,9 +184,36 @@
     -对于连续的数值，能用 between 就不要用 in
     -少用 like or > < != 等
     -不要在 where 子句中的“=”左边进行函数、算术运算或其他表达式运算，否则系统将可能无法正确使用索引
-    -
 
-
+  19.索引方式:
+    -b-tree  支持 myisam 和 innodb
+        -innodb
+            -primary key 其叶结点存放索引数据 + 其他字段数据
+            -secondary index 存放的指向主键的信息
+        -myisam
+            -leaf node存指向数据文件里的对应数据行的信息
+    -hash   支持 memory  ndb cluster  *innodb
+        -特点:
+            -hash索引 根据hash表实现 查询条件需要匹配hash所有列才能用到hash索引
+            -hash 会为每一行计算一个hash码,hash索引存储的是hash码
+            -hash索引包括键值、hash码和指针
+        -限制：
+            -二次查找:
+                先找对应行, 再读取数据
+                对数据库性能影响不大
+            -不能外排序
+                用的hash码,而不是键值
+            -只能用等值查找-不能范围查找
+            -容易出现hash冲突
+                当出现hash冲突时,会遍历所有行指针逐行比较,代价太大
+                选择 索引 时 要选择重复率小的,唯一最好
+        -innodb的hash较为特殊
+            -伪装的hash列表 还是b-tree索引
+            -不过在Btree的基础上使用hash值来存储+查找
+            -查找效率加快
+            -缺点:
+                需要维护hash值
+                CRC32容易出现Hash冲突
 
 
 

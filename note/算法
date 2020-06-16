@@ -86,6 +86,51 @@
 				}
 		-1W数比较，选择排序：9s，插入排序：2s，快速排序：0.12s（打印的情况）
 
+    2.堆排序
+        -1.先无序数组转存储成堆
+        -2.固定一个最大值，将剩余的数再构造成一个大根堆
+        -实例:
+        // 堆排序
+        func heapSort(arr []int)[]int{
+        	arrLen := len(arr)
+        	buildMaxHeap(arr,arrLen)
+        	for i:=arrLen -1;i>=0;i--{
+        		swap(arr,0,i)
+        		arrLen -= 1
+        		heapify(arr,0,arrLen)
+        	}
+        	return arr
+        }
+
+        // 构建顶大堆
+        func buildMaxHeap(arr []int,arrLen int) {
+        	for i:= arrLen/2;i>=0;i--{
+        		heapify(arr,i,arrLen)
+        	}
+        }
+
+        // 堆化
+        func heapify(arr []int,i,arrLen int) {
+        	left := 2*i+1
+        	right := 2*i+2
+        	largest := i
+        	if left < arrLen && arr[left] > arr[largest]{   // >升序 <降序
+        		largest = left
+        	}
+        	if right < arrLen && arr[right] > arr[largest]{
+        		largest = right
+        	}
+        	if right != i{
+        		swap(arr,i,largest)
+        		heapify(arr,largest,arrLen)
+        	}
+        }
+
+        // 交换位置
+        func swap(arr []int,i,j int) {
+        	arr[i],arr[j] = arr[j],arr[i]
+        }
+
 ---------字符匹配算法-------------
     1.kmp算法
         -特点：移动模式串， 不进行回溯

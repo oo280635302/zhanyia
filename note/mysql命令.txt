@@ -385,8 +385,19 @@
 	-打开本地mysql表-->user-->HOST字段：localhost 只能本地
 											%	  其他人也可以
   
-  
-  
+  28.full_text  全文索引
+    -只能用于 myISAM 表
+    -用于 like 提高匹配搜索的性能
+    -语法:
+        where match(字段名) against('匹配字符' IN BOOLEAN MODE);
+    -匹配字符 不能为单字符
+        -full text 匹配是依据单个字节进行匹配 不是根据匹配模式匹配的
+    -多字段index
+        -当需要的结果是根据多个字段 合并产生的结果进行匹配时 建立联合索引
+         -FULLTEXT (title,body)
+        -ADD FULLTEXT INDEX `ft_title_body` (`title`, `body`) WITH PARSER ngram;
+
+
   
   
   

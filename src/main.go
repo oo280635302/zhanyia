@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.CountAndSay(4))
+	fmt.Println(program.HeapSort([]int{2, 5, 7, 1, 4, 3}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
