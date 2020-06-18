@@ -131,7 +131,7 @@
         	arr[i],arr[j] = arr[j],arr[i]
         }
 
----------字符匹配算法-------------
+---------------------字符匹配算法-------------------------
     1.kmp算法
         -特点：移动模式串， 不进行回溯
         -规则:
@@ -141,17 +141,99 @@
             3.将模式串前缀移动到后缀的位置
             4.继续匹配
         -实例：
+            func StrStr(haystack string, needle string) int {
+                lenRoot := len(haystack)
+                lenTmpl := len(needle)
+                if lenTmpl == 0 {
+                    return 0
+                }
+
+                next := KMPNext(needle)
+                for i, j := 0, 0; i < lenRoot; { //i=haystack j=needle
+                    // 找到 第一次不匹配的位置
+                    for j < lenTmpl && i < lenRoot && haystack[i] == needle[j] {
+                        i++
+                        j++
+                    }
+                    // 当这是j已经被匹配完了 就返回
+                    if j == lenTmpl {
+                        return i - j
+                    }
+                    // 当i被匹配完了，就说明没有
+                    if i == lenRoot {
+                        return -1
+                    }
+
+                    // i 每次都会往后移动
+                    // j 根据返回值 重新定位要开始匹配的位置
+                    if j > 0 {
+                        j = next[j-1]
+                    } else {
+                        i++
+                    }
+                }
+                return -1
+            }
+            func KMPNext(s string) []int {
+                lenth := len(s)
+                next := make([]int, lenth)
+                next[0] = 0
+                i, j := 1, 0
+                for i < lenth {
+                    if s[i] == s[j] {
+                        next[i] = j + 1 // 一下个匹配位置为下一位
+                        i++
+                        j++
+                    } else {
+                        if j == 0 {
+                            next[i] = 0 // 重头开始匹配
+                            i++
+                        } else {
+                            j = next[j-1] // 回退
+                        }
+                    }
+                }
+                fmt.Println(next)
+                return next
+            }
+
+
+--------------Dynamic Programming动态规划算法------------------------
+    1.概念:
+        动态规划：将一个大问题分解成有相同属性的小问题进行解决
+        使用动态规划的场景：
+            1.重叠子问题  不同的问题，可能都要求1个相同问题的解
+            2.最优子结构  子解必定也是子问题的最优解
+            3.无后效性 求出来的子问题并不会因为后面求出来的改变
+    2.解决问题的方法
+        1.划分状态，即划分子问题
+        2.状态表示，即如何让计算机理解子问题
+        3.状态转移，即父问题是如何由子问题推导出来的
+        4.确定边界，确定初始状态是什么？最小的子问题？最终状态又是什么
+    3.例子：
+       -1.简单例子:
+            // 最大子序和  [-2,1,-3,4,-1,2,1,-5,4]
+            // 解法:动态规划 8 ms/3.8 MB -- 使用
+            func MaxSubArray(nums []int) int {
+            	max := nums[0]
+
+            	for i := 1; i < len(nums); i++ {
+            		if nums[i] + nums[i-1] > nums[i] {
+            			nums[i] += nums[i-1]
+            		}
+            		if nums[i] > max {
+            			max = nums[i]
+            		}
+            	}
+            	fmt.Println(nums)
+            	return max
+            }
+        -2.简单例子:
 
 
 
 
-
-
-
-
-
-
-
+------------------栈的算法----------------------
 
 
 
