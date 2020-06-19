@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.MaxSubArray([]int{2, -5, -7, -7, 4, 3}))
+	fmt.Println(program.SimplifyPath("/../"))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
