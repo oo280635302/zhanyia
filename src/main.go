@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.SimplifyPath("/../"))
+	fmt.Println(program.LargestRectangleArea([]int{0, 1, 0, 1}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup

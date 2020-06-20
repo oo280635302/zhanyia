@@ -199,4 +199,62 @@ func SimplifyPath(path string) string {
 	return "/" + strings.Join(stack, "/")
 }
 
-//
+// 柱状图中最大的矩形---------------------------------------------------------------------
+// 使用栈 当遇到当前点<栈顶元素时 就能去计算栈顶元素他在矩形面积  20ms/5.8mb
+func LargestRectangleArea(heights []int) int {
+
+	res := 0
+
+	stack := []int{} // 通过slice维护一个单调递增栈
+
+	for i := 0; i < len(heights); i++ {
+		for len(stack) > 0 && heights[i] < heights[stack[len(stack)-1]] {
+			h := heights[stack[len(stack)-1]] // 以出栈元素为高，计算最大矩形的面积
+			stack = stack[:len(stack)-1]
+
+			var w int // 计算宽
+			if len(stack) == 0 {
+				w = i
+			} else {
+				w = i - stack[len(stack)-1] - 1
+			}
+
+			s := h * w
+			res = max(res, s)
+		}
+
+		stack = append(stack, i)
+	}
+
+	// 清空栈内元素,确保以每个元素作为高，并计算其面积
+	for len(stack) > 0 {
+		h := heights[stack[len(stack)-1]] // 以出栈元素为高，计算最大矩形的面积
+		stack = stack[:len(stack)-1]
+
+		var w int // 计算宽
+		if len(stack) > 0 {
+			w = len(heights) - stack[len(stack)-1] - 1
+		} else {
+			w = len(heights)
+		}
+
+		s := h * w
+		res = max(res, s)
+
+	}
+
+	return res
+}
+
+func max(x, y int) int {
+	if x > y {
+		return x
+	}
+	fmt.Println(x, y)
+	return y
+}
+
+// 最大矩形图-----------------------------------------------------------------------------
+func maximalRectangle(matrix [][]byte) int {
+
+}

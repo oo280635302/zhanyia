@@ -43,6 +43,7 @@ func (s *Stack) Pop() (int, error) {
 		return -1, errors.New("stack empty")
 	}
 	val := s.Arr[s.Top]
+	s.Arr = s.Arr[:len(s.Arr)-1]
 	s.Top--
 	return val, nil
 }
