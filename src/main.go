@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.LargestRectangleArea([]int{0, 1, 0, 1}))
+	fmt.Println(program.InorderTraversal(&program.TreeNode{Val: 1, Left: &program.TreeNode{Val: 2}, Right: &program.TreeNode{Val: 3}}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup

@@ -255,6 +255,66 @@ func max(x, y int) int {
 }
 
 // 最大矩形图-----------------------------------------------------------------------------
+// 在柱形矩形图的基础上 操作 从上到下增加层数 并视为柱状图 当遇到0时其向上的柱状图崩裂为0（因为是矩形,遇到0就会成为不规则图形）4ms/3.8mb
 func maximalRectangle(matrix [][]byte) int {
+	if len(matrix) == 0 {
+		return 0
+	}
+	maxNum := 0
+	m, n := len(matrix), len(matrix[0])
+	height := make([]int, n)
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			//每一行去找1的高度
+			//如果不是‘1’，则将当前高度置为0 - 保证其实柱状图
+			if matrix[i][j] == '0' {
+				height[j] = 0
+			} else {
+				//是‘1’，则将高度加1
+				height[j] = height[j] + 1
+			}
+		}
+		//更新最大矩形的面积 -- 每个
+		maxNum = max(maxNum, LargestRectangleArea(height))
+	}
+	return maxNum
+}
 
+// 二叉树的中序遍历---------------------------------------------------------------------------
+// 解法一：迭代+stack的方法 0ms/2mb
+func inorderTraversal(root *TreeNode) []int {
+	reply := make([]int, 0)
+
+	stack := make([]*TreeNode, 0)
+
+	// 当stack存在 或者 root有值时(第一次||只有右支点的情况)
+	for root != nil || 0 < len(stack) {
+
+		// 追到当前root最左边的子结点(如果左边没支点了,插入他本身)，同时将路过的所有node存入stack中
+		for root != nil {
+			stack = append(stack, root) //入栈
+			root = root.Left            //移至最左
+		}
+
+		// 将栈顶的数据给即 目前的最左数给arr（即左为nil 右为未知的子节点）
+		index := len(stack) - 1
+		reply = append(reply, stack[index].Val)
+		root = stack[index].Right //右节点会进入下次循环，如果 =nil，继续出栈
+		stack = stack[:index]     //出栈
+	}
+	return reply
+}
+
+// 解法二:递归 最简单的方式 0ms/2mb
+func InorderTraversal(root *TreeNode) []int {
+	reply := make([]int, 0)
+	recur(root, &reply)
+	return reply
+}
+func recur(root *TreeNode, arr *[]int) {
+	if root != nil {
+		recur(root.Left, arr)
+		*arr = append(*arr, root.Val)
+		recur(root.Right, arr)
+	}
 }
