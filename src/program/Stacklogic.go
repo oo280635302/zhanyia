@@ -318,3 +318,43 @@ func recur(root *TreeNode, arr *[]int) {
 		recur(root.Right, arr)
 	}
 }
+
+// 二叉树的锯齿形层次遍历 -递归---------------------------------------------------------------------------
+// 广度优先算法BFS+递归+列表 ，将每层进行扫描，判断插入 0ms/2.5mb
+func zigzagLevelOrder(root *TreeNode) [][]int {
+	var doubleArr [][]int
+	if root == nil {
+		return doubleArr
+	}
+
+	lis := make([]*TreeNode, 0)
+	lis = append(lis, root)
+	leftJudge := true
+	// 当lis有数时进入
+	for len(lis) > 0 {
+		l := len(lis)
+		ans := make([]int, l)
+		for i := 0; i < l; i++ {
+			node := lis[i]
+			if node.Left != nil {
+				lis = append(lis, node.Left)
+			}
+			if node.Right != nil {
+				lis = append(lis, node.Right)
+			}
+
+			if leftJudge {
+				ans[i] = node.Val
+			} else {
+				ans[l-i-1] = node.Val
+			}
+
+		}
+		// 反转
+		leftJudge = !leftJudge
+		doubleArr = append(doubleArr, ans)
+		// 截断已经扫描过的该层各数
+		lis = lis[l:]
+	}
+	return doubleArr
+}
