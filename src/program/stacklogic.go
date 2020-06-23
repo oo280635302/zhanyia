@@ -280,7 +280,7 @@ func maximalRectangle(matrix [][]byte) int {
 	return maxNum
 }
 
-// 二叉树的中序遍历---------------------------------------------------------------------------
+// 二叉树的中序遍历 左->中->右---------------------------------------------------------------------------
 // 解法一：迭代+stack的方法 0ms/2mb
 func inorderTraversal(root *TreeNode) []int {
 	reply := make([]int, 0)
@@ -357,4 +357,61 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 		lis = lis[l:]
 	}
 	return doubleArr
+}
+
+// 二叉树的前序遍历 中->左->右 -------------------------------------------------------------------------------------
+// 在二叉树的中序遍历基础上修改 -- 栈放每次支点的右子节点 支点val每次都放入结果中,同时每次都往左追下一格 0ms/2mb\
+// 方法一:迭代
+func preorderTraversal(root *TreeNode) []int {
+	res := make([]int, 0)
+
+	if root == nil {
+		return res
+	}
+
+	stack := make([]*TreeNode, 0)
+
+	// 当节点与 stack都没数据了就结束
+	for root != nil || len(stack) != 0 {
+
+		// 将所有根节点存入返回,右节点存入栈中 节点往左移动
+		for root != nil {
+			res = append(res, root.Val)
+			stack = append(stack, root.Right)
+			root = root.Left
+		}
+
+		// 弹出栈 将其赋值给root - 不用担心stack 没有走不到这来
+		index := len(stack) - 1
+		node := stack[index]
+		stack = stack[:index]
+		root = node
+	}
+	return res
+}
+
+// 方法二:递归 - 中左右 完成 0ms/2mb
+func PreorderTraversal(root *TreeNode) []int {
+	var arr = make([]int, 0)
+	preorderRecur(root, &arr)
+	return arr
+}
+func preorderRecur(root *TreeNode, arr *[]int) {
+	if root != nil {
+		// 到这里支点处就将支点值放入 - 然后找他的左支点与他的右支点
+		*arr = append(*arr, root.Val)
+		preorderRecur(root.Left, arr)
+		preorderRecur(root.Right, arr)
+	}
+}
+
+// 二叉树的后序遍历 中右左 ---------------------------------------------------------------------------------------
+// 方法一:迭代
+func postorderTraversal(root *TreeNode) []int {
+
+}
+
+// 方法二:递归
+func postorderRecur() {
+
 }
