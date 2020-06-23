@@ -4,6 +4,7 @@ import (
 	"container/list"
 	"fmt"
 	"math"
+	"strconv"
 	"strings"
 )
 
@@ -405,13 +406,135 @@ func preorderRecur(root *TreeNode, arr *[]int) {
 	}
 }
 
-// 二叉树的后序遍历 中右左 ---------------------------------------------------------------------------------------
-// 方法一:迭代
-func postorderTraversal(root *TreeNode) []int {
+// 二叉树的后序遍历 左右中 --------------------------------------------------------------------------------------------
+// 方法一:迭代 将每个节点的右左节点都存入栈中  先存右 再存左 判断过的将其左右节点置成nil 不用再存 从栈顶中弹出来继续 0ms/2mb
+func PostorderTraversal(root *TreeNode) []int {
+	res := make([]int, 0)
+	if root == nil {
+		return res
+	}
+	stack := make([]*TreeNode, 0)
+	stack = append(stack, root)
 
+	// 当栈中有元素时继续  直到数据全部被取完
+	for len(stack) > 0 {
+
+		node := stack[len(stack)-1]
+		// 先插入右  再插入左  当节点是最子节点就等于找到底了 释放
+		if node.Right != nil {
+			stack = append(stack, node.Right)
+		}
+		if node.Left != nil {
+			stack = append(stack, node.Left)
+		}
+		// 找到底 弹出栈 并赋值res
+		if node.Left == nil && node.Right == nil {
+			res = append(res, node.Val)
+			stack = stack[:len(stack)-1]
+		}
+		// 已经找过左右子节点的节点 不用再找
+		node.Left = nil
+		node.Right = nil
+	}
+	return res
 }
 
-// 方法二:递归
-func postorderRecur() {
+// 方法二:递归 0ms/2mb
+func postorderTraversal(root *TreeNode) []int {
+	var arr = make([]int, 0)
+	postorderRecur(root, &arr)
+	return arr
+}
+func postorderRecur(root *TreeNode, arr *[]int) {
+	if root != nil {
+		// 先放其左子节点 在放其右子节点
+		postorderRecur(root.Left, arr)
+		postorderRecur(root.Right, arr)
+		*arr = append(*arr, root.Val)
+	}
+}
 
+// 二进制求和 ---------------------------------------------------------------------------------------------------------
+// 思路用栈 匹配每一个数据 然后进制 0ms/2.6mb
+func AddBinary(a string, b string) string {
+	// 是否进位
+	res := ""
+	digit := false
+	for len(a) != 0 || len(b) != 0 || digit {
+		curA, curB := 0, 0
+		if len(a) > 0 {
+			curA, _ = strconv.Atoi(string(a[len(a)-1]))
+			a = a[:len(a)-1]
+		}
+		if len(b) > 0 {
+			curB, _ = strconv.Atoi(string(b[len(b)-1]))
+			b = b[:len(b)-1]
+		}
+		curAll := 0
+		if digit {
+			curAll = curA + curB + 1
+		} else {
+			curAll = curA + curB
+		}
+
+		if curAll%2 == 0 && curAll/2 == 1 {
+			res = "0" + res
+			digit = true
+		} else if curAll%2 == 0 && curAll/2 == 0 {
+			if res == "" {
+				res = "0" + res
+			}
+			digit = false
+		} else if curAll%2 == 1 && curAll/2 == 1 {
+			res = "1" + res
+			digit = true
+		} else {
+			res = "1" + res
+			digit = false
+		}
+	}
+	// 去0
+	for len(res) > 1 && res[0] == '0' {
+		res = res[1:]
+	}
+	return res
+}
+
+// 逆波兰表达式求值 ---------------------------------------------------------------------------------------------
+// 将数字都存入栈中 - 当遇到运算符时 就数字弹出来 计算并存进去 只要他逆波兰写法是对的 那就没问题 4ms/4.8mb
+func EvalRPN(tokens []string) int {
+	n := len(tokens)
+	if n == 0 {
+		return 0
+	}
+	// 栈
+	stack := make([]int, 0)
+	for i := 0; i < n; i++ {
+		// 将字符串转成数字 - 失败说明他是运算符
+		curNum, err := strconv.Atoi(tokens[i])
+		// 运算符 弹出两个数 进行计算
+		if err != nil {
+			a := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			b := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			res := 0
+			//fmt.Println(a,b,tokens[i],res)
+			switch tokens[i] {
+			case "+":
+				res = a + b
+			case "-":
+				res = a - b
+			case "*":
+				res = a * b
+			case "/":
+				res = a / b
+			}
+			fmt.Println(a, b, tokens[i], res)
+			stack = append(stack, res)
+			continue
+		}
+		stack = append(stack, curNum)
+	}
+	return stack[0]
 }

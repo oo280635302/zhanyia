@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.InorderTraversal(&program.TreeNode{Val: 1, Left: &program.TreeNode{Val: 2}, Right: &program.TreeNode{Val: 3}}))
+	fmt.Println(program.EvalRPN([]string{"4", "13", "5", "/", "+"}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
