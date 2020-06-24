@@ -538,3 +538,68 @@ func EvalRPN(tokens []string) int {
 	}
 	return stack[0]
 }
+
+// 二叉搜索树迭代器---------------------------------------------------------------------------------------------------
+// 解题思路: 用 中序遍历(栈+迭代) 将tree进行排序 然后每次弹出即可 44ms/12.5mb
+type BSTIterator struct {
+	tree []int
+}
+
+func newConstructor(root *TreeNode) BSTIterator {
+	return BSTIterator{
+		tree: inorderTraversal(root),
+	}
+}
+
+/** @return the next smallest number */
+func (this *BSTIterator) Next() int {
+	res := this.tree[0]
+	this.tree = this.tree[1:]
+	return res
+}
+
+/** @return whether we have a next smallest number */
+func (this *BSTIterator) HasNext() bool {
+	return len(this.tree) > 0
+}
+
+// 基本计算器----------------------------------------------------------------------------------------------------------
+// 思路:栈
+func calculate(s string) int {
+	stack := make([]int, 0)
+	cStack := make([]int32, 0)
+
+	num := ""
+	for _, val := range s {
+
+		switch val {
+		case ' ':
+			if num != "" {
+				realN, _ := strconv.Atoi(num)
+				stack = append(stack, realN)
+				num = ""
+			}
+		case '+', '-':
+			cStack = append(cStack, '+')
+			if num != "" {
+				realN, _ := strconv.Atoi(num)
+				stack = append(stack, realN)
+				num = ""
+			}
+		case '(':
+			cStack = append(cStack, '(')
+			if num != "" {
+				realN, _ := strconv.Atoi(num)
+				stack = append(stack, realN)
+				num = ""
+			}
+		case ')':
+			// 弹出到(为止
+			for stack[len(stack)-1] != '(' {
+
+			}
+		}
+	}
+
+	return stack[0]
+}
