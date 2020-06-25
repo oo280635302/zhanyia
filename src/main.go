@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.EvalRPN([]string{"4", "13", "5", "/", "+"}))
+	fmt.Println(program.WordBreak("leetcode", []string{"leet", "code"}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
