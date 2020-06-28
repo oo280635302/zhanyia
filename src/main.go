@@ -29,7 +29,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.WordBreak("leetcode", []string{"leet", "code"}))
+	fmt.Println(program.MinSubArrayLen(7, []int{1, 7, 2, 3, 5, 6}))
 	//goSqlOp()
 	var sm sync.Map
 	var w sync.WaitGroup
