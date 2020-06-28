@@ -283,6 +283,7 @@ func maximalRectangle(matrix [][]byte) int {
 
 // 二叉树的中序遍历 左->中->右---------------------------------------------------------------------------
 // 解法一：迭代+stack的方法 0ms/2mb
+// 中序遍历应用场景:可以用来做表达式树，在编译器底层实现的时候用户可以实现基本的加减乘除，比如 a*b+c
 func inorderTraversal(root *TreeNode) []int {
 	reply := make([]int, 0)
 
@@ -363,6 +364,7 @@ func zigzagLevelOrder(root *TreeNode) [][]int {
 // 二叉树的前序遍历 中->左->右 -------------------------------------------------------------------------------------
 // 在二叉树的中序遍历基础上修改 -- 栈放每次支点的右子节点 支点val每次都放入结果中,同时每次都往左追下一格 0ms/2mb\
 // 方法一:迭代
+// 前序遍历的应用场景:可以用来实现目录结构的显示
 func preorderTraversal(root *TreeNode) []int {
 	res := make([]int, 0)
 
@@ -408,6 +410,7 @@ func preorderRecur(root *TreeNode, arr *[]int) {
 
 // 二叉树的后序遍历 左右中 --------------------------------------------------------------------------------------------
 // 方法一:迭代 将每个节点的右左节点都存入栈中  先存右 再存左 判断过的将其左右节点置成nil 不用再存 从栈顶中弹出来继续 0ms/2mb
+// 后序遍历的应用场景: 计算目录内的文件占用的数据大小
 func PostorderTraversal(root *TreeNode) []int {
 	res := make([]int, 0)
 	if root == nil {
@@ -607,4 +610,60 @@ func Calculate(s string) int {
 		}
 	}
 	return res
+}
+
+// 去除重复字母(字典序最小，保持相对位置)-------------------------------------------------------------------------------
+// 思路:单调栈，根据字典序最小特性 尽量让小字母在左 -- 将stack中不存在的数据插入栈中 当新数据<栈顶元素|栈顶元素后面会出现 就将栈顶元素弹出 4ms/2.2mb
+func RemoveDuplicateLetters(s string) string {
+	// 存放每个字母出现的次数
+	countMap := make(map[int32]int, 0)
+	// 栈
+	stack := make([]int32, 0)
+	// 存放放入栈中的字母元素
+	checkMap := make(map[int32]bool, 0)
+
+	// 计算每个数据的次数
+	for _, val := range s {
+		countMap[val]++
+	}
+
+	// 遍历s
+	// 已经有的数据不需要再存
+	// 新的字符  ：如果<栈顶元素 同时栈顶元素后面还会出现 就让其代替栈顶元素
+	//          其余：
+	for _, val := range s {
+		if checkMap[val] {
+			countMap[val]--
+			continue
+		}
+
+		for len(stack) > 0 && stack[len(stack)-1] > val && countMap[stack[len(stack)-1]] > 0 {
+			// 弹出
+			checkMap[stack[len(stack)-1]] = false
+			stack = stack[:len(stack)-1]
+		}
+		checkMap[val] = true
+		stack = append(stack, val)
+		countMap[val]--
+	}
+
+	return string(stack)
+}
+
+// 验证二叉树的前序序列化-----------------------------------------------------------------------------------------------
+// 思路：根节点有2个空节点，每分出去一个支点多一个空子节点，同时要保证一个空节点数不能多余需要的空节点数如 1,#,#,#,2 是错的 0ms/2.7mb
+func isValidSerialization(preorder string) bool {
+	preArr := strings.Split(preorder, ",")
+	check := 1
+	for _, val := range preArr {
+		check -= 1
+		if check < 0 {
+			return false
+		}
+
+		if val != "#" {
+			check = check + 2
+		}
+	}
+	return check == 0
 }
