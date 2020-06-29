@@ -667,3 +667,32 @@ func isValidSerialization(preorder string) bool {
 	}
 	return check == 0
 }
+
+// 下一个更大元素 I----------------------------------------------------------------------------------------------------
+// 思路：单调栈，将num2 依次放入栈中 遇到栈顶小于本身就将栈顶弹出 放入map中，然后nums1直接找map就完事（不重复的特性）4ms/3.1mb
+func NextGreaterElement(nums1 []int, nums2 []int) []int {
+	stack := make([]int, 0)
+	checkMap := make(map[int]int, len(nums2))
+
+	for i := 0; i < len(nums2); i++ {
+
+		// 栈不为空 同时 栈顶数据小于当前数据就将其弹出保存
+		for len(stack) != 0 && stack[len(stack)-1] < nums2[i] {
+			checkMap[stack[len(stack)-1]] = nums2[i]
+			stack = stack[:len(stack)-1]
+		}
+
+		// 插入数据到栈中
+		stack = append(stack, nums2[i])
+
+	}
+	for _, val := range stack {
+		checkMap[val] = -1
+	}
+
+	res := make([]int, 0)
+	for _, val := range nums1 {
+		res = append(res, checkMap[val])
+	}
+	return res
+}
