@@ -8,8 +8,10 @@
 	-克隆没有加密的仓库,可以不需要任何配置就可以下载
 	-但是有加密的仓库,就需要配置公钥和账号
 	-1):
-		-git config user.name "名字"
-		-git config user.email "邮箱"
+		-git config user.name "名字"              设置名字
+		-git config user.email "邮箱"             设置邮箱
+		-git config --global user.name "名字"     修改名字
+		-git config --global user.email "邮箱"    修改邮箱
 	-2):
 		-git config --list	查看配置信息
 	-3):
@@ -64,6 +66,9 @@
 	git push origin 新分支名              把新建的分支push到远端
 	git branch --set-upstream-to=origin/新分支名        将本地分支与远程分支关联
 
-	
-	
-	
+  10.权限管理,基础设置:
+    git config credential.helper store      开启凭证助手 - 会记住下次输入的账号密码
+        -'cache --timeout 7200'             记住7200s
+	git config --system --unset credential.helper       清理系统凭证助手
+    git config --global credential.helper wincred       清理全局凭证助手
+    git credential-manager uninstall                    清除掉缓存在git中的用户名和密码
