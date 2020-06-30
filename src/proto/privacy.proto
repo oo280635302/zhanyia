@@ -1,0 +1,24 @@
+syntax = "proto3";
+
+//import "me.xiaoka.v5/micro/passenger/protobuf/passenger_info/passenger_info.proto";
+//import "me.xiaoka.v5/micro/passenger/protobuf/grade/passenger_grade.proto";
+
+package proto;
+
+// 协议本身
+message Privacy {
+    // 协议内容
+    string privacy_content = 1;
+}
+
+// 获取隐私协议请求
+message QueryPrivacyReq {
+	string app_key = 1;
+}
+
+// 获取隐私协议回复
+message QueryPrivacyResp {
+	int32 code = 1;
+	// 协议内容
+    string privacy_content = 2;
+}

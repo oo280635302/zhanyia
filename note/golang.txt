@@ -3229,7 +3229,7 @@
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogofast_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
     -protoc-gen-gogofaster 基于gogofast 同时引入减少xxx_...的字段
         -脚本需要自行go build
-        -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogofaster_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
+        -编译pb.go文件: protoc -I=./ -I=d:/gopath/src --gogofaster_out=plugins=grpc:./ privacy.proto
     -protoc-gen-gogoslick 基于gogofaster 同时但是有已生成的字符串
         -脚本需要自行go build
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogoslick_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto

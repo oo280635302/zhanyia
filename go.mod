@@ -5,7 +5,10 @@ go 1.12
 require (
 	github.com/boombuler/barcode v1.0.0
 	github.com/garyburd/redigo v1.6.0
+	github.com/gin-gonic/gin v1.6.3
+	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/go-sql-driver/mysql v1.5.0
+	github.com/gogo/protobuf v1.3.1
 	github.com/golang/protobuf v1.4.0
 	github.com/google/uuid v1.1.0
 	github.com/jinzhu/gorm v1.9.12

@@ -6,7 +6,6 @@ import (
 	"math/rand"
 	"os"
 	"os/signal"
-	"sync"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
@@ -29,32 +28,9 @@ func main() {
 	must.Init()
 	mustComponent()
 
+	must.SetPrivacyServer()
+
 	fmt.Println(program.NextGreaterElement([]int{1, 7, 2}, []int{1, 7, 2, 3, 5, 6}))
-	//goSqlOp()
-	var sm sync.Map
-	var w sync.WaitGroup
-	var lock sync.Mutex
-
-	w.Add(1000)
-	for i := 0; i < 1000; i++ {
-
-		go func() {
-			lock.Lock()
-			if val, ok := sm.Load(1); ok {
-
-				a := val.(*AStudent)
-				a.Val++
-				sm.Store(1, a)
-
-			} else {
-				sm.Store(1, &AStudent{Val: 1})
-			}
-			lock.Unlock()
-
-			w.Done()
-		}()
-	}
-	w.Wait()
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
@@ -71,32 +47,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func ArrSpilt() {
-	a := make([]int, 0)
-	for i := 0; i < 1001; i++ {
-		a = append(a, i)
-	}
-
-	lens := len(a) / 100
-	if lens%100 != 0 {
-		lens++
-	}
-
-	for i := 0; i < lens; i++ {
-		end := i*100 + 100
-		if i == lens-1 {
-			end = len(a)
-		}
-		fmt.Println(i*100, end)
-	}
-}
-
-func cs(sm *sync.Map) {
-	for i := 0; i < 100; i++ {
-		sm.Store(i, i)
-	}
 }
 
 func goSqlOp() {
@@ -149,73 +99,4 @@ func mapSpace() {
 	}
 	n := common.ImageToSqArray(a)
 	common.PrintDoubleMap(n)
-}
-
-// 精灵云 笔试第一题 合并结构体
-type ProA struct {
-	key1 byte
-	key2 byte
-	val1 int
-}
-
-type ProB struct {
-	key1 byte
-	key2 byte
-	val2 int
-}
-
-type MergedAB struct {
-	key1 byte
-	key2 byte
-	val1 int
-	val2 int
-}
-
-type pMergedAB struct {
-	val  *MergedAB
-	next *pMergedAB
-}
-
-type LenMerged int
-
-func (p *pMergedAB) insert(pMergedAB *pMergedAB) {
-
-	temp := p
-	for {
-		if temp.next == nil {
-			break
-		}
-		temp = temp.next
-	}
-	if temp.val == nil {
-		temp.val = pMergedAB.val
-	} else {
-		temp.next = pMergedAB
-	}
-}
-
-// method 1
-func MergedStructAB1(arrA []*ProA, lenA int, arrB []*ProB, lenB int, mergedAB *pMergedAB, lengthMergedAB *LenMerged) {
-
-	for _, v1 := range arrA {
-		for _, v2 := range arrB {
-			if v1.key1 == v2.key1 && v1.key2 == v2.key2 {
-				mergedAB.insert(&pMergedAB{val: &MergedAB{key1: v1.key1, key2: v2.key2, val1: v1.val1, val2: v2.val2}})
-			}
-		}
-	}
-	fmt.Println(mergedAB)
-}
-
-// method 2
-func MergedStructAB2(arrA []*ProA, lenA int, arrB []*ProB, lenB int, mergedAB *pMergedAB, lengthMergedAB *LenMerged) {
-
-	for _, v1 := range arrA {
-		for _, v2 := range arrB {
-			if v1.key1 == v2.key1 && v1.key2 == v2.key2 {
-				mergedAB.insert(&pMergedAB{val: &MergedAB{key1: v1.key1, key2: v2.key2, val1: v1.val1, val2: v2.val2}})
-			}
-		}
-	}
-	fmt.Println(mergedAB)
 }
