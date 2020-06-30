@@ -28,9 +28,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	must.SetPrivacyServer()
-
-	fmt.Println(program.NextGreaterElement([]int{1, 7, 2}, []int{1, 7, 2, 3, 5, 6}))
+	fmt.Println(program.NextGreaterElements([]int{1, 2, 2, 1}))
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)

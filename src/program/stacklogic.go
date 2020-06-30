@@ -696,3 +696,83 @@ func NextGreaterElement(nums1 []int, nums2 []int) []int {
 	}
 	return res
 }
+
+// 下一个更大元素 II----------------------------------------------------------------------------------------------------
+// 思路：单调栈	倒序遍历2次（正序也一样） 目的是为了组成类环形帮后面数字找到其更大元素 2次是最小圈数 28ms/6.4mb
+func NextGreaterElements(nums []int) []int {
+	stack := make([]int, 0) // 栈保存索引
+	n := len(nums)
+	res := make([]int, n)
+	for i, _ := range res {
+		res[i] = -1
+	}
+
+	// 倒序遍历
+	for i := n - 1; i >= 0; i-- {
+
+		// 前一个数 >= 栈顶时 将栈顶元素弹出
+		for len(stack) > 0 && nums[i] >= nums[stack[len(stack)-1]] {
+			stack = stack[:len(stack)-1]
+		}
+
+		// 这时栈还有数 说明 当前数 < 该数 赋值
+		if len(stack) > 0 {
+			res[i] = nums[stack[len(stack)-1]]
+		}
+
+		// 将值追加进栈中
+		stack = append(stack, i)
+	}
+
+	// 倒序遍历
+	for i := n - 1; i >= 0; i-- {
+
+		// 前一个数 >= 栈顶时 将栈顶元素弹出
+		for len(stack) > 0 && nums[i] >= nums[stack[len(stack)-1]] {
+			stack = stack[:len(stack)-1]
+		}
+
+		// 这时栈还有数 说明 当前数 < 该数 赋值
+		if len(stack) > 0 {
+			res[i] = nums[stack[len(stack)-1]]
+		}
+
+		// 将值追加进栈中
+		stack = append(stack, i)
+	}
+
+	return res
+}
+
+// 用两个栈实现队列---------------------------------------------------------------------------------------------------
+// 思路： 一个出栈 一个入栈 - 出栈没值了就把入栈的值倒进去出栈 244ms,8.4mb
+type CQueue struct {
+	In  []int
+	Out []int
+}
+
+func twoStackConstructor() CQueue {
+	return CQueue{In: make([]int, 0), Out: make([]int, 0)}
+}
+
+// tail In
+func (this *CQueue) AppendTail(value int) {
+	this.In = append(this.In, value)
+}
+
+// head Out
+func (this *CQueue) DeleteHead() int {
+	if len(this.Out) == 0 && len(this.In) == 0 {
+		return -1
+	}
+	// 如果出栈 为0 将 入栈 倒入 出栈
+	if len(this.Out) == 0 {
+		for i := len(this.In) - 1; i >= 0; i-- {
+			this.Out = append(this.Out, this.In[i])
+		}
+		this.In = this.In[:0]
+	}
+	res := this.Out[len(this.Out)-1]
+	this.Out = this.Out[:len(this.Out)-1]
+	return res
+}
