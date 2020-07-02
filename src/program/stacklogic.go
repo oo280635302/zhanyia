@@ -776,3 +776,36 @@ func (this *CQueue) DeleteHead() int {
 	this.Out = this.Out[:len(this.Out)-1]
 	return res
 }
+
+// 132模式----------------------------------------------------------------------------------------------------
+// 思路：先获取到每个数的前最小数 13模式  然后用栈找2 倒序遍历 20ms/6mb
+func Find132pattern(nums []int) bool {
+	stack := make([]int, 0)
+	n := len(nums)
+	if n < 3 {
+		return false
+	}
+
+	// 获取每个数的前面最小数
+	minArr := make([]int, n)
+	minNum := nums[0]
+	minArr[0] = minNum
+	for i := 1; i <= n-1; i++ {
+
+		minArr[i] = min(minNum, nums[i])
+		minNum = minArr[i]
+	}
+
+	for i := n - 1; i >= 0; i-- {
+		for len(stack) > 0 && stack[len(stack)-1] <= minArr[i] {
+			stack = stack[0 : len(stack)-1]
+		}
+		// 判断是否符合32模式
+		if len(stack) > 0 && nums[i] > stack[len(stack)-1] {
+			return true
+		}
+		stack = append(stack, nums[i])
+	}
+
+	return false
+}

@@ -28,7 +28,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.KthSmallest2([][]int{{1, 5, 9}, {10, 11, 13}, {12, 13, 15}}, 8))
+	fmt.Println(program.Find132pattern([]int{25, 15, 9, 10, 11, 13, 12, 13, 15}))
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
