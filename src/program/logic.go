@@ -311,47 +311,6 @@ func CountAndSay(n int) string {
 	return res
 }
 
-// 堆排序
-func HeapSort(arr []int) []int {
-	arrLen := len(arr)
-	buildMaxHeap(arr, arrLen)
-	for i := arrLen - 1; i >= 0; i-- {
-		swap(arr, 0, i)
-		arrLen -= 1
-		heapify(arr, 0, arrLen)
-	}
-	return arr
-}
-
-// 构建顶大堆
-func buildMaxHeap(arr []int, arrLen int) {
-	for i := arrLen / 2; i >= 0; i-- {
-		heapify(arr, i, arrLen)
-	}
-}
-
-// 排堆
-func heapify(arr []int, i, arrLen int) {
-	left := 2*i + 1
-	right := 2*i + 2
-	largest := i
-	if left < arrLen && arr[left] > arr[largest] {
-		largest = left
-	}
-	if right < arrLen && arr[right] > arr[largest] {
-		largest = right
-	}
-	if largest != i {
-		swap(arr, i, largest)
-		heapify(arr, largest, arrLen)
-	}
-}
-
-// 交换位置
-func swap(arr []int, i, j int) {
-	arr[i], arr[j] = arr[j], arr[i]
-}
-
 // 最大子序和  [-2,1,-3,4,-1,2,1,-5,4]
 // 解法:动态规划 8 ms/3.8 MB -- 使用
 func MaxSubArray(nums []int) int {

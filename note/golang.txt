@@ -370,6 +370,26 @@
         -syscall.NewLazyDLL("xx.dll")   读取dll文件
             -dll.NewProc("xx")          获取指定方法
                 -func.Call(arg)         执行方法
+    -heap  堆 工具包
+        -需要先有swap,less,len,push,pop方法的结构体
+        -例:
+            type IHeap []int
+
+            func (h IHeap) Len() int           { return len(h) }
+            func (h IHeap) Less(i, j int) bool { return h[i] < h[j] }
+            func (h IHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+
+            func (h *IHeap) Push(x interface{}) {
+            	*h = append(*h, x.(int))
+            }
+
+            func (h *IHeap) Pop() interface{} {
+            	old := *h
+            	n := len(old)
+            	x := old[n-1]
+            	*h = old[0 : n-1]
+            	return x
+            }
 
 
 	-导入包

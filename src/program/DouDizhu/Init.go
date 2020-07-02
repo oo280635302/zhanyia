@@ -1,5 +1,0 @@
-package program
-
-func Init() {
-
-}
