@@ -797,15 +797,72 @@ func Find132pattern(nums []int) bool {
 	}
 
 	for i := n - 1; i >= 0; i-- {
+		// 当栈顶元素 比 当前数的前面最小数都小时 说明1>2了 不符合要求 不用存在于栈顶了
 		for len(stack) > 0 && stack[len(stack)-1] <= minArr[i] {
 			stack = stack[0 : len(stack)-1]
 		}
-		// 判断是否符合32模式
+		// 如果栈顶还有 说明 1<2 已经成立 如果正好3 > 2 就找到了
 		if len(stack) > 0 && nums[i] > stack[len(stack)-1] {
 			return true
 		}
+		// 每次都 将2插入进入
 		stack = append(stack, nums[i])
 	}
 
 	return false
 }
+
+// 字符串解码--------------------------------------------------------------------------------------------------
+// 思路：一个数字栈，一个字符串栈  遇到] 取字符串栈中数据 直到[然后取数字栈来判定重复数 然后推入栈中 最后组合 0ms/2.2mb
+func DecodeString(s string) string {
+	if s == "" {
+		return ""
+	}
+
+	stack := make([]string, 0)
+	numStack := make([]int32, 0)
+	cur, numCur := "", ""
+	// 便利s
+	for _, val := range s {
+
+		switch val {
+		case '0', '1', '2', '3', '4', '5', '6', '7', '8', '9':
+			numCur += string(val)
+		case '[':
+			if cur != "" {
+				stack = append(stack, cur)
+				cur = ""
+			}
+			n, _ := strconv.Atoi(numCur)
+			numStack = append(numStack, int32(n))
+			numCur = ""
+			stack = append(stack, "[")
+		case ']':
+			for len(stack) > 0 && stack[len(stack)-1] != "[" {
+				s := stack[len(stack)-1]
+				stack = stack[:len(stack)-1]
+				cur = s + cur
+			}
+			stack = stack[:len(stack)-1]
+			n := numStack[len(numStack)-1]
+			numStack = numStack[:len(numStack)-1]
+			a := ""
+			for i := 0; i < int(n); i++ {
+				a += cur
+			}
+			stack = append(stack, a)
+			cur = ""
+		default:
+			cur += string(val)
+		}
+
+	}
+	res := ""
+	for _, val := range stack {
+		res += val
+	}
+	res += cur
+	return res
+}
+
+//
