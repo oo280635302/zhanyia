@@ -79,3 +79,33 @@ func findLength2(A []int, B []int) int {
 	}
 	return ans
 }
+
+// 通配符匹配
+// 思路：动态规划 先设定 0,0 是true 再依次匹配1,1根据0,0 && 1?=1 来决定 最终到m,n是否是正确来判断整体是否匹配
+// * 可以将任意一条n列 全部污染成true 哦~
+func IsMatch(s string, p string) bool {
+	m, n := len(s), len(p)
+	dp := make([][]bool, m+1)
+	for i := 0; i <= m; i++ {
+		dp[i] = make([]bool, n+1)
+	}
+	dp[0][0] = true
+	// 先解决 以*开头的情况
+	for i := 1; i <= n; i++ {
+		if p[i-1] == '*' {
+			dp[0][i] = true
+		} else {
+			break
+		}
+	}
+	for i := 1; i <= m; i++ {
+		for j := 1; j <= n; j++ {
+			if p[j-1] == '*' {
+				dp[i][j] = dp[i][j-1] || dp[i-1][j]
+			} else if p[j-1] == '?' || s[i-1] == p[j-1] {
+				dp[i][j] = dp[i-1][j-1]
+			}
+		}
+	}
+	return dp[m][n]
+}
