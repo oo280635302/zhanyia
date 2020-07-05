@@ -28,7 +28,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.RemoveKdigits("321", 3))
+	fmt.Println(program.IsValidTag("<DIV>>>>>>>  ![cdata[]] <![CDATA[<div>]>]]>]]>>]</DIV>"))
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
