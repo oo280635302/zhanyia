@@ -809,3 +809,37 @@ func Find132pattern(nums []int) bool {
 
 	return false
 }
+
+// 移掉K位数字-----------------------------------------------------------------------------------------------
+// 思路： 贪心算法+栈  根据1个特性 如 132 右边的数<左边的数时 去掉左边的数就会使剩下的数小来移除 0ms/3.1mb
+func removeKdigits(num string, k int) string {
+
+	stack := make([]int32, 0)
+
+	for _, val := range num {
+		for len(stack) > 0 && k > 0 && val < stack[len(stack)-1] {
+			stack = stack[:len(stack)-1]
+			k--
+		}
+		stack = append(stack, val)
+	}
+
+	stack = stack[:len(stack)-k]
+	res := strings.TrimLeft(string(stack), "0")
+	if res == "" {
+		return "0"
+	}
+	return res
+}
+
+// 标签验证器
+// 思路： 栈 -- 仅此而已
+func IsValidTag(code string) bool {
+	tagStack := make([]string, 0)
+	sumStack := make([]int32, 0)
+	curStr := ""
+	for _, v := range code {
+
+	}
+	return false
+}
