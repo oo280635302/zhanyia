@@ -109,3 +109,70 @@ func IsMatch(s string, p string) bool {
 	}
 	return dp[m][n]
 }
+
+// 正则表达式匹配---------------------------------------------------------------------------------------------------
+// 思路: 动态规划 思路同 通配符匹配 ,不同处在于正则*是 前一个字母的复制体 同时可以将前一个字母置为0 因此遇到* 只需要其前2位数相同即可 4ms/2.4mb
+func IsMatchRegexp(s string, p string) bool {
+	m, n := len(s), len(p)
+	dp := make([][]bool, m+1)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = make([]bool, n+1)
+	}
+
+	// 检测两数是否相等
+	matches := func(i, j int) bool {
+		if i == 0 {
+			return false
+		}
+		if p[j-1] == '.' {
+			return true
+		}
+		return s[i-1] == p[j-1]
+	}
+
+	dp[0][0] = true
+
+	for i := 0; i <= m; i++ { // 第一排是为了 给* 找空间
+		for j := 1; j <= n; j++ {
+
+			if p[j-1] == '*' {
+
+				// 当遇到 * 时 因为有可能会将前一个数无效化 需要看其j-2位是否正确
+				dp[i][j] = dp[i][j] || dp[i][j-2]
+				// 在有效化的情况时 只需要位于s前一位是正确的 他也是正确的 aa == a* 当aa相等
+				if matches(i, j-1) {
+					dp[i][j] = dp[i][j] || dp[i-1][j]
+				}
+
+				// 正常的数字 只需要对应匹配即可 同时i-1,j-1正确即可
+			} else if matches(i, j) {
+				dp[i][j] = dp[i][j] || dp[i-1][j-1]
+			}
+
+		}
+	}
+
+	return dp[m][n]
+}
+
+// 不同路径
+// 思路：动态规划 要想知道 到达1,1的路径 == 0,1 + 1,0的路径和以此推论 遇到石头说明此路不通 0ms/2.4mb
+func UniquePathsWithObstacles(obstacleGrid [][]int) int {
+	m, n := len(obstacleGrid), len(obstacleGrid[0])
+	f := make([]int, n)
+	if obstacleGrid[0][0] == 0 {
+		f[0] = 1
+	}
+	for i := 0; i < m; i++ {
+		for j := 0; j < n; j++ {
+			if obstacleGrid[i][j] == 1 {
+				f[j] = 0
+				continue
+			}
+			if j-1 >= 0 && obstacleGrid[i][j-1] == 0 {
+				f[j] += f[j-1]
+			}
+		}
+	}
+	return f[len(f)-1]
+}

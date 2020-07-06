@@ -28,7 +28,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.IsMatch("aaa", "a*"))
+	fmt.Println(program.UniquePathsWithObstacles([][]int{{0, 0}, {0, 0}, {0, 0}}))
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)
