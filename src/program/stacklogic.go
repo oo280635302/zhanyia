@@ -975,3 +975,125 @@ func checkTag(s string) bool {
 
 	return true
 }
+
+// 函数的独占时间
+// 思路:因为是单线程 意思同一时间只能有一个函数被调用:一个函数被调用的时间= 结束时间-开始时间-中途调用其他函数消耗的时间 12ms/6.1mb
+type CallStack struct {
+	funcId    int
+	startTime int
+	extraTime int
+}
+
+func ExclusiveTime(n int, logs []string) []int {
+	result := make([]int, n)
+	stack := make([]CallStack, 0)
+
+	for _, log := range logs {
+		split := strings.Split(log, ":")
+		if split[1] == "start" {
+			id, _ := strconv.Atoi(split[0])
+			num, _ := strconv.Atoi(split[2])
+			stack = append(stack, CallStack{
+				funcId:    id,
+				startTime: num,
+				extraTime: 0,
+			})
+		} else {
+			es, _ := strconv.Atoi(split[2])
+			cs := stack[len(stack)-1]
+			stack = stack[:len(stack)-1]
+			runtime := es - cs.startTime + 1 - cs.extraTime
+			result[cs.funcId] += runtime
+			if len(stack) > 0 {
+				stack[len(stack)-1].extraTime += es - cs.startTime + 1
+			}
+		}
+	}
+	return result
+}
+
+// 棒球比赛
+// 思路:简单的栈调用 C就将栈顶弹出 D就将栈顶*2插入 +就将顶1顶2加起来插入 最后求栈的和 4ms/2.6mb
+func calPoints(ops []string) int {
+	stack := make([]int, 0)
+
+	for _, v := range ops {
+		if v == "C" {
+			stack = stack[:len(stack)-1]
+			continue
+		}
+		if v == "D" {
+			stack = append(stack, stack[len(stack)-1]*2)
+			continue
+		}
+
+		if v == "+" {
+			stack = append(stack, stack[len(stack)-1]+stack[len(stack)-2])
+			continue
+		}
+		n, _ := strconv.Atoi(v)
+		stack = append(stack, n)
+	}
+	res := 0
+	for _, v := range stack {
+		res += v
+	}
+
+	return res
+}
+
+// 原子的数量
+// 思路:
+//func countOfAtoms(formula string) string {
+//	 stack := make([]string,0)
+//	 numMap := make(map[string]int,0)
+//
+//
+//}
+
+// 行星碰撞
+// 思路: 遇到栈顶数据<0,自身又是>0的 说明会相撞将栈顶弹出用绝对值比较 >就将栈顶返还 =结束   <就继续撞   12ms/4.7mb
+func asteroidCollision(asteroids []int) []int {
+	stack := make([]int, 0)
+
+	for _, v := range asteroids {
+
+		// 当栈顶与当前数+-不同时 进行Pk
+		if len(stack) > 0 {
+			for len(stack) > 0 {
+				if checkDoublePN(stack[len(stack)-1], v) {
+					stack = append(stack, v)
+					break
+				} else {
+					n := stack[len(stack)-1]
+					stack = stack[:len(stack)-1]
+
+					absN := int(math.Abs(float64(n)))
+					absV := int(math.Abs(float64(v)))
+					if absN > absV {
+						stack = append(stack, n)
+						break
+					} else if absN == absV {
+						break
+					} else if absN < absV && len(stack) == 0 {
+						stack = append(stack, v)
+						break
+					}
+				}
+			}
+		} else {
+			stack = append(stack, v)
+		}
+
+	}
+	return stack
+}
+
+// 是否不发生碰撞
+func checkDoublePN(a, b int) bool {
+	if a > 0 && b < 0 {
+		return false
+	}
+
+	return true
+}

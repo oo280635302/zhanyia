@@ -28,7 +28,7 @@ func main() {
 	must.Init()
 	mustComponent()
 
-	fmt.Println(program.UniquePathsWithObstacles([][]int{{0, 0}, {0, 0}, {0, 0}}))
+	fmt.Println(program.ExclusiveTime(2, []string{"0:start:0", "0:start:2", "0:start:5", "0:end:7", "0:end:7", "0:end:8"}))
 
 	fmt.Println("run start")
 	time.Sleep(time.Second * 2)

@@ -2,7 +2,10 @@ package program
 
 import (
 	"fmt"
+	"math/rand"
+	"reflect"
 	"strconv"
+	"time"
 )
 
 // 罗马数值转普通数字
@@ -326,4 +329,86 @@ func MaxSubArray(nums []int) int {
 	}
 	fmt.Println(nums)
 	return max
+}
+
+// 一到10W 排序
+func Match10WSort() {
+	// 生成10W条数据
+	arr := make([]int, 100000)
+	for i := 1; i <= 100000; i++ {
+		arr[i-1] = i
+	}
+
+	// 找最大的100个数
+	top := make([]int, 0)
+
+	// 乱序
+	randSlice(arr)
+	//fmt.Println(arr)
+	// 比较
+	start := time.Now().UnixNano()
+	for i := 0; i < 100; i++ {
+		t := getMaxNum(arr)
+		top = append(top, arr[t])
+		arr[t] = 0
+	}
+	end := time.Now().UnixNano()
+	fmt.Println("耗时", (end-start)/1e6)
+	fmt.Println(top)
+}
+
+func getMaxNum(arr []int) (index int) {
+	compare := make([]int, 0)
+
+	for i := 100000; i > 1; {
+		if i == 100000 {
+			for j := 0; j < len(arr)/2+len(arr)%2; j++ {
+				if j*2+1 >= len(arr) {
+					compare = append(compare, j*2)
+					break
+				}
+				if arr[j*2] > arr[j*2+1] {
+					compare = append(compare, j*2)
+				} else {
+					compare = append(compare, j*2+1)
+				}
+			}
+			i = i/2 + i%2
+			continue
+		}
+		n := len(compare)
+		for j := 0; j < i; j++ {
+			if j%2 == 1 {
+				continue
+			}
+			if n-i+j+1 > n+i || arr[compare[n-i+j]] > arr[compare[n-i+j+1]] {
+				compare = append(compare, compare[n-i+j])
+			} else {
+				compare = append(compare, compare[n-i+j+1])
+			}
+		}
+
+		i = i/2 + i%2
+	}
+	return compare[len(compare)-1]
+}
+
+func randSlice(slice interface{}) {
+	rv := reflect.ValueOf(slice)
+	if rv.Type().Kind() != reflect.Slice {
+		return
+	}
+
+	length := rv.Len()
+	if length < 2 {
+		return
+	}
+
+	swap := reflect.Swapper(slice)
+	rand.Seed(time.Now().Unix())
+	for i := length - 1; i >= 0; i-- {
+		j := rand.Intn(length)
+		swap(i, j)
+	}
+	return
 }
