@@ -1097,3 +1097,30 @@ func checkDoublePN(a, b int) bool {
 
 	return true
 }
+
+// 每日温度
+// 思路：倒序遍历 当前值>栈顶就一直弹 直到找到<的情况 top-i 或者栈没值了 0  88ms/6.7mb
+func dailyTemperatures(T []int) []int {
+	n := len(T)
+	stack := make([]int, 0)
+	res := make([]int, n)
+
+	for i := n - 1; i >= 0; i-- {
+
+		// 找stack中比他大的数
+		for len(stack) > 0 {
+			cur := stack[len(stack)-1]
+			// 找到了就直接出去
+			if T[cur] > T[i] {
+				break
+			}
+			stack = stack[:len(stack)-1]
+		}
+
+		if len(stack) > 0 {
+			res[i] = stack[len(stack)-1] - i
+		}
+		stack = append(stack, i)
+	}
+	return res
+}
