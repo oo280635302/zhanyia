@@ -155,7 +155,7 @@ func IsMatchRegexp(s string, p string) bool {
 	return dp[m][n]
 }
 
-// 不同路径
+// 不同路径-----------------------------------------------------------------------------------------------------------
 // 思路：动态规划 要想知道 到达1,1的路径 == 0,1 + 1,0的路径和以此推论 遇到石头说明此路不通 0ms/2.4mb
 func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 	m, n := len(obstacleGrid), len(obstacleGrid[0])
@@ -175,4 +175,21 @@ func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 		}
 	}
 	return f[len(f)-1]
+}
+
+// 跳水板-----------------------------------------------------------------------------------------------------------
+// 思路: 因为k=大小板总和  因此排列方式有k+1种 0个短板->k个短板  20ms/7.1mb
+func divingBoard(shorter int, longer int, k int) []int {
+	res := make([]int, 0)
+	if k == 0 {
+		return nil
+	}
+	if longer == shorter {
+		res = append(res, k)
+		return res
+	}
+	for i := 0; i <= k; i++ {
+		res = append(res, shorter*(k-i)+longer*(i))
+	}
+	return res
 }

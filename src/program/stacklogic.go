@@ -889,7 +889,7 @@ func removeKdigits(num string, k int) string {
 	return res
 }
 
-// 标签验证器
+// 标签验证器-----------------------------------------------------------------------------------------------------------
 // 思路：就是单纯的栈 中间会设计到很多的判断 0ms/2.1mb
 func IsValidTag(code string) bool {
 	n := len(code)
@@ -976,7 +976,7 @@ func checkTag(s string) bool {
 	return true
 }
 
-// 函数的独占时间
+// 函数的独占时间--------------------------------------------------------------------------------------------------------
 // 思路:因为是单线程 意思同一时间只能有一个函数被调用:一个函数被调用的时间= 结束时间-开始时间-中途调用其他函数消耗的时间 12ms/6.1mb
 type CallStack struct {
 	funcId    int
@@ -1012,7 +1012,7 @@ func ExclusiveTime(n int, logs []string) []int {
 	return result
 }
 
-// 棒球比赛
+// 棒球比赛 -----------------------------------------------------------------------------------------------------------
 // 思路:简单的栈调用 C就将栈顶弹出 D就将栈顶*2插入 +就将顶1顶2加起来插入 最后求栈的和 4ms/2.6mb
 func calPoints(ops []string) int {
 	stack := make([]int, 0)
@@ -1042,7 +1042,7 @@ func calPoints(ops []string) int {
 	return res
 }
 
-// 原子的数量
+// 原子的数量 -----------------------------------------------------------------------------------------------------------
 // 思路:
 //func countOfAtoms(formula string) string {
 //	 stack := make([]string,0)
@@ -1051,7 +1051,7 @@ func calPoints(ops []string) int {
 //
 //}
 
-// 行星碰撞
+// 行星碰撞 -----------------------------------------------------------------------------------------------------------
 // 思路: 遇到栈顶数据<0,自身又是>0的 说明会相撞将栈顶弹出用绝对值比较 >就将栈顶返还 =结束   <就继续撞   12ms/4.7mb
 func asteroidCollision(asteroids []int) []int {
 	stack := make([]int, 0)
@@ -1098,7 +1098,7 @@ func checkDoublePN(a, b int) bool {
 	return true
 }
 
-// 每日温度
+// 每日温度-----------------------------------------------------------------------------------------------------------
 // 思路：倒序遍历 当前值>栈顶就一直弹 直到找到<的情况 top-i 或者栈没值了 0  88ms/6.7mb
 func dailyTemperatures(T []int) []int {
 	n := len(T)
@@ -1123,4 +1123,89 @@ func dailyTemperatures(T []int) []int {
 		stack = append(stack, i)
 	}
 	return res
+}
+
+// 比较含退格的字符串----------------------------------------------------------------------------------------------------
+// 思路: 两个栈  遍历S,T两个数 遇到#就把栈顶数据弹出 其余就追加 0ms/2mb
+func backspaceCompare(S string, T string) bool {
+	sStack := make([]int32, 0)
+	tStack := make([]int32, 0)
+
+	for _, v := range S {
+		if v == '#' {
+			if len(sStack) > 0 {
+				sStack = sStack[:len(sStack)-1]
+			}
+			continue
+		}
+		sStack = append(sStack, v)
+	}
+
+	for _, v := range T {
+		if v == '#' {
+			if len(tStack) > 0 {
+				tStack = tStack[:len(tStack)-1]
+			}
+			continue
+		}
+		tStack = append(tStack, v)
+	}
+	return string(sStack) == string(tStack)
+}
+
+// 括号的分数-----------------------------------------------------------------------------------------------------------
+// 思路：只有()才是真正的值1 (() 会使1*2 当遇到() 只需要知道其前面生效的(有多少个 就让1移动多少位数(剩2) 0ms/2mb
+func ScoreOfParentheses(S string) int {
+	res, count := 0, uint(0)
+
+	for k, v := range S {
+		if v == '(' {
+			count++
+		} else {
+			count--
+			if S[k-1] == '(' {
+				res += 1 << count
+				fmt.Println(count, res)
+			}
+		}
+	}
+	return res
+}
+
+func XthPower() int {
+	fmt.Println(uint(1) >> 3)
+	return 1
+}
+
+// 索引处的解码字符串---------------------------------------------------------------------------------------------------
+// 思路:有误!
+func DecodeAtIndex(S string, K int) string {
+	stack := make([]string, 0)
+	cur := ""
+	for _, val := range S {
+		if val >= '2' && val <= '9' {
+			if cur != "" {
+				stack = append(stack, cur)
+				cur = ""
+			}
+			str := stack[len(stack)-1]
+			n := ""
+			for i := 0; i < int(val)-48; i++ {
+				n += str
+			}
+			// 替换栈顶
+			stack[len(stack)-1] = n
+
+		} else {
+			cur += string(val)
+		}
+	}
+
+	realS := ""
+	for _, v := range stack {
+		realS += v
+	}
+	k := K % len(realS)
+	//unicode.IsDigit(c)
+	return string(realS[k-1])
 }

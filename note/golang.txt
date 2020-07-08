@@ -391,7 +391,8 @@
             	*h = old[0 : n-1]
             	return x
             }
-
+    -unicode包   编码包
+        unicode.IsDigit()       判断字节是否是数字
 
 	-导入包
 		-同一目录的文件 package 名字 必须一样
