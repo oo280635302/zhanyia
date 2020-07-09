@@ -1,8 +1,8 @@
 package main
 
 import (
+	sql "database/sql"
 	"fmt"
-	"github.com/jinzhu/gorm"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -10,16 +10,10 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
-
-type AStudent struct {
-	Key string
-	Val int
-}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -27,11 +21,10 @@ func main() {
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
-
-	fmt.Println(program.DecodeAtIndex("a2b3", 4))
-
 	fmt.Println("run start")
-	time.Sleep(time.Second * 2)
+	goSqlOp()
+	//fmt.Println(program.DecodeAtIndex("a2b3", 4))
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -48,17 +41,15 @@ func main() {
 }
 
 func goSqlOp() {
-	db, err := gorm.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
+	conn, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
 	if err != nil {
 		fmt.Println("连接数据库失败", err)
 		return
 	}
-	//db.LogMode(true)
-	//a := &AStudent{}
-	db.Exec("update `students` set `key` = `key`-"+fmt.Sprintf("%0.1f", 3.54)+" where val = ? ", 120)
-	e := db.Table("students").Where("`key` = 1").Update("val", 120, "key", 123)
-	fmt.Println("1", e.RowsAffected)
-	fmt.Println(e.Error)
+	var b bool
+	r := conn.QueryRow("select is_open from students where id = 5")
+	err = r.Scan(&b)
+	fmt.Println(err, b)
 }
 
 // 必备组件
