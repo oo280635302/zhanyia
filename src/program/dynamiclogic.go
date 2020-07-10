@@ -1,5 +1,7 @@
 package program
 
+import "fmt"
+
 // 动态规划有关的算法问题 -- LeetCode
 
 // 单词拆分---------------------------------------------------------------------------------------------------
@@ -155,7 +157,7 @@ func IsMatchRegexp(s string, p string) bool {
 	return dp[m][n]
 }
 
-// 不同路径-----------------------------------------------------------------------------------------------------------
+// 不同路径2-----------------------------------------------------------------------------------------------------------
 // 思路：动态规划 要想知道 到达1,1的路径 == 0,1 + 1,0的路径和以此推论 遇到石头说明此路不通 0ms/2.4mb
 func UniquePathsWithObstacles(obstacleGrid [][]int) int {
 	m, n := len(obstacleGrid), len(obstacleGrid[0])
@@ -240,4 +242,58 @@ func (this *Trie) insert(s string) {
 		curPos = curPos.next[t]
 	}
 	curPos.isEnd = true
+}
+
+// 最佳买卖股票时机含冷冻期
+// 思路:dynamic看注释 将操作状态分为3种,到每一股时都根据前一个状态的最佳收益计算出本次状态的最佳收益 	0ms/2.5mb
+func MaxProfit(prices []int) int {
+	if len(prices) == 0 {
+		return 0
+	}
+	n := len(prices)
+	// f[i][0]: 手上持有股票的最大收益累计
+	// f[i][1]: 手上不持有股票，并且处于冷冻期中的累计最大收益
+	// f[i][2]: 手上不持有股票，并且不在冷冻期中的累计最大收益
+	f := make([][3]int, n)
+	f[0][0] = -prices[0]
+	for i := 1; i < n; i++ {
+		f[i][0] = max(f[i-1][0], f[i-1][2]-prices[i]) // 说明当前手上一定有股票, 两种情况 本身就有f[i-1][0] 或者 不属于冰冻期这次购买f[i-1][2]-prices[i]
+		f[i][1] = f[i-1][0] + prices[i]               // 说明 前一天有股票这次卖出 即纯收入
+		f[i][2] = max(f[i-1][1], f[i-1][2])           // 说明 前一天必定 不持有股票 要么处于冰冻期f[i-1][1] 要么处于非冰冻期f[i-1][2]
+	}
+	fmt.Println(f)
+	return max(f[n-1][1], f[n-1][2]) // 最终结果必定从不持有股票中选举出来  因为持有股票最佳也仅仅是持平的金额
+}
+
+// 不同路径1
+// 思路:到当前点的路径 = 到起左边点的路径 + 到起上边点路径的;最左边与最上边的路径都是1 0ms/2mb
+func UniquePaths(m int, n int) int {
+
+	if m == 0 || n == 0 {
+		return 0
+	}
+
+	path := make([][]int, m)
+	for i := 0; i < m; i++ {
+		path[i] = make([]int, n)
+	}
+	path[0][0] = 1
+
+	for i := 0; i < len(path); i++ {
+		for j := 0; j < len(path[0]); j++ {
+			if i == 0 || j == 0 {
+				path[i][j] = 1
+				continue
+			}
+			path[i][j] = path[i-1][j] + path[i][j-1]
+		}
+	}
+
+	return path[m-1][n-1]
+}
+
+// 最小路径和
+// 思路:
+func minPathSum(grid [][]int) int {
+	return 1
 }

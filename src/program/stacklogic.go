@@ -251,7 +251,7 @@ func max(x, y int) int {
 	if x > y {
 		return x
 	}
-	fmt.Println(x, y)
+	//fmt.Println(x, y)
 	return y
 }
 
