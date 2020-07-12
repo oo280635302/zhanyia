@@ -1,6 +1,9 @@
 package program
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // 动态规划有关的算法问题 -- LeetCode
 
@@ -296,4 +299,32 @@ func UniquePaths(m int, n int) int {
 // 思路:
 func minPathSum(grid [][]int) int {
 	return 1
+}
+
+// 地下城游戏
+// 思路：动态规划  根据右下角生命值 一直往上 推到出最优的开始计算的生命值 4ms/3.7mb
+func calculateMinimumHP(dungeon [][]int) int {
+	// 建立 二维图
+	m, n := len(dungeon), len(dungeon[0])
+	dp := make([][]int, m+1)
+	for i := 0; i < len(dp); i++ {
+		dp[i] = make([]int, n+1)
+		for j := 0; j < len(dp[i]); j++ {
+			dp[i][j] = math.MaxInt32
+		}
+	}
+
+	// m-1,n-1值由其右边 和 下边 两值选举出来
+	dp[m][n-1], dp[m-1][n] = 1, 1
+
+	// 从右下角开始 计算出要往下一格走需要的生命值
+	// 从右边和下边两个生命格中选出需要最少生命的格子， 走这个格子需要的生命= 下个格子带来的生命 - 这个格子能+/-的生命 但最低只能为1
+	// 依次向上推导 出0,0需要的最低生命
+	for i := m - 1; i >= 0; i-- {
+		for j := n - 1; j >= 0; j-- {
+			minn := min(dp[i+1][j], dp[i][j+1])
+			dp[i][j] = max(minn-dungeon[i][j], 1)
+		}
+	}
+	return dp[0][0]
 }

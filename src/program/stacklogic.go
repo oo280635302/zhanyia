@@ -1209,3 +1209,29 @@ func DecodeAtIndex(S string, K int) string {
 	//unicode.IsDigit(c)
 	return string(realS[k-1])
 }
+
+// 计算右侧小于当前元素的个数
+// 思路：暴力 从右到左遍历 每个数都往右边找比他小的数计数 找到相等的就不用找了 直接加上其计数值 440ms/4.3mb
+func CountSmaller(nums []int) []int {
+	n := len(nums)
+
+	res := make([]int, n)
+
+	for i := n - 2; i >= 0; i-- {
+
+		count := 0
+		for k, v := range nums[i+1:] {
+			if nums[i] > v {
+				count++
+			} else if nums[i] == v {
+				count += res[k+i+1]
+				break
+			}
+		}
+		res[i] = count
+
+	}
+	return res
+}
+
+// todo 需要补充的知识 树状数组

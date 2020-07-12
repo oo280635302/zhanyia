@@ -25,7 +25,7 @@ func main() {
 	fmt.Println("run start")
 	//goSqlOp()
 	//must.GinListener()
-	fmt.Println(program.UniquePaths(5, 4))
+	fmt.Println(program.CountSmaller([]int{3, 5, 1, 5, 6, 7, 2, 2}))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
