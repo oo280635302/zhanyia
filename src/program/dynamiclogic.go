@@ -296,13 +296,30 @@ func UniquePaths(m int, n int) int {
 }
 
 // 最小路径和
-// 思路:
-func minPathSum(grid [][]int) int {
-	return 1
+// 思路: 动态规划 每个路径的和都是右边或者下边中选择路径和最小的 从右下角开始找 每个格子都找最小路径和 一直往左上角找  8ms/3.9mb
+// 该题甚至都不用建立 二维动态图 节约了0.6mb的内存
+func MinPathSum(grid [][]int) int {
+	m, n := len(grid), len(grid[0])
+
+	for i := m - 1; i >= 0; i-- {
+		for j := n - 1; j >= 0; j-- {
+			if i == m-1 && j == n-1 {
+				continue
+			} else if i == m-1 && j != n-1 {
+				grid[i][j] = grid[i][j] + grid[i][j+1]
+			} else if i != m-1 && j == n-1 {
+				grid[i][j] = grid[i][j] + grid[i+1][j]
+			} else {
+				grid[i][j] = grid[i][j] + min(grid[i+1][j], grid[i][j+1])
+			}
+		}
+	}
+
+	return grid[0][0]
 }
 
 // 地下城游戏
-// 思路：动态规划  根据右下角生命值 一直往上 推到出最优的开始计算的生命值 4ms/3.7mb
+// 思路：动态规划  根据右下角生命值 一直往上 推到出最优的开始计算的生命值 (思路与最小路径和相同) 4ms/3.7mb
 func calculateMinimumHP(dungeon [][]int) int {
 	// 建立 二维图
 	m, n := len(dungeon), len(dungeon[0])
@@ -327,4 +344,24 @@ func calculateMinimumHP(dungeon [][]int) int {
 		}
 	}
 	return dp[0][0]
+}
+
+// 爬楼梯
+// 思路:动态规划  因为只能1,2个台阶走法: 该台阶 = 该台阶-1 + 台阶-2,0号台阶与1号台阶 走法都只有1种 0ms/1.9mb
+// 反复使用2个变量 让空间复杂度o(1)
+func ClimbStairs(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	res1, res2 := 1, 1
+
+	for i := 2; i <= n; i++ {
+		if i%2 == 0 {
+			res1 = res1 + res2
+		} else {
+			res2 = res1 + res2
+		}
+	}
+
+	return max(res1, res2)
 }

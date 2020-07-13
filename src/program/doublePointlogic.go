@@ -34,3 +34,28 @@ func MinSubArrayLen(s int, nums []int) int {
 	}
 	return lenth
 }
+
+// 两个数组的交集 II--------------------------------------------------------------------------------------------------
+// 思路: 用一个 map 存放小的那方的数组 每有一个重复的+1 然后用大的一方去匹配小的一方 有就减少 直到0  4ms/3.2mb
+// 额外思路: 双指针 排序后 双指针移动 捕捉相同的数
+func intersect(nums1 []int, nums2 []int) []int {
+	m, n := len(nums1), len(nums2)
+	if m < n {
+		nums1, nums2 = nums2, nums1
+	}
+
+	map1 := make(map[int]int)
+	for _, v := range nums1 {
+		map1[v]++
+	}
+
+	res := make([]int, 0)
+	for _, v := range nums2 {
+		if r, ok := map1[v]; ok && r > 0 {
+			map1[v]--
+			res = append(res, v)
+		}
+	}
+
+	return res
+}
