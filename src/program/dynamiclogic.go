@@ -249,7 +249,7 @@ func (this *Trie) insert(s string) {
 
 // 最佳买卖股票时机含冷冻期
 // 思路:dynamic看注释 将操作状态分为3种,到每一股时都根据前一个状态的最佳收益计算出本次状态的最佳收益 	0ms/2.5mb
-func MaxProfit(prices []int) int {
+func MaxProfitByFreeze(prices []int) int {
 	if len(prices) == 0 {
 		return 0
 	}
@@ -297,7 +297,7 @@ func UniquePaths(m int, n int) int {
 
 // 最小路径和
 // 思路: 动态规划 每个路径的和都是右边或者下边中选择路径和最小的 从右下角开始找 每个格子都找最小路径和 一直往左上角找  8ms/3.9mb
-// 该题甚至都不用建立 二维动态图 节约了0.6mb的内存
+// 优化:该题甚至都不用建立 二维动态图 利用grid就可以 节约了0.6mb的内存
 func MinPathSum(grid [][]int) int {
 	m, n := len(grid), len(grid[0])
 
@@ -348,7 +348,7 @@ func calculateMinimumHP(dungeon [][]int) int {
 
 // 爬楼梯
 // 思路:动态规划  因为只能1,2个台阶走法: 该台阶 = 该台阶-1 + 台阶-2,0号台阶与1号台阶 走法都只有1种 0ms/1.9mb
-// 反复使用2个变量 让空间复杂度o(1)
+// 优化:反复使用2个变量 让空间复杂度o(1)
 func ClimbStairs(n int) int {
 	if n <= 1 {
 		return 1
@@ -364,4 +364,52 @@ func ClimbStairs(n int) int {
 	}
 
 	return max(res1, res2)
+}
+
+// 买卖股票的最佳时机
+// 思路: 有两种操作 买/卖 最优化买:对比 上一次买与这次买 最省钱的方式,最优化卖:对比 上次卖与这次卖 最赚钱的方式 4ms/3.6mb
+// 优化: 内存可以压缩 不用建立二维数组 重复使用买卖变量 4ms/3.1mb
+func maxProfit(prices []int) int {
+	// 0 = 持有股票
+	// 1 = 不持有股票
+	n := len(prices)
+	if n == 0 {
+		return 0
+	}
+
+	buy := -prices[0]
+	sell := 0
+
+	for i := 1; i < n; i++ {
+		// 这个时候购入
+		tBuy := max(buy, -prices[i])
+		// 这个时候卖出
+		tSell := max(buy+prices[i], sell)
+		buy, sell = tBuy, tSell
+	}
+	return sell
+}
+
+// 三角形最小路径和
+// 思路: 从下往上 每次都给上一层提供下一层相邻两个最小的,直到最上层就是最小的路径和 4ms/3.1mb
+// 优化: 直接利用triangle 不浪费额外内存 （实际情况应该不能这样做）
+func minimumTotal(triangle [][]int) int {
+	n := len(triangle)
+
+	if n == 1 {
+		return triangle[0][0]
+	}
+
+	for i := n - 2; i >= 0; i-- {
+		for k, v := range triangle[i] {
+			triangle[i][k] = v + min(triangle[i+1][k], triangle[i+1][k+1])
+		}
+	}
+
+	return triangle[0][0]
+}
+
+//  编辑距离
+func minDistance(word1 string, word2 string) int {
+	return len(word1)
 }

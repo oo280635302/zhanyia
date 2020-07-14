@@ -24,7 +24,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	fmt.Println(program.ClimbStairs(44))
+	fmt.Println(program.ClimbStairs(1))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
