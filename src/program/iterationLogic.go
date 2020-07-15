@@ -50,3 +50,46 @@ func RecoverFromPreorder(S string) *TreeNode {
 
 	return path[0]
 }
+
+// 扰乱字符串-----------------------------------------------------------------------------------------------------------
+// 思路:递归, 将数切割成 1个数和2个数时匹配  切割时:头和头匹配, 头和尾匹配 0ms/2.1mb
+func isScramble(s1 string, s2 string) bool {
+	length := len(s1)
+	if !checkStrSame(s1, s2) {
+		return false
+	}
+	if length == 1 {
+		return s1[0] == s2[0]
+	}
+	if length == 2 {
+		return s1[0] == s2[0] && s1[1] == s2[1] || s1[0] == s2[1] && s1[1] == s2[0]
+	}
+
+	for i := 1; i < len(s1); i++ {
+		la, ra := s1[:i], s1[i:]
+		lb, rb := s2[:i], s2[i:]
+		nb, mb := s2[length-i:], s2[:length-i]
+		// 将s2 切割成 头和尾模式 只要s1的头和s2的头或者s2的尾配对就 = 匹配成功
+		if isScramble(la, lb) && isScramble(ra, rb) || isScramble(la, nb) && isScramble(ra, mb) {
+			return true
+		}
+	}
+	return false
+}
+
+func checkStrSame(a, b string) bool {
+	if len(a) != len(b) {
+		return false
+	}
+	var ta, tb [26]int
+	for i := 0; i < len(a); i++ {
+		ta[a[i]-'a']++
+		tb[b[i]-'a']++
+	}
+	for i := 0; i < 26; i++ {
+		if ta[i] != tb[i] {
+			return false
+		}
+	}
+	return true
+}

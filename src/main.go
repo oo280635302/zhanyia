@@ -24,7 +24,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	fmt.Println(program.ClimbStairs(1))
+	fmt.Println(program.MinDistance("214", "124"))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

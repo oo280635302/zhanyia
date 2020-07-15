@@ -1,6 +1,8 @@
 package program
 
-// 将有序数组转换为二叉搜索树
+import "fmt"
+
+// 将有序数组转换为二叉搜索树-------------------------------------------------------------------------------------------
 // 思路：递归 每次都从正中间切开	4ms/4.4mb
 func sortedArrayToBST(nums []int) *TreeNode {
 	if len(nums) == 0 {
@@ -13,7 +15,7 @@ func sortedArrayToBST(nums []int) *TreeNode {
 	}
 }
 
-// 路径总和
+// 路径总和-----------------------------------------------------------------------------------------------------------
 // 思路1: 递归 操作找到每个数的子节点上判断是否相等   8ms/4.8mb
 func hasPathSum(root *TreeNode, sum int) bool {
 	return checkPath(root, 0, sum)
@@ -34,7 +36,7 @@ func checkPath(root *TreeNode, nowSum, sum int) bool {
 	return a || b
 }
 
-// 思路2:迭代  8ms/4.8mb
+// 更优解:迭代  8ms/4.8mb
 func hasPathSum2(root *TreeNode, sum int) bool {
 	if root == nil { // 如果树为空
 		return false // 返回false
@@ -70,4 +72,32 @@ func hasPathSum2(root *TreeNode, sum int) bool {
 	}
 
 	return false
+}
+
+// 不同的二叉搜索树-------------------------------------------------------------------------------------------------
+// 思路: 动态规划 每个数都与之前数有关 如 2 = 0*1 + 1*0 以此推论每次都保存前一个数 0ms/1.9mb
+func numTrees1(n int) int {
+	if n <= 1 {
+		return 1
+	}
+	r := make([]int, n+1)
+	r[0], r[1] = 1, 1
+	for i := 2; i <= n; i++ {
+		for j := 0; j < i; j++ {
+			// 获取 Ci = C0*Ci-1 + ...+ Ci-1*C0
+			r[i] += r[j] * r[i-j-1]
+		}
+	}
+	fmt.Println(r)
+	return r[n]
+}
+
+// 更优解：类似于 (数学问题1.卡特兰数) -> 变式 0ms/1.9mb
+func NumTrees(n int) int {
+	c := 1
+	for i := 0; i < n; i++ {
+		fmt.Println(c, i)
+		c = c * (4*i + 2) / (i + 2)
+	}
+	return c
 }
