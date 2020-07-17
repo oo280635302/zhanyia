@@ -440,8 +440,44 @@ func MinDistance(word1 string, word2 string) int {
 	return dp[m][n]
 }
 
-// 解码方法----------------------------------------------------------------------------------------------------
+// 解码方法----------------------------------------------------------------------------------------------------------
 // 思路:
 func numDecodings(s string) int {
 	return 1
+}
+
+// 最长回文串--------------------------------------------------------------------------------------------------------
+// 思路: 用动规保存 当前i,j相等 就查看i-1与j+1是否相等 然后与之前保存的最长回文串比较长度  108ms/15.3ms
+func LongestPalindrome(s string) string {
+	n := len(s)
+
+	dp := make([][]int, n)
+	for i, _ := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	reply := ""
+
+	// x为i,j的距离
+	for x := 0; x < n; x++ {
+		for i := 0; i < n; i++ {
+
+			j := i + x
+			if j < n && s[i] == s[j] {
+				if i == j || i+1 == j {
+					dp[i][j] = 1
+				} else if i+1 <= j-1 && dp[i+1][j-1] == 1 {
+					dp[i][j] = 1
+				} else {
+					continue
+				}
+
+				if j-i+1 > len(reply) {
+					reply = s[i : j+1]
+				}
+			}
+		}
+	}
+
+	return reply
 }

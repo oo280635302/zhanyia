@@ -24,7 +24,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	fmt.Println(program.IsBipartite([][]int{{1}, {0, 3}, {3}, {1, 2}}))
+	fmt.Println(program.LongestPalindrome("bbbbsasa"))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

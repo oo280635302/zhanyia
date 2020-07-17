@@ -37,3 +37,33 @@ func check(matrix [][]int, mid, k, n int) bool {
 	}
 	return num >= k
 }
+
+// 搜索插入位置-------------------------------------------------------------------------------------------------------
+// 思路：二分/tree  或者直接 遍历  均为 4ms,3.1mb
+func SearchInsert(nums []int, target int) int {
+	// 左右指针
+	left, right := 0, len(nums)-1
+	// 中间值
+	mid := 0
+	// 当做 左<右 时能继续寻找
+	for left <= right {
+		mid = (left + right) / 2
+
+		if nums[mid] > target {
+			right = mid - 1
+		} else if nums[mid] == target {
+			return mid
+		} else if nums[mid] < target {
+			left = mid + 1
+		}
+	}
+	return left
+}
+func searchInsert(nums []int, target int) int {
+	for k, v := range nums {
+		if v >= target {
+			return k
+		}
+	}
+	return len(nums)
+}
