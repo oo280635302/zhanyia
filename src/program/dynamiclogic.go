@@ -481,3 +481,30 @@ func LongestPalindrome(s string) string {
 
 	return reply
 }
+
+// 交错字符串 --------------------------------------------------------------------------------------------------------
+// 思路：建立dp图， 只要当前数与s3相同 同时邻近的两边有一边能组成s3之前的数时 意味着当前s1[:i+1] + s2[:j+1] 构成交错字符串 s3[:i+j+1]  0ms/2.1mb
+func IsInterleave(s1 string, s2 string, s3 string) bool {
+	n, m, t := len(s1), len(s2), len(s3)
+	if (n + m) != t {
+		return false
+	}
+	f := make([][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		f[i] = make([]bool, m+1)
+	}
+	f[0][0] = true
+	for i := 0; i <= n; i++ {
+		for j := 0; j <= m; j++ {
+			p := i + j - 1
+			if i > 0 {
+				f[i][j] = f[i][j] || (f[i-1][j] && s1[i-1] == s3[p])
+			}
+			if j > 0 {
+				f[i][j] = f[i][j] || (f[i][j-1] && s2[j-1] == s3[p])
+			}
+		}
+	}
+
+	return f[n][m]
+}
