@@ -440,8 +440,71 @@ func MinDistance(word1 string, word2 string) int {
 	return dp[m][n]
 }
 
-// 解码方法----------------------------------------------------------------------------------------------------
+// 解码方法----------------------------------------------------------------------------------------------------------
 // 思路:
 func numDecodings(s string) int {
 	return 1
+}
+
+// 最长回文串--------------------------------------------------------------------------------------------------------
+// 思路: 用动规保存 当前i,j相等 就查看i-1与j+1是否相等 然后与之前保存的最长回文串比较长度  108ms/15.3ms
+func LongestPalindrome(s string) string {
+	n := len(s)
+
+	dp := make([][]int, n)
+	for i, _ := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	reply := ""
+
+	// x为i,j的距离
+	for x := 0; x < n; x++ {
+		for i := 0; i < n; i++ {
+
+			j := i + x
+			if j < n && s[i] == s[j] {
+				if i == j || i+1 == j {
+					dp[i][j] = 1
+				} else if i+1 <= j-1 && dp[i+1][j-1] == 1 {
+					dp[i][j] = 1
+				} else {
+					continue
+				}
+
+				if j-i+1 > len(reply) {
+					reply = s[i : j+1]
+				}
+			}
+		}
+	}
+
+	return reply
+}
+
+// 交错字符串 --------------------------------------------------------------------------------------------------------
+// 思路：建立dp图， 只要当前数与s3相同 同时邻近的两边有一边能组成s3之前的数时 意味着当前s1[:i+1] + s2[:j+1] 构成交错字符串 s3[:i+j+1]  0ms/2.1mb
+func IsInterleave(s1 string, s2 string, s3 string) bool {
+	n, m, t := len(s1), len(s2), len(s3)
+	if (n + m) != t {
+		return false
+	}
+	f := make([][]bool, n+1)
+	for i := 0; i <= n; i++ {
+		f[i] = make([]bool, m+1)
+	}
+	f[0][0] = true
+	for i := 0; i <= n; i++ {
+		for j := 0; j <= m; j++ {
+			p := i + j - 1
+			if i > 0 {
+				f[i][j] = f[i][j] || (f[i-1][j] && s1[i-1] == s3[p])
+			}
+			if j > 0 {
+				f[i][j] = f[i][j] || (f[i][j-1] && s2[j-1] == s3[p])
+			}
+		}
+	}
+
+	return f[n][m]
 }

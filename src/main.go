@@ -24,7 +24,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	fmt.Println(program.MinDistance("214", "124"))
+	fmt.Println(program.IsInterleave("aabcc", "dbbca", "aadbbcbcac"))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

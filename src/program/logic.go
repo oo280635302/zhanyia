@@ -270,28 +270,6 @@ func KMPNext(s string) []int {
 	return next
 }
 
-// 搜索插入位置
-// 思路：二分/tree  或者直接 遍历  均为 4ms,3.1mb
-func SearchInsert(nums []int, target int) int {
-	// 左右指针
-	left, right := 0, len(nums)-1
-	// 中间值
-	mid := 0
-	// 当做 左<右 时能继续寻找
-	for left <= right {
-		mid = (left + right) / 2
-
-		if nums[mid] > target {
-			right = mid - 1
-		} else if nums[mid] == target {
-			return mid
-		} else if nums[mid] < target {
-			left = mid + 1
-		}
-	}
-	return left
-}
-
 // 外观数列
 // 思路：递归/循环 4ms/6.3mb
 func CountAndSay(n int) string {
