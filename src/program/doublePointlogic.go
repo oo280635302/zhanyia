@@ -59,3 +59,38 @@ func intersect(nums1 []int, nums2 []int) []int {
 
 	return res
 }
+
+// 两数之和2 有序数组-------------------------------------------------------------------------------------------------
+// 思路：遍历 map保存已经找到的数+对应的位置  8ms/3.1mb
+func twoSum(numbers []int, target int) []int {
+	checkMap := make(map[int]int)
+	res := make([]int, 0)
+	for k, v := range numbers {
+
+		if l, ok := checkMap[target-v]; ok {
+			res = append(res, l+1)
+			res = append(res, k+1)
+			break
+		}
+		checkMap[v] = k
+	}
+
+	return res
+}
+
+// 优解:双指针 避免了内存浪费 4ms/3mb
+func TwoSumOptimal(numbers []int, target int) []int {
+	n := len(numbers)
+	left, right := 0, n-1
+	for left < right {
+		s := numbers[left] + numbers[right]
+		if s == target {
+			return []int{left + 1, right + 1}
+		} else if s < target {
+			left++
+		} else {
+			right--
+		}
+	}
+	return nil
+}

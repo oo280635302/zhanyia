@@ -510,26 +510,32 @@ func IsInterleave(s1 string, s2 string, s3 string) bool {
 }
 
 // 戳气球-------------------------------------------------------------------------------------------------------------
-// 思路：
-func maxCoins(nums []int) int {
+// 思路：反向思考,戳气球转为插入气球直到插满 插入一个气球时其值=左区间和+当前值+右区间和 选择最优的和赋值
+func MaxCoins(nums []int) int {
 	n := len(nums)
-	rec := make([][]int, n+2)
+	// dp图
+	dp := make([][]int, n+2)
 	for i := 0; i < n+2; i++ {
-		rec[i] = make([]int, n+2)
+		dp[i] = make([]int, n+2)
 	}
+	// 加入左右两边1
 	val := make([]int, n+2)
 	val[0], val[n+1] = 1, 1
 	for i := 1; i <= n; i++ {
 		val[i] = nums[i-1]
 	}
+	// 寻找最大值
 	for i := n - 1; i >= 0; i-- {
 		for j := i + 2; j <= n+1; j++ {
 			for k := i + 1; k < j; k++ {
+				// 当前值 = 左区间 + 本身值 + 右区间
 				sum := val[i] * val[k] * val[j]
-				sum += rec[i][k] + rec[k][j]
-				rec[i][j] = max(rec[i][j], sum)
+				sum += dp[i][k] + dp[k][j]
+				// 选择最优值 即 有可能
+				dp[i][j] = max(dp[i][j], sum)
 			}
 		}
 	}
-	return rec[0][n+1]
+
+	return dp[0][n+1]
 }

@@ -42,15 +42,11 @@ func main() {
 }
 
 func goSqlOp() {
-	conn, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
+	_, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
 	if err != nil {
 		fmt.Println("连接数据库失败", err)
 		return
 	}
-	var b bool
-	r := conn.QueryRow("select is_open from students where id = 5")
-	err = r.Scan(&b)
-	fmt.Println(err, b)
 }
 
 // 必备组件

@@ -1,5 +1,55 @@
 
   ---该笔记目的:解析golang源码,实现方法,原理---
 
-  1.mutex 互斥锁
+  -1.sync包
+    -1.1 mutex锁 互斥锁
+        -数据结构
+            type Mutex struct {
+                state int32
+                sema  uint32
+            }
+        -模式：
+            -normal正常状态:
+                -所有等待锁的goroutine按照FIFO顺序等待.
+                -唤醒的goroutine不会直接拥有锁，而是会和新请求锁的goroutine竞争锁的拥有.
+                -新请求锁的goroutine具有优势：它正在CPU上执行，而且可能有好几个，所以刚刚唤醒的goroutine有很大可能在锁竞争中失败.
+                -在这种情况下，这个被唤醒的goroutine会加入到等待队列的前面
+                -转换: 如果一个等待的goroutine超过1ms没有获取锁，那么它将会把锁转变为饥饿模式.
+            -interval饥饿模式:
+                -在饥饿模式下，锁的所有权将从unlock的gorutine直接交给交给等待队列中的第一个
+                -新来的goroutine将不会尝试去获得锁，即使锁看起来是unlock状态, 也不会去尝试自旋操作，而是放在等待队列的尾部
+                -转换: 当一个goroutine是队列的最后一个,同时他等待的时间<1ms,转换成正常模式
+        -加解锁方法:
+            type Locker interface {
+                Lock()
+                Unlock()
+            }
+        -涉及到的算法:
+            CAS(CompareAndSwap)     原子操作的比较和交换
+                -atomic.CompareAndSwapInt32(&地址, old, new)
+                    -调用CPU的指令 完成的原子操作
 
+    -1.2 RWMutex锁 读写锁
+        -数据结构
+            type RWMutex struct {
+            	w           Mutex  // 写入的互斥锁 - 保证写锁只有一个
+            	writerSem   uint32 // 写操作的信号量 - 通讯用
+            	readerSem   uint32 // 读操作的信号量 - 通讯用
+            	readerCount int32  // 当前读操作的个数
+            	readerWait  int32  // 当前写入操作需要等待读操作解锁的个数
+            }
+        -方法：
+            RLock()     获取读锁
+                -当有协程获取读锁时,readerCount计算就+1
+                -当readerCount < 0 (有写入操作时 会<0) 调用runtime_Semacquire方法进行等待
+            RUnlock()   释放读锁
+                -释放时: readerCount-1  如果释放后 +1等于0 就报错因为没获取锁,如果释放后 +1等于写锁减去的值也报错以为获取的是写锁却要释放读锁
+                -正好=0了 就顺带释放写锁信号 通知写锁可以进行获取了
+            Lock()     获取写锁
+                -先加入互斥锁,保证写锁只能有一个操作
+                -再讲读锁减去一个很大的数10E+,让读锁进行等待
+            Unlock()   释放写锁
+                -加上之前减去的很大的数10E+,如果 正好等于10E+ 这个数  说明没有加写锁就在释放 报错
+                -然后for循环告诉暂停的读锁可以继续进行了
+            RLocker()  用于返回一个实现了Lock()和Unlock()方法的Locker接口
+    -1.3
