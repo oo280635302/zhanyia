@@ -93,11 +93,49 @@ func numTrees1(n int) int {
 }
 
 // 更优解：类似于 (数学问题1.卡特兰数) -> 变式 0ms/1.9mb
-func NumTrees(n int) int {
+func NumTrees1(n int) int {
 	c := 1
 	for i := 0; i < n; i++ {
 		fmt.Println(c, i)
 		c = c * (4*i + 2) / (i + 2)
 	}
 	return c
+}
+
+// 不同的二叉搜索树2---------------------------------------------------------------------------------------------------
+// 思路：卡特兰树 一个节点为顶点时,所有变化次数 = dfs左数变化次数 * dfs右数变化次数  特殊情况:在边界上时有一段会出现s>e的情况 返回有一个nil的数组以便计算 4ms/4.5mb
+func GenerateTrees(n int) []*TreeNode {
+	if n == 0 {
+		return nil
+	}
+	return generateTreesDfs(1, n)
+}
+
+func generateTreesDfs(start, end int) []*TreeNode {
+	res := make([]*TreeNode, 0)
+	// 当数据s>e = 返回有nil的数组
+	if start > end {
+		res = append(res, nil)
+		return res
+	}
+	// 遇到相同的之间返回 避免继续递归 浪费时间/空间
+	if start == end {
+		res = append(res, &TreeNode{Val: start})
+		return res
+	}
+
+	// 其他情况 找当前s->e的所有节点 当一个数的固定时,其所有变化次数 = 左数变化次数 * 右数变化次数
+	for i := start; i <= end; i++ {
+		for _, v := range generateTreesDfs(start, i-1) {
+			for _, v1 := range generateTreesDfs(i+1, end) {
+				oneTree := &TreeNode{
+					Val:   i,
+					Left:  v,
+					Right: v1,
+				}
+				res = append(res, oneTree)
+			}
+		}
+	}
+	return res
 }

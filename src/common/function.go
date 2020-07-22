@@ -53,6 +53,14 @@ func GoTimer(d time.Duration, callBack TimerCallBack) (*time.Timer, chan bool) {
 	return t, stop
 }
 
+// 关闭定时器
+func CloseTimer(tm *time.Timer, ch chan bool) {
+	ch <- true
+	for !tm.Stop() {
+		close(ch)
+	}
+}
+
 // 错误日志输出
 func LogErr(a ...interface{}) {
 	Log.LogErr(a...)

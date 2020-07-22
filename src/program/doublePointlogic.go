@@ -79,7 +79,7 @@ func twoSum(numbers []int, target int) []int {
 }
 
 // 优解:双指针 避免了内存浪费 4ms/3mb
-func TwoSumOptimal(numbers []int, target int) []int {
+func TwoSumBetterSlv(numbers []int, target int) []int {
 	n := len(numbers)
 	left, right := 0, n-1
 	for left < right {
@@ -93,4 +93,45 @@ func TwoSumOptimal(numbers []int, target int) []int {
 		}
 	}
 	return nil
+}
+
+// 旋转数组的最小数字 + 寻找旋转排序数组中的最小值 + 寻找旋转排序数组中的最小值2---3道题共同解法
+// 思路：双指针 左右共同寻找最小值(左>右 就= 右最小),需要注意的是初始最小值设为number[0] 为没旋转的数组最小的值 0ms/3.1mb
+func minArray(numbers []int) int {
+	n := len(numbers)
+	// 数组为0直接返回
+	if n == 0 {
+		return 0
+	}
+
+	minNum := numbers[0]
+	// 左右两边共同开工,寻找最小值
+	l, r := 0, n-1
+	for l < r {
+		if numbers[l] > numbers[l+1] || numbers[r-1] > numbers[r] {
+			minNum = min(minNum, numbers[l+1])
+			minNum = min(minNum, numbers[r])
+			break
+		}
+		l++
+		r--
+	}
+	return minNum
+}
+
+// 优化解: 两份查找 中间切割 如果中间值<右边 = min在左边的区间里 将m赋值给r 同理将m+1赋给l ,如果相等r-- 破坏平衡 4ms/3.1mb
+func minArrayBetterSlv(numbers []int) int {
+	l := 0
+	r := len(numbers) - 1
+	for l < r {
+		m := l + (r-l)/2
+		if numbers[m] < numbers[r] {
+			r = m
+		} else if numbers[m] > numbers[r] {
+			l = m + 1
+		} else {
+			r--
+		}
+	}
+	return numbers[l]
 }

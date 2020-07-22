@@ -1,8 +1,8 @@
 package main
 
 import (
-	sql "database/sql"
 	"fmt"
+	"github.com/jinzhu/gorm"
 	"math/rand"
 	"os"
 	"os/signal"
@@ -10,7 +10,6 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -23,8 +22,7 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
-	fmt.Println(program.IsInterleave("aabcc", "dbbca", "aadbbcbcac"))
+	//fmt.Println(program.GenerateTrees(1))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
@@ -42,11 +40,22 @@ func main() {
 }
 
 func goSqlOp() {
-	_, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
+	//_, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
+	//if err != nil {
+	//	fmt.Println("连接数据库失败", err)
+	//	return
+	//}
+	db, err := gorm.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
 	if err != nil {
-		fmt.Println("连接数据库失败", err)
 		return
 	}
+	type Student struct {
+		Key string
+		val int64
+	}
+	a := &Student{}
+	dErr := db.Table("a_students").Where("`key` = '222'").Find(a)
+	fmt.Println(dErr.Error, dErr.Error == gorm.ErrRecordNotFound, a)
 }
 
 // 必备组件
