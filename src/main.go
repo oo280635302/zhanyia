@@ -10,6 +10,7 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -22,7 +23,8 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-	//fmt.Println(program.GenerateTrees(1))
+
+	fmt.Println(program.LetterCombinations("23"))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
