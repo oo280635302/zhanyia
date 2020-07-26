@@ -24,7 +24,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	fmt.Println(program.LetterCombinations("23"))
+	fmt.Println(program.SplitArray([]int{2, 5, 6}, 2))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

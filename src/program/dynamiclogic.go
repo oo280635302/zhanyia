@@ -545,3 +545,91 @@ func MaxCoins(nums []int) int {
 func divisorGame(N int) bool {
 	return N%2 == 0
 }
+
+// 分割数组的最大值---------------------------------------------------------------------------------------------------
+// 思路：将数组所有段都进行分段比较  36ms/2.5mb
+func SplitArray(nums []int, m int) int {
+	n := len(nums)
+
+	f := make([][]int, n+1)
+	sub := make([]int, n+1)
+	for i := 0; i < len(f); i++ {
+		f[i] = make([]int, m+1)
+		for j := 0; j < len(f[i]); j++ {
+			f[i][j] = math.MaxInt32
+		}
+	}
+	// 数组各数的前数累加值
+	for i := 0; i < n; i++ {
+		sub[i+1] = sub[i] + nums[i]
+	}
+	f[0][0] = 0
+
+	for i := 1; i <= n; i++ {
+		for j := 1; j <= min(i, m); j++ {
+			for k := 0; k < i; k++ {
+				// 其
+				f[i][j] = min(f[i][j], max(f[k][j-1], sub[i]-sub[k]))
+			}
+		}
+	}
+
+	return f[n][m]
+}
+
+// 矩阵中的最长递增路径--------------------------------------------------------------------------------------------------
+// 思路： 拓扑排序 52 ms,6.8 MB
+var (
+	dirs          = [][]int{[]int{-1, 0}, []int{1, 0}, []int{0, -1}, []int{0, 1}}
+	rows, columns int
+)
+
+func longestIncreasingPath(matrix [][]int) int {
+	if len(matrix) == 0 || len(matrix[0]) == 0 {
+		return 0
+	}
+	rows, columns = len(matrix), len(matrix[0])
+	outdegrees := make([][]int, rows)
+	for i := 0; i < rows; i++ {
+		outdegrees[i] = make([]int, columns)
+	}
+	for i := 0; i < rows; i++ {
+		for j := 0; j < columns; j++ {
+			for _, dir := range dirs {
+				newRow, newColumn := i+dir[0], j+dir[1]
+				if newRow >= 0 && newRow < rows && newColumn >= 0 && newColumn < columns && matrix[newRow][newColumn] > matrix[i][j] {
+					outdegrees[i][j]++
+				}
+			}
+		}
+	}
+
+	queue := [][]int{}
+	for i := 0; i < rows; i++ {
+		for j := 0; j < columns; j++ {
+			if outdegrees[i][j] == 0 {
+				queue = append(queue, []int{i, j})
+			}
+		}
+	}
+	ans := 0
+	for len(queue) != 0 {
+		ans++
+		size := len(queue)
+		for i := 0; i < size; i++ {
+			cell := queue[0]
+			queue = queue[1:]
+			row, column := cell[0], cell[1]
+			for _, dir := range dirs {
+				newRow, newColumn := row+dir[0], column+dir[1]
+				if newRow >= 0 && newRow < rows && newColumn >= 0 && newColumn < columns && matrix[newRow][newColumn] < matrix[row][column] {
+					outdegrees[newRow][newColumn]--
+					if outdegrees[newRow][newColumn] == 0 {
+						queue = append(queue, []int{newRow, newColumn})
+					}
+				}
+			}
+		}
+	}
+	return ans
+}
