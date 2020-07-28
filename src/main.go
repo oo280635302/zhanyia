@@ -1,16 +1,19 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/jinzhu/gorm"
+	"io/ioutil"
 	"math/rand"
+	"net/http"
 	"os"
 	"os/signal"
+	"strings"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 
 	_ "github.com/jinzhu/gorm/dialects/mysql"
@@ -23,9 +26,8 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
-	fmt.Println(program.LetterCombinations("23"))
-
+	//fmt.Println(program.LetterCombinations("23"))
+	cs()
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -39,6 +41,36 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func cs() {
+	inter := make(map[string]interface{})
+
+	// 创建请求
+	req, err := http.NewRequest("GET", "http://manage-test.rvaka.cn/v1/manage/open/word/order", strings.NewReader("page=1&size=1"))
+	if err != nil {
+		fmt.Println("获取工单详情 http newRequest has err:", err)
+		return
+	}
+	req.Header.Set("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNTk1OTMwMTM5LCJleHAiOjE1OTY1MzQ5Mzl9.cwR0gHkLyD6WWkVYvTPu7Mop6VgrxK32wnXmNwdA9As")
+
+	c := http.Client{}
+	resp, err := c.Do(req)
+	if err != nil {
+		fmt.Println("do has err:", err)
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil || len(body) == 0 {
+		fmt.Println("获取工单列表 http 读取resp.body失败 err:", err)
+		return
+	}
+	err = json.Unmarshal(body, &inter)
+	if err != nil {
+		fmt.Println("unmarl err:", err)
+		return
+	}
+	fmt.Println(inter)
 }
 
 func goSqlOp() {

@@ -12,6 +12,10 @@ func GinListener() {
 		c.String(http.StatusOK, "hello word\n123")
 		fmt.Println("url", c.Request.Host)
 	})
+	r.GET("/123", func(c *gin.Context) {
+		c.String(http.StatusOK, "hello word\n123")
+		fmt.Println("url", c.Request.Host)
+	})
 
 	//监听端口默认为8080
 	r.Run(":8000")
