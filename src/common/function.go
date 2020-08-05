@@ -1,9 +1,14 @@
 package common
 
 import (
+	"fmt"
+	"github.com/golang/protobuf/proto"
 	"os"
+	"reflect"
 	"regexp"
+	"strconv"
 	"strings"
+	"sync"
 	"time"
 )
 
@@ -172,4 +177,69 @@ func getAllTimeStamp(sYear, sMonth, sDay, eYear, eMonth, eDay int, uint Unit) []
 		arr = append(arr, oneData)
 	}
 	return arr
+}
+
+func UnmarshalPb2Url(message proto.Message) {
+	vm := reflect.ValueOf(message).Elem()
+	str := ""
+	for i := 0; i < vm.NumField(); i++ {
+		refField := vm.Type().Field(i)
+
+		jsonTagRev := refField.Tag.Get("json")
+		jsonTagArr := strings.Split(jsonTagRev, ",")
+		jsonTag := jsonTagArr[0]
+		if jsonTag == "-" {
+			continue
+		}
+		kd := vm.FieldByName(refField.Name).Kind()
+
+		switch kd {
+		case reflect.Int64, reflect.Int32, reflect.Int16, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
+			str += fmt.Sprintf("%v=%s&", jsonTag, strconv.Itoa(int(kd)))
+		case reflect.String:
+			str += fmt.Sprintf("%v=%s&", jsonTag, string(kd))
+		case reflect.Bool:
+			str += fmt.Sprintf("%v=%s&", jsonTag, kd)
+		}
+	}
+	fmt.Println(str)
+}
+
+type call struct {
+	wg  sync.WaitGroup
+	val interface{}
+	err error
+}
+
+type Group struct {
+	mu    sync.Mutex
+	calls map[string]*call
+}
+
+var g Group
+
+// 同一执行时间内的同一操作 只执行一次且返回相同数据
+func Do(key string, fn func() (interface{}, error)) (interface{}, error) {
+	g.mu.Lock()
+	if g.calls == nil {
+		g.calls = make(map[string]*call)
+	}
+
+	if c, ok := g.calls[key]; ok {
+		g.mu.Unlock()
+		c.wg.Wait()
+		return c.val, c.err
+	}
+
+	c := &call{}
+	c.wg.Add(1)
+	g.calls[key] = c
+	g.mu.Unlock()
+
+	c.val, c.err = fn()
+	c.wg.Done()
+	g.mu.Lock()
+	delete(g.calls, key)
+	g.mu.Unlock()
+	return c.val, c.err
 }

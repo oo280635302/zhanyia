@@ -26,8 +26,11 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
+
+	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
+
 	//fmt.Println(program.LetterCombinations("23"))
-	cs()
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -43,42 +46,38 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func cs() {
+func csHttp() {
 	inter := make(map[string]interface{})
-
-	// 创建请求
-	req, err := http.NewRequest("GET", "http://manage-test.rvaka.cn/v1/manage/open/word/order", strings.NewReader("page=1&size=1"))
+	str := "domain=admin-proxy&domainAddress=&title=123&type=1&content=123&category=6603&priority=4&contactInformation=1&phone=&email=&contactTimeType=1&contactTimeStart=&contactTimeEnd=&annex=Fp96GLfqIKu34Hi8pp2fNWTLXudK&createName=xiaoka"
+	req, err := http.NewRequest("POST", "http://10.10.2.1:9011/api/v1/manage/open/word/order", strings.NewReader(str))
 	if err != nil {
-		fmt.Println("获取工单详情 http newRequest has err:", err)
+		fmt.Println("新增工单 http newRequest has err:", err)
 		return
 	}
-	req.Header.Set("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNTk1OTMwMTM5LCJleHAiOjE1OTY1MzQ5Mzl9.cwR0gHkLyD6WWkVYvTPu7Mop6VgrxK32wnXmNwdA9As")
 
-	c := http.Client{}
+	req.Header.Set("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNTk2NTI1MzQ4LCJleHAiOjE1OTcxMzAxNDh9.hNBeNVYQxlf25k_SZn9EXNwP7XlO-iVgBmwSoQAf4q0")
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	//req.Header.Set("Content-Type", "application/json")
+
+	// 发送请求
+	c := &http.Client{}
 	resp, err := c.Do(req)
-	if err != nil {
-		fmt.Println("do has err:", err)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		fmt.Println("新增工单 http 请求失败 err:", err, resp.StatusCode, str)
 		return
 	}
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil || len(body) == 0 {
-		fmt.Println("获取工单列表 http 读取resp.body失败 err:", err)
+	defer resp.Body.Close()
+
+	body, e := ioutil.ReadAll(resp.Body)
+	if e != nil || len(body) == 0 {
+		fmt.Println("新增工单 读取resp.body失败 err:", e)
 		return
 	}
-	err = json.Unmarshal(body, &inter)
-	if err != nil {
-		fmt.Println("unmarl err:", err)
-		return
-	}
+	json.Unmarshal(body, &inter)
 	fmt.Println(inter)
 }
 
 func goSqlOp() {
-	//_, err := sql.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
-	//if err != nil {
-	//	fmt.Println("连接数据库失败", err)
-	//	return
-	//}
 	db, err := gorm.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
 	if err != nil {
 		return

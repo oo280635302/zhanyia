@@ -1748,7 +1748,7 @@
 			-value名.Kind()				获取reflectvalue类型的类别
 				//包名.Student 类型   stuct 类别
 			-value名.Elem()				获取value持有的指针指向的类型或者值
-				-当传入的是指针类型的数据时使用,不然类别是ptr
+				-当传入的是指针类型的数据时使用,不然类别是ptr !!!
 			-value名.SetString("...")	将指针指向的值进行改变
 				-实例：
 					var str string = "Tom"
@@ -2512,7 +2512,7 @@
 		hex.EncodeToString(h.sum(nil))
 	
   43.golang的Gin框架
-	-第三方库："github.com/gin-gonic/gin"
+	-第三方库："github.com/gin-gonic/gn"k
 	-获取Enigine实例-
 		-gin.Default() 				获取一个Engine的实例,返回router
 		-gin.New()					获取一个Engine的实例,无中间件,返回router
@@ -3251,7 +3251,7 @@
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogofast_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
     -protoc-gen-gogofaster 基于gogofast 同时引入减少xxx_...的字段
         -脚本需要自行go build
-        -编译pb.go文件: protoc -I=./ -I=d:/gopath/src --gogofaster_out=plugins=grpc:./ privacy.proto
+        -编译pb.go文件: protoc -I=./ -I=e:/gopath/src --gogofaster_out=plugins=grpc:./ privacy.proto
     -protoc-gen-gogoslick 基于gogofaster 同时但是有已生成的字符串
         -脚本需要自行go build
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogoslick_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
