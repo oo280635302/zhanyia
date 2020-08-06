@@ -57,7 +57,6 @@ func csHttp() {
 
 	req.Header.Set("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNTk2NTI1MzQ4LCJleHAiOjE1OTcxMzAxNDh9.hNBeNVYQxlf25k_SZn9EXNwP7XlO-iVgBmwSoQAf4q0")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	//req.Header.Set("Content-Type", "application/json")
 
 	// 发送请求
 	c := &http.Client{}

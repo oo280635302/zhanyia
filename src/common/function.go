@@ -243,3 +243,21 @@ func Do(key string, fn func() (interface{}, error)) (interface{}, error) {
 	g.mu.Unlock()
 	return c.val, c.err
 }
+
+// 不应gc的线程安全指针类型
+var builderPool = sync.Pool{
+	New: func() interface{} {
+		return &strings.Builder{}
+	},
+}
+
+// 获取可以自动扩容字符串builder 减少时空浪费
+func GetBuilder() *strings.Builder {
+	return builderPool.Get().(*strings.Builder)
+}
+
+// 清理builder
+func DeleteBuilder(b *strings.Builder) {
+	b.Reset()
+	builderPool.Put(b)
+}

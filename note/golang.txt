@@ -316,6 +316,7 @@
 		    -b.WriteString(str)
 		    -b.WriteByte(byte)
 		    -b.String()
+		        -其真正的优势 是创建的类型是切片不需要重新分配内存  普通字符串拼接是数组
         -stings.TrimLeft("字符串","需要去掉的左边的字")     将字符串中左边起匹配该字的去掉
 
 	-binary	*数字与字节序列的转换*
