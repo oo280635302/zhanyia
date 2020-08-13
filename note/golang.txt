@@ -1858,7 +1858,7 @@
 		-使用：
 			引入包：github.com/garyburd/redigo/redis
 		-连入redis服务器
-			-reidis.Dial("协议","地址+端口")	返回conn和err
+			-redis.Dial("协议","地址+端口")	返回conn和err
 			-Conn名.Close()					关闭服务器
 			-Conn名.Do(Redis指令)			进行redis操作,返回是否成功(如果获取,获得结果需要内置的类型断言)和err
 			-redis.Int()					类型断言,返回值,err
@@ -3257,6 +3257,8 @@
         -脚本需要自行go build
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogoslick_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
 
+  56.阿里云文件上传下载
+    -库："github.com/aliyun/aliyun-oss-go-sdk/oss"
 
 
 
