@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"github.com/jinzhu/gorm"
+	"github.com/go-redis/redis"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -26,7 +26,8 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
+	//csRedis()
+	//csHttp()
 	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
 
 	//fmt.Println(program.LetterCombinations("23"))
@@ -48,10 +49,10 @@ func main() {
 
 func csHttp() {
 	inter := make(map[string]interface{})
-	str := "domain=admin-proxy&domainAddress=&title=123&type=1&content=123&category=6603&priority=4&contactInformation=1&phone=&email=&contactTimeType=1&contactTimeStart=&contactTimeEnd=&annex=Fp96GLfqIKu34Hi8pp2fNWTLXudK&createName=xiaoka"
-	req, err := http.NewRequest("POST", "http://10.10.2.1:9011/api/v1/manage/open/word/order", strings.NewReader(str))
+	str := "id=143&domain=admin-proxy&domainAddress=&title=少时诵诗书是&type=3&content=胜多负少范德萨范德萨发生的&category=3&priority=4&contactInformation=&phone=&email=&contactTimeType=1&contactTimeStart=&contactTimeEnd=&annex=&state=1"
+	req, err := http.NewRequest("PUT", "http://10.10.2.1:9011/api/v1/manage/open/word/order", strings.NewReader(str))
 	if err != nil {
-		fmt.Println("新增工单 http newRequest has err:", err)
+		fmt.Println("修改工单 http newRequest has err:", err)
 		return
 	}
 
@@ -74,20 +75,6 @@ func csHttp() {
 	}
 	json.Unmarshal(body, &inter)
 	fmt.Println(inter)
-}
-
-func goSqlOp() {
-	db, err := gorm.Open("mysql", "root:123@tcp(127.0.0.1:3306)/cs?charset=utf8")
-	if err != nil {
-		return
-	}
-	type Student struct {
-		Key string
-		val int64
-	}
-	a := &Student{}
-	dErr := db.Table("a_students").Where("`key` = '222'").Find(a)
-	fmt.Println(dErr.Error, dErr.Error == gorm.ErrRecordNotFound, a)
 }
 
 // 必备组件
@@ -126,4 +113,16 @@ func mapSpace() {
 	}
 	n := common.ImageToSqArray(a)
 	common.PrintDoubleMap(n)
+}
+
+func csRedis() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
+		Password: "YtYnpW9dbF1Y0i3j", // no password set
+		DB:       0,                  // use default DB
+	})
+
+	// 7e55fa97e5ea48ebb2fb8c4b17eab867 老兵
+	result := client.HSet("privacy1_server", "7e55fa97e5ea48ebb2fb8c4b17eab867", 1)
+	fmt.Print(result.String())
 }
