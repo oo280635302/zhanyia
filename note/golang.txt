@@ -3261,10 +3261,16 @@
   56.阿里云文件上传下载
     -库："github.com/aliyun/aliyun-oss-go-sdk/oss"
 
+  57.base64编解码
+    -相关库: "encoding/base64"
+    -字符串的编/解码:
+        -base64.StdEncoding.EncodeToString()    将[]byte编码成base64的string
+        -base64.StdEncoding.DecodeString()      将base64的string解码成byte数组
+        -base64.StdEncoding.DecodedLen()        字节数对应的编码长度
 
-
-
-
+  57.AES加密/解密
+    -相关库: "crypto/aes"
+    -
 
 
 
