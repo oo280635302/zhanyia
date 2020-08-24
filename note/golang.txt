@@ -3253,6 +3253,7 @@
     -protoc-gen-gogofaster 基于gogofast 同时引入减少xxx_...的字段
         -脚本需要自行go build
         -编译pb.go文件: protoc -I=./ -I=e:/gopath/src --gogofaster_out=plugins=grpc:./ privacy.proto
+                        protoc -I=./ -I=e:/gopath/src --proto_path=e://work/v5-server/src/ --gogofaster_out=plugins=grpc:./ passenger.proto
     -protoc-gen-gogoslick 基于gogofaster 同时但是有已生成的字符串
         -脚本需要自行go build
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogoslick_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
@@ -3260,10 +3261,16 @@
   56.阿里云文件上传下载
     -库："github.com/aliyun/aliyun-oss-go-sdk/oss"
 
+  57.base64编解码
+    -相关库: "encoding/base64"
+    -字符串的编/解码:
+        -base64.StdEncoding.EncodeToString()    将[]byte编码成base64的string
+        -base64.StdEncoding.DecodeString()      将base64的string解码成byte数组
+        -base64.StdEncoding.DecodedLen()        字节数对应的编码长度
 
-
-
-
+  57.AES加密/解密
+    -相关库: "crypto/aes"
+    -
 
 
 

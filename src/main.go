@@ -27,7 +27,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	//csRedis()
-	//csHttp()
+	csHttp()
 	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
 
 	//fmt.Println(program.LetterCombinations("23"))
@@ -49,21 +49,21 @@ func main() {
 
 func csHttp() {
 	inter := make(map[string]interface{})
-	str := "id=143&domain=admin-proxy&domainAddress=&title=少时诵诗书是&type=3&content=胜多负少范德萨范德萨发生的&category=3&priority=4&contactInformation=&phone=&email=&contactTimeType=1&contactTimeStart=&contactTimeEnd=&annex=&state=1"
-	req, err := http.NewRequest("PUT", "http://10.10.2.1:9011/api/v1/manage/open/word/order", strings.NewReader(str))
+	str := "phone=1234444444&password=123&app_key=488441998952435da895286632e82f40&timeStamp=1597636234"
+	req, err := http.NewRequest("PUT", "https://v5preapp.rvaka.cn/passenger/api/v1/changePassword", strings.NewReader(str))
 	if err != nil {
 		fmt.Println("修改工单 http newRequest has err:", err)
 		return
 	}
 
-	req.Header.Set("Authorization", "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNTk2NTI1MzQ4LCJleHAiOjE1OTcxMzAxNDh9.hNBeNVYQxlf25k_SZn9EXNwP7XlO-iVgBmwSoQAf4q0")
+	req.Header.Set("Authorization", "76AC42E5DB74B88A7512437BBE85FA5BCE7AC890")
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 
 	// 发送请求
 	c := &http.Client{}
 	resp, err := c.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		fmt.Println("新增工单 http 请求失败 err:", err, resp.StatusCode, str)
+		fmt.Println("新增工单 http 请求失败 err:", err, str)
 		return
 	}
 	defer resp.Body.Close()
