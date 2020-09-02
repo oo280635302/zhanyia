@@ -2180,6 +2180,13 @@
 		-ptypes.MarshalAny(proto.Message)	将protobuf的类型转换成any.Any类型
 		-ptypes.Empty(*any.Any)				根据any.Any new一个proto实例
 		-ptypes.UnmarshalAny(*any.Any,&proto.Message)	将Any解析成proto.Message类型
+
+	-proto引用其他proto包||引用同级proto 的问题：
+        -引用其他proto包：
+            import "xx/xx.proto";
+        -引用同级proto包（一定要加go_package,不然会出现循环引包的问题）
+            option go_package = "proto路径";
+            import "xx.proto";
 		
   27.go mod 跳出gopath 自动安装依赖
 	-在项目文件夹下go mod init packagename
