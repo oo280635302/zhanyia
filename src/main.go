@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
+	_ "github.com/jinzhu/gorm/dialects/mysql"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -15,8 +16,6 @@ import (
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	pb "zhanyia/src/proto"
-
-	_ "github.com/jinzhu/gorm/dialects/mysql"
 )
 
 func main() {
@@ -29,7 +28,6 @@ func main() {
 	//csRedis()
 	csHttp()
 	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
-
 	//fmt.Println(program.LetterCombinations("23"))
 
 	// 持久化
