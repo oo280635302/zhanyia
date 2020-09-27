@@ -6,7 +6,7 @@ require (
 	github.com/boombuler/barcode v1.0.0
 	github.com/garyburd/redigo v1.6.0
 	github.com/gin-gonic/gin v1.6.3
-	github.com/go-redis/redis v6.15.9+incompatible // indirect
+	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gogo/protobuf v1.3.1
@@ -18,4 +18,5 @@ require (
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	github.com/willf/bitset v1.1.10 // indirect
+	go.mongodb.org/mongo-driver v1.4.1 // indirect
 )

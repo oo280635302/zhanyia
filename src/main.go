@@ -1,10 +1,11 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
-	_ "github.com/jinzhu/gorm/dialects/mysql"
+	_ "github.com/go-sql-driver/mysql"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -13,6 +14,7 @@ import (
 	"strings"
 	"syscall"
 	"time"
+	"unsafe"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	pb "zhanyia/src/proto"
@@ -25,11 +27,8 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-	//csRedis()
-	csHttp()
 	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
-	//fmt.Println(program.LetterCombinations("23"))
-
+	csMysql()
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -45,34 +44,70 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func csHttp() {
-	inter := make(map[string]interface{})
-	str := "phone=1234444444&password=123&app_key=488441998952435da895286632e82f40&timeStamp=1597636234"
-	req, err := http.NewRequest("PUT", "https://v5preapp.rvaka.cn/passenger/api/v1/changePassword", strings.NewReader(str))
+func byte2string2(in [16]byte) string {
+	tmp := make([]byte, 0)
+	x := (*[3]uintptr)(unsafe.Pointer(&tmp))
+	x[0] = uintptr(unsafe.Pointer(&in))
+	x[1] = 16
+	x[2] = 16
+	return string(tmp)
+}
+
+func csMysql() {
+	db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
-		fmt.Println("修改工单 http newRequest has err:", err)
+		panic(err)
+	}
+	db.SetConnMaxLifetime(600 * time.Second)
+	db.SetMaxOpenConns(50)
+	db.SetMaxIdleConns(20)
+	stm, err := db.Prepare("insert into `cs`.`1E` (`key1`,`key2`,`value1`,`value2`) value (?,?,?,?)")
+	if err != nil {
+		fmt.Println("insert has err:", err)
 		return
 	}
+	for i := 23004; i <= 100000; i++ {
+		r, err := stm.Exec(i, i, i, i)
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+		fmt.Println(r.LastInsertId())
+	}
+}
 
-	req.Header.Set("Authorization", "76AC42E5DB74B88A7512437BBE85FA5BCE7AC890")
+func csHttp() {
+	str := fmt.Sprintf("phone=%s&message=%s&countryCode=%s&type=%s&signName=%s", "13982552218", "验证码：6674,请注意查收", "86", "2", "小咖科技")
+
+	// 创建请求
+	req, err := http.NewRequest("POST", "https://manage.rvaka.com/v1/sms/open/send", strings.NewReader(str))
+	if err != nil {
+		fmt.Println("根据code获取access http newRequest has err:", err)
+		return
+	}
+	//req.URL.RawQuery = param.Encode()
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	req.Header.Set("Authorization", "yJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNjAwOTk1NDgwLCJleHAiOjE2MDE2MDAyODB9.GSkegI02HMrZBByfjCxyIaz3LHthSvKP1EBId-Z2q_")
 
 	// 发送请求
 	c := &http.Client{}
 	resp, err := c.Do(req)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		fmt.Println("新增工单 http 请求失败 err:", err, str)
+		fmt.Println("http 请求失败 err:", err, resp)
 		return
 	}
 	defer resp.Body.Close()
 
-	body, e := ioutil.ReadAll(resp.Body)
-	if e != nil || len(body) == 0 {
-		fmt.Println("新增工单 读取resp.body失败 err:", e)
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil || len(body) == 0 {
+		fmt.Println(" http 读取resp.body失败 err:", err)
 		return
 	}
-	json.Unmarshal(body, &inter)
-	fmt.Println(inter)
+	fmt.Println(string(body))
+	res := make(map[string]interface{})
+
+	json.Unmarshal(body, &res)
+	fmt.Println(res)
 }
 
 // 必备组件
@@ -114,13 +149,20 @@ func mapSpace() {
 }
 
 func csRedis() {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
-		Password: "YtYnpW9dbF1Y0i3j", // no password set
-		DB:       0,                  // use default DB
+	//client := redis.NewClient(&redis.Options{
+	//	Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
+	//	Password: "YtYnpW9dbF1Y0i3j", // no password set
+	//	DB:       0,                  // use default DB
+	//})
+	//
+	//result := client.HSet("privacy1_server", "7e55fa97e5ea48ebb2fb8c4b17eab867", 1)
+	//fmt.Print(result.String())
+
+	r := redis.NewClient(&redis.Options{
+		Addr: "localhost:6379",
+		DB:   0, // use default DB
 	})
 
-	// 7e55fa97e5ea48ebb2fb8c4b17eab867 老兵
-	result := client.HSet("privacy1_server", "7e55fa97e5ea48ebb2fb8c4b17eab867", 1)
-	fmt.Print(result.String())
+	t, _ := r.PTTL("123").Result()
+	fmt.Println(t == time.Millisecond*-2)
 }
