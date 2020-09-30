@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/jinzhu/gorm"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
@@ -28,7 +29,12 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
-	csMysql()
+	//csGorm()
+	itfaceMap := []interface{}{1, 1, []int{1, 2, 3}}
+
+	fmt.Println(itfaceMap...)
+
+	//csMysql()
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -53,7 +59,36 @@ func byte2string2(in [16]byte) string {
 	return string(tmp)
 }
 
+type cs struct {
+	Id    int64
+	Key   string
+	Value string
+}
+
+func csGorm() {
+	db, err := gorm.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
+	if err != nil {
+		fmt.Println("1", err)
+		return
+	}
+	defer db.Close()
+	db.LogMode(true)
+	arr := make([]*cs, 0)
+
+	cc := []int{1, 2}
+
+	bd := db.Table("cs.cs").Select("*").Where("`value` in (?)", cc).Find(&arr)
+	if bd.Error != nil {
+		fmt.Println(bd.Error)
+		return
+	}
+	for _, v := range arr {
+		fmt.Println(*v)
+	}
+}
+
 func csMysql() {
+
 	db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
 		panic(err)
