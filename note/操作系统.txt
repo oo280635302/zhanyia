@@ -150,13 +150,21 @@
                         解决方法：动态给进程分配页框数，算法：百度
 
     6.IO设备
-        -显示器
-
-        -键盘
-
-
-
-
+        -概念：
+            -通过pci总线进行输出输入的设备
+            -向设备控制器的寄存器写命令
+        -显示器：
+            out输出
+            库函数print -> 系统调用write -> 字符设备接口crw_table -> tty设备写tty_write -> write_q队列缓冲 -> 显示器写con_write (mov ax,pos)
+        -键盘：
+            中断处理0x21
+            keyboard.s -> read_q队列 ->tty设备读tty_read  ->  字符设备接口crw_table
+                                     -> 回显 -> write_q队列
+        -磁盘管理
+            -生磁盘
+            -文件
+            -文件使用磁盘的使用
+            -目录
 
 
 
