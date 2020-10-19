@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -21,6 +22,12 @@ import (
 	pb "zhanyia/src/proto"
 )
 
+type Stu struct {
+	Id   int      `json:"id"`
+	Name string   `json:"name"`
+	Pop  []string `json:"pop"`
+}
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -28,13 +35,20 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
-	//csGorm()
-	itfaceMap := []interface{}{1, 1, []int{1, 2, 3}}
 
-	fmt.Println(itfaceMap...)
+	conn, exit := must.GetMongoDB()
+	if conn == nil {
+		return
+	}
+	defer exit()
 
-	//csMysql()
+	r, err := conn.Database("db1").Collection("employ").InsertOne(context.TODO(), map[string]interface{}{
+		"id":    1,
+		"name":  "罗天文",
+		"phone": 13982551155,
+	})
+	fmt.Println(r, err)
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -48,6 +62,19 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func ToOffsetLimit(pg, lim int64, count int64) (offset, limit int64) {
+	diff := int64(0)
+	if count < pg*lim {
+		diff = pg*lim - count
+	}
+	offset = (pg - 1) * lim
+	limit = lim - diff
+	if limit < 0 {
+		limit = 0
+	}
+	return
 }
 
 func byte2string2(in [16]byte) string {
