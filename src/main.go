@@ -1,7 +1,6 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -36,18 +35,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	conn, exit := must.GetMongoDB()
-	if conn == nil {
-		return
-	}
-	defer exit()
-
-	r, err := conn.Database("db1").Collection("employ").InsertOne(context.TODO(), map[string]interface{}{
-		"id":    1,
-		"name":  "罗天文",
-		"phone": 13982551155,
-	})
-	fmt.Println(r, err)
+	must.GinListener(must.NewLimitTicker(60*time.Second, 100))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
