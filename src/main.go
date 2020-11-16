@@ -15,7 +15,6 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"unsafe"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	pb "zhanyia/src/proto"
@@ -35,7 +34,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	must.GinListener(must.NewLimitTicker(60*time.Second, 100))
+	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
@@ -50,28 +49,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func ToOffsetLimit(pg, lim int64, count int64) (offset, limit int64) {
-	diff := int64(0)
-	if count < pg*lim {
-		diff = pg*lim - count
-	}
-	offset = (pg - 1) * lim
-	limit = lim - diff
-	if limit < 0 {
-		limit = 0
-	}
-	return
-}
-
-func byte2string2(in [16]byte) string {
-	tmp := make([]byte, 0)
-	x := (*[3]uintptr)(unsafe.Pointer(&tmp))
-	x[0] = uintptr(unsafe.Pointer(&in))
-	x[1] = 16
-	x[2] = 16
-	return string(tmp)
 }
 
 type cs struct {
