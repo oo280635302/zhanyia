@@ -15,11 +15,16 @@ import (
 	"strings"
 	"syscall"
 	"time"
-	"unsafe"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	pb "zhanyia/src/proto"
 )
+
+type Stu struct {
+	Id   int      `json:"id"`
+	Name string   `json:"name"`
+	Pop  []string `json:"pop"`
+}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -28,13 +33,9 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-	//common.UnmarshalPb2Url(&pb.ClearJoyImage{Width:123})
-	//csGorm()
-	itfaceMap := []interface{}{1, 1, []int{1, 2, 3}}
 
-	fmt.Println(itfaceMap...)
+	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 
-	//csMysql()
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -48,15 +49,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func byte2string2(in [16]byte) string {
-	tmp := make([]byte, 0)
-	x := (*[3]uintptr)(unsafe.Pointer(&tmp))
-	x[0] = uintptr(unsafe.Pointer(&in))
-	x[1] = 16
-	x[2] = 16
-	return string(tmp)
 }
 
 type cs struct {
