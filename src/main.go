@@ -34,7 +34,13 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+
+	a := &cs{Id:213}
+	b, _ := json.Marshal(a)
+	c := &cs{}
+	json.Unmarshal(b,c)
+	fmt.Println(c)
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
@@ -49,6 +55,12 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+type cs1 struct {
+	Id float64
+	Key string
+	Value string
 }
 
 type cs struct {
