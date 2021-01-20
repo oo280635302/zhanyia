@@ -3328,8 +3328,15 @@
             2.GODEBUG gctrace =1 ./xxxx.exe
             3.GODEBUG gctrace =1 go run main.go
 
-
-
+  59.零复制string转bytes
+        func StringToSliceByte(s string) []byte {
+           l := len(s)
+           return *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
+              Data: (*(*reflect.StringHeader)(unsafe.Pointer(&s))).Data,
+              Len:  l,
+              Cap:  l,
+           }))
+        }
 
 
 

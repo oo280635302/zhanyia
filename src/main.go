@@ -1,18 +1,24 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
 	"net/url"
 	"os"
 	"os/signal"
+	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -31,8 +37,20 @@ func main() {
 
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 
-	httpReq()
+	time.Sleep(time.Duration(1609826400-time.Now().Unix()) * time.Second)
+	//csGorm()
+	//fmt.Println(RAND())
+	//httpReq()
+	//csMysql()
+	//csMongo()
 
+	go func() {
+		b := common.StringToBytes("你好")
+		fmt.Println(b)
+		fmt.Println(string(b))
+	}()
+
+	runtime.Gosched()
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -46,6 +64,22 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func RAND() int {
+	Rank := make(map[int]int, 3395)
+	for i := 1; i <= 3395; i++ {
+		Rank[i] = i
+	}
+
+	i := 1
+	for _, v := range Rank {
+		if v == 1244 {
+			return i
+		}
+		i++
+	}
+	return -1
 }
 
 type PPhoneBindReq struct {
@@ -73,7 +107,7 @@ func httpReq() {
 	req.NotifyUrl = "https://api.xiaokayun.cn/api/v1/privacy/phone/notify"
 	param, _ := json.Marshal(req)
 
-	request, err := http.NewRequest("POST", "http://117.172.236.74:30011" + "/v1/privacy/open/axb/binding", strings.NewReader(string(param)))
+	request, err := http.NewRequest("POST", "http://117.172.236.74:30011"+"/v1/privacy/open/axb/binding", strings.NewReader(string(param)))
 	if err != nil {
 		fmt.Println("绑定隐私号 http newRequest has err:", err)
 		return
@@ -82,7 +116,7 @@ func httpReq() {
 	request.Header.Set("Content-Type", "application/json;charset=utf-8")
 	request.Header.Set("Authorization", token)
 
-	client := &http.Client{Timeout: time.Second*3}
+	client := &http.Client{Timeout: time.Second * 3}
 	resp, err := client.Do(request)
 	if err != nil || resp.StatusCode != http.StatusOK {
 		fmt.Println("绑定隐私号 http 请求失败 err:", err, resp)
@@ -105,12 +139,12 @@ func httpReq() {
 }
 
 func getPublicToken() {
-	resp,err := http.PostForm("http://117.172.236.74:30011"+"/v1/platform/login" ,url.Values{
+	resp, err := http.PostForm("http://117.172.236.74:30011"+"/v1/platform/login", url.Values{
 		"appKey":      {"488441998952435da895286632e82f40"},
 		"platformKey": {"73f1d74553e6c802070142e254c8f277"},
 	})
-	if err != nil || resp.StatusCode!= http.StatusOK{
-		fmt.Println("1:",err,resp)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		fmt.Println("1:", err, resp)
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
@@ -120,14 +154,14 @@ func getPublicToken() {
 	}
 	defer resp.Body.Close()
 	m := make(map[string]interface{})
-	json.Unmarshal(body,&m)
+	json.Unmarshal(body, &m)
 	fmt.Println(m)
 }
 
 type cs struct {
-	Id    int64
-	Key   string
-	Value string
+	Id    int64  `json:"id"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 func csGorm() {
@@ -138,18 +172,18 @@ func csGorm() {
 	}
 	defer db.Close()
 	db.LogMode(true)
-	arr := make([]*cs, 0)
 
-	cc := []int{1, 2}
+	cc := &cs{}
 
-	bd := db.Table("cs.cs").Select("*").Where("`value` in (?)", cc).Find(&arr)
+	cc.Key = "8"
+	cc.Value = "8"
+
+	bd := db.Table("cs.cs").Create(cc)
 	if bd.Error != nil {
 		fmt.Println(bd.Error)
 		return
 	}
-	for _, v := range arr {
-		fmt.Println(*v)
-	}
+	fmt.Println(bd.Value.(*cs).Id)
 }
 
 func csMysql() {
@@ -161,18 +195,30 @@ func csMysql() {
 	db.SetConnMaxLifetime(600 * time.Second)
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
-	stm, err := db.Prepare("insert into `cs`.`1E` (`key1`,`key2`,`value1`,`value2`) value (?,?,?,?)")
+	//stm, err := db.Prepare("insert into `cs`.`1E` (`key1`,`key2`,`value1`,`value2`) value (?,?,?,?)")
+	//if err != nil {
+	//	fmt.Println("insert has err:", err)
+	//	return
+	//}
+	//for i := 23004; i <= 100000; i++ {
+	//	r, err := stm.Exec(i, i, i, i)
+	//	if err != nil {
+	//		fmt.Println(err)
+	//		return
+	//	}
+	//	fmt.Println(r.LastInsertId())
+	//}
+
+	sql := fmt.Sprintf("select `key1` from `cs`.`1E` where id in(%s)", "1,2,3,")
+	rows, err := db.Query(sql)
 	if err != nil {
-		fmt.Println("insert has err:", err)
+		fmt.Println(err)
 		return
 	}
-	for i := 23004; i <= 100000; i++ {
-		r, err := stm.Exec(i, i, i, i)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(r.LastInsertId())
+	for rows.Next() {
+		a := 0
+		err := rows.Scan(&a)
+		fmt.Println(a, err)
 	}
 }
 
@@ -265,4 +311,49 @@ func csRedis() {
 
 	t, _ := r.PTTL("123").Result()
 	fmt.Println(t == time.Millisecond*-2)
+}
+
+func csMongo() {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		fmt.Println("conn : ", err)
+		return
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		fmt.Println("PING ERROR:", err)
+		return
+	}
+	cur, err := client.Database("db1").Collection("employ").Find(ctx, bson.D{
+		{
+			"$or", []interface{}{
+				bson.D{
+					{
+						"id", bson.D{
+							{"$lte", 1},
+						},
+					},
+				},
+				bson.D{
+					{
+						"id", bson.D{
+							{"$gte", 3},
+						},
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for cur.Next(ctx) {
+		a := make(map[string]interface{}, 0)
+		err = cur.Decode(&a)
+		fmt.Println(err, a)
+	}
+
 }

@@ -10,6 +10,7 @@ import (
 	"strings"
 	"sync"
 	"time"
+	"unsafe"
 )
 
 // 取int64绝对值
@@ -260,4 +261,14 @@ func GetBuilder() *strings.Builder {
 func DeleteBuilder(b *strings.Builder) {
 	b.Reset()
 	builderPool.Put(b)
+}
+
+// 0拷贝 string to bytes
+func StringToBytes(s string) []byte {
+	l := len(s)
+	return *(*[]byte)(unsafe.Pointer(&reflect.SliceHeader{
+		Data: (*(*reflect.StringHeader)(unsafe.Pointer(&s))).Data,
+		Len:  l,
+		Cap:  l,
+	}))
 }
