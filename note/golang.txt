@@ -303,6 +303,13 @@
 		-runtime.GOARCH				获取当前系统架构
 		-runtime.Caller(0)			返回当前参数在文件的位置
 		-runtime.GC()               执行垃圾回收,可能会使程序卡顿
+		-runtime.Gosched()          释放当前goroutine资源，当有空闲时再进行调度
+		-runtime.Version()          查看当前golang版本
+        -runtime.GOROOT()           查看当前go root所在文件位置
+        -runtime.GOARCH             查看当前架构
+        -runtime.GOOS               查看当前操作系统
+        -runtime.Compiler           查看当前编译器
+        -
 
 	-strings
 		-strings.Trim(字符串,"需要去掉的字")			    将字符串中的某字去掉

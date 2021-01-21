@@ -1,0 +1,49 @@
+
+    1.基础概念
+        -方便用于统计、数值分析的语言
+
+    2.数据类型：
+        -原子向量
+            -Logical                逻辑型
+            -Numeric                数字型
+            -Integer                整型
+            -Complex                复合型
+            -Character              字符型
+            -Raw                    原型
+        -特殊对象
+            -Vectors 向量
+                由c()函数传入多个原子向量组成
+            -Lists 列表
+                由list()创建
+            -Matrices 二维矩阵
+                matrix()创建
+            -Arrays 数组
+                array()    多维矩阵
+            -Factors 因子
+                factor()    将向量、向量元素存储为标签 -- 标签是字符
+            -Data Frames 数据帧
+                data.frame()   表格
+        -特殊对象涉及函数
+            -c()                                          将元素组合成向量
+            -list()                                       创建列表类型
+            -matrix(c(),nrow=X, ncol=y,byrow=TRUE)        创建矩阵
+            -array(c(),dim = c(x,y,z))                    创建数组(矩阵)
+            -factor(向量)                                 创建因子
+            -nlevels(因子)                                输出标签数量
+            -data.frame(名 = 向量,...)                    创建数据帧
+
+    3.自带函数
+        -class()                        获取变量的数据类型
+        -print()                        打印
+        -cat()                          打印字符串
+        -ls()                           获取非隐藏变量
+            -all.name = TRUE            获取所有变量
+        -rm()                           删除变量
+            -rm(list = ls())            删除所有变量
+
+    4.变量
+        由字母，数字和点或下划线字符，动态数据类型
+        =  或者 <-  赋值
+        以.开头的变量为隐藏变量
+
+    5.运算

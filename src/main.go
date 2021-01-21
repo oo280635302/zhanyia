@@ -18,7 +18,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"runtime"
 	"strings"
 	"syscall"
 	"time"
@@ -39,18 +38,11 @@ func main() {
 
 	time.Sleep(time.Duration(1609826400-time.Now().Unix()) * time.Second)
 	//csGorm()
-	//fmt.Println(RAND())
 	//httpReq()
 	//csMysql()
 	//csMongo()
 
-	go func() {
-		b := common.StringToBytes("你好")
-		fmt.Println(b)
-		fmt.Println(string(b))
-	}()
-
-	runtime.Gosched()
+	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
