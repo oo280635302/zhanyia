@@ -36,7 +36,6 @@ func main() {
 
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 
-	time.Sleep(time.Duration(1609826400-time.Now().Unix()) * time.Second)
 	//csGorm()
 	//httpReq()
 	//csMysql()
