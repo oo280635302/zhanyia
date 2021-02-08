@@ -8,6 +8,7 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"github.com/tealeg/xlsx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -35,8 +36,8 @@ func main() {
 	fmt.Println("run start")
 
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
-
-	//csGorm()
+	//csXlsx()
+	csGorm()
 	//httpReq()
 	//csMysql()
 	//csMongo()
@@ -55,6 +56,10 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func CC() *cs {
+	return nil
 }
 
 func RAND() int {
@@ -164,17 +169,25 @@ func csGorm() {
 	defer db.Close()
 	db.LogMode(true)
 
-	cc := &cs{}
+	cc := make([]*cs, 0)
+	cc = append(cc, &cs{
+		Key:   "18",
+		Value: "18",
+	})
+	cc = append(cc, &cs{
+		Key:   "18",
+		Value: "18",
+	})
 
-	cc.Key = "8"
-	cc.Value = "8"
-
-	bd := db.Table("cs.cs").Create(cc)
-	if bd.Error != nil {
-		fmt.Println(bd.Error)
-		return
+	for _, v := range cc {
+		bd := db.Table("cs.cs").Create(v)
+		if bd.Error != nil {
+			fmt.Println(bd.Error)
+			return
+		}
+		fmt.Println(bd.Value.(*cs))
 	}
-	fmt.Println(bd.Value.(*cs).Id)
+
 }
 
 func csMysql() {
@@ -199,17 +212,25 @@ func csMysql() {
 	//	}
 	//	fmt.Println(r.LastInsertId())
 	//}
+	//a := []int64{1,2,3}
+	//b, _ := json.Marshal(a)
+	//r,err:= db.Exec("insert into `cs`.`cs` (`key`,`arr`) value (?,?)",1,b)
+	//if err != nil {
+	//	fmt.Println("ins err:",err)
+	//	return
+	//}
+	//fmt.Println(r.LastInsertId())
 
-	sql := fmt.Sprintf("select `key1` from `cs`.`1E` where id in(%s)", "1,2,3,")
-	rows, err := db.Query(sql)
+	rows, err := db.Query("select `key` from `cs`.`cs` where  `id` in (" + "1,2,3,4" + ")")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
+
 	for rows.Next() {
-		a := 0
-		err := rows.Scan(&a)
-		fmt.Println(a, err)
+		key := ""
+		rows.Scan(&key)
+		fmt.Println(key)
 	}
 }
 
@@ -347,4 +368,15 @@ func csMongo() {
 		fmt.Println(err, a)
 	}
 
+}
+
+func csXlsx() {
+	file, err := xlsx.OpenFile("E://downfile/EmployTemplate_1612401111603.xlsx")
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	s := file.Sheet["sheet1"]
+	//fmt.Println(len(s.Rows))
+	fmt.Println(s)
 }
