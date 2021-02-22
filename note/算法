@@ -22,8 +22,8 @@
 					}
 				}
 		-插入排序：（效率优于选择排序）
-			-概念：将数组分成有序的和无序的两部分，才开始有序的只有第一个，将无序的提一个数据出来，
-				   与前面有序依次的进行比较，每次比较没符合规则有序数据就往后移且覆盖后一个数据，直
+			-概念：将数组分成有序的和无序的两部分,才开始有序的只有第一个,将无序的提一个数据出来,
+				   与前面有序依次的进行比较,每次比较没符合规则有序数据就往后移且覆盖后一个数据,直
 				   到找到符合规则的就插入到其后面那个数据中(该数据已经copy过一次了)。
 			-实例：
 				func insertSort(arr *[5]int) {
@@ -84,11 +84,11 @@
 						QuickSort(l,right,arr)
 					}
 				}
-		-1W数比较，选择排序：9s，插入排序：2s，快速排序：0.12s（打印的情况）
+		-1W数比较,选择排序：9s,插入排序：2s,快速排序：0.12s（打印的情况）
 
     2.堆排序
         -1.先无序数组转存储成堆
-        -2.固定一个最大值，将剩余的数再构造成一个大根堆
+        -2.固定一个最大值,将剩余的数再构造成一个大根堆
         -实例:
         // 堆排序
         func heapSort(arr []int)[]int{
@@ -132,7 +132,7 @@
         }
 
     3.归并排序：
-        特点：速度仅次于快速排序nlogn，稳定
+        特点：速度仅次于快速排序nlogn,稳定
         算法：分治
         func mergeSort(r []int) []int {
             length := len(r)
@@ -160,7 +160,7 @@
         }
 ---------------------字符匹配算法-------------------------
     1.kmp算法
-        -特点：移动模式串， 不进行回溯
+        -特点：移动模式串, 不进行回溯
         -规则:
             1.正常匹配 第一次 当遇到不匹配时暂停
             2.找不匹配的字符前方是否有 相同的前缀与后缀
@@ -186,7 +186,7 @@
                     if j == lenTmpl {
                         return i - j
                     }
-                    // 当i被匹配完了，就说明没有
+                    // 当i被匹配完了,就说明没有
                     if i == lenRoot {
                         return -1
                     }
@@ -230,14 +230,14 @@
         -常见时间复杂度 n2, 常见空间复杂度 n2(空间容易优化)
         动态规划：将一个大问题分解成有相同属性的小问题进行解决
         使用动态规划的场景：
-            1.重叠子问题  不同的问题，可能都要求1个相同问题的解
+            1.重叠子问题  不同的问题,可能都要求1个相同问题的解
             2.最优子结构  子解必定也是子问题的最优解
             3.无后效性 求出来的子问题并不会因为后面求出来的改变
     2.解决问题的方法
-        1.划分状态，即划分子问题
-        2.状态表示，即如何让计算机理解子问题
-        3.状态转移，即父问题是如何由子问题推导出来的
-        4.确定边界，确定初始状态是什么？最小的子问题？最终状态又是什么
+        1.划分状态,即划分子问题
+        2.状态表示,即如何让计算机理解子问题
+        3.状态转移,即父问题是如何由子问题推导出来的
+        4.确定边界,确定初始状态是什么？最小的子问题？最终状态又是什么
     3.例子：
        -1.简单例子:
             // 最大子序和  [-2,1,-3,4,-1,2,1,-5,4]
@@ -320,10 +320,89 @@
     1.概念
         -
 
+------------------LRU的算法----------------------
+    1.概念:
+        Least Recently Used
+        淘汰时间最长且最近没被访问的数据
+        可用list实现
+    2.golang实现
+        type LRUNode struct {
+            key string
+            val interface{}
+            prev *LRUNode
+            next *LRUNode
+        }
 
+        type LRU struct {
+            dataMap map[string]*LRUNode
+            head *LRUNode
+            tail *LRUNode
+            capacity int
+            count int
+        }
 
+        func NewLRU(capacity int)LRU{
+            head := &LRUNode{}
+            tail := &LRUNode{}
+            head.next = tail
+            tail.prev = head
+            return LRU{head:head,tail:tail,capacity:capacity,count:0,dataMap:make(map[string]*LRUNode)}
+        }
 
+        func (L *LRU)Get(key string)interface{} {
+            v,ok:=L.dataMap[key]
+            if !ok {
+                return nil
+            }
+            //detach node
+            L.detachNode(v)
+            //insert first
+            L.insertFront(v)
+            return v.val
+        }
+        func (L *LRU)detachNode(node *LRUNode) {
+            node.prev.next = node.next
+            node.next.prev = node.prev
+        }
+        func (L *LRU)insertFront(node *LRUNode) {
+            node.next = L.head.next
+            L.head.next = node
+            node.prev = L.head
+        }
+        func (L *LRU)delLast(){
+            tmp:=L.tail.prev
+            tmp.prev.next = L.tail
+            L.tail.prev = tmp.prev
+            tmp.next = nil
+            tmp.prev = nil
+            L.count = L.count-1
+            delete(L.dataMap,tmp.key)
+        }
+        func (L *LRU)Set(key string,val interface{}){
+            v,ok :=L.dataMap[key]
+            if !ok {
+                node :=&LRUNode{key:key,val:val}
+                if L.count==L.capacity{
+                    L.delLast()
+                }
+                L.dataMap[key] = node
+                L.insertFront(node)
+                L.count = L.count+1
+            }else {
+                L.detachNode(v)
+                L.insertFront(v)
+            }
+        }
 
+------------------two-list的算法----------------------
+    1.概念:
+        LRU的变种
+        Two-List策略维护了两个list,active list 和 inactive list。
+        在active list上的数据被认为是hot的,不能释放。
+        只有inactive list上的数据可以被释放的。
+        首次缓存的数据会被加入到inactive list中,已经在inactive list中的数据如果再次被访问,就会移入active list中。
+        两个链表都使用了伪LRU算法维护,新的数据从尾部加入,移除时从头部移除,就像队列一样。
+        如果active list中数据的数量远大于inactive list,那么active list头部的页面会被移入inactive list中,从而位置两个表的平衡。
 
 
 

@@ -1,0 +1,29 @@
+
+
+1.内存页缓存PageCache
+    -概念：
+        Page cache是通过将磁盘中的数据缓存到内存中,从而减少磁盘I/O操作,从而提高性能。
+        此外,还要确保在page cache中的数据更改时能够被同步到磁盘上,后者被称为page回写(page writeback)。
+        一个inode对应一个page cache对象,一个page cache对象包含多个物理page
+    -page cache：
+        Page cache由内存中的物理page组成,其内容对应磁盘上的block。
+        page cache的大小是动态变化的,可以扩大,也可以在内存不足时缩小。
+        cache缓存的存储设备被称为后备存储(backing store),注意我们在block I/O一文中提到的：一个page通常包含多个block,这些block不一定是连续的
+    -读cache：
+        读得时候,先在page cache找,找不到miss再去磁盘读。
+        可以只缓存一个文件的部分内容,不需要将整个文件缓存
+    -写cache：
+        直接往cache中写入并标记dirty,并且不写入磁盘
+        加入dirty list,周期性将page的内容写入磁盘
+    -cache回收：
+        使用two-list算法,是LRU算法的变种
+        参考*算法*的two-list解释
+    -flusher线程群：
+        线程群的特点是让一个线程负责一个存储设备(比如一个磁盘驱动器),多少个存储设备就用多少个线程。
+        这样可以避免阻塞或者竞争的情况,提高效率。
+        当空闲内存低于阈值时,内核就会调用wakeup_flusher_threads()来唤醒一个或者多个flusher线程,将数据写回磁盘。
+        为了避免dirty数据在内存中驻留过长时间(避免在系统崩溃时丢失过多数据),内核会定期唤醒一个flusher线程,将驻留时间过长的dirty数据写回磁盘。
+    -内核在下面三种情况下会进行会将dirty page写回磁盘：
+        -用户进程调用sync() 和 fsync()系统调用
+        -空闲内存低于特定的阈值（threshold）
+        -Dirty数据在内存中驻留的时间超过一个特定的阈值
