@@ -1,4 +1,4 @@
-  
+  #中文文档：http://docs.kubernetes.org.cn/
   1.kubernetes简介
 	-特点：
 		轻量级，消耗资源小

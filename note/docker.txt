@@ -1,4 +1,4 @@
-
+  # docker 中文文档:http://www.dockerinfo.net/
   1.docker简介
 	-场景：开发出来的软件给运维进行部署，环境配置,操作系统不同出现问题。
 	-docker可以将代码/配置/系统/环境整体打包给运维
