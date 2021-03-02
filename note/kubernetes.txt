@@ -1,4 +1,5 @@
-  #中文文档：http://docs.kubernetes.org.cn/
+  #中文文档: http://docs.kubernetes.org.cn/
+  #Rancher中文文档: https://rancher.com/docs/rancher/v1.6/zh/
   1.kubernetes简介
 	-特点：
 		轻量级，消耗资源小
