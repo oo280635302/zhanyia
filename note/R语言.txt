@@ -1,0 +1,131 @@
+
+    1.基础概念
+        -方便用于统计、数值分析的语言
+
+    2.数据类型：
+        -原子向量
+            -Logical                逻辑型
+            -Numeric                数字型
+            -Integer                整型
+            -Complex                复合型
+            -Character              字符型
+            -Raw                    原型
+        -特殊对象
+            -Vectors 向量
+                由c()函数传入多个原子向量组成
+            -Lists 列表
+                由list()创建
+            -Matrices 二维矩阵
+                matrix()创建
+            -Arrays 数组
+                array()    多维矩阵
+            -Factors 因子
+                factor()    将向量、向量元素存储为标签 -- 标签是字符
+            -Data Frames 数据帧
+                data.frame()   表格
+        -特殊对象涉及函数
+            -c()                                          将元素组合成向量
+            -list()                                       创建列表类型
+            -matrix(c(),nrow=X, ncol=y,byrow=TRUE)        创建矩阵
+            -array(c(),dim = c(x,y,z))                    创建数组(矩阵)
+            -factor(向量)                                 创建因子
+            -nlevels(因子)                                输出标签数量
+            -data.frame(名 = 向量,...)                    创建数据帧
+
+    3.自带函数
+        -class()                        获取变量的数据类型
+        -print()                        打印
+        -cat()                          打印字符串
+        -ls()                           获取非隐藏变量
+            -all.name = TRUE            获取所有变量
+        -rm()                           删除变量
+            -rm(list = ls())            删除所有变量
+        -.libPaths()                    获取R包的位置
+        -library()                      获取已安装的所有包列表
+        -search()                       获取当前在R环境中加载的所有包
+        -nrow()                         获取列数
+        -ncol()                         获取行数
+        -gl(级别数,级别重复数,结果长度)                          生成因子水平
+        -stack(数据帧)                                          将数据帧拆分
+        -sort()                                                 数据排序，返回数据
+        -sample(范围,数量)                                      生成对应数量的随机数
+        -rank()                                                 数据排序，返回序号
+        -order()                                                返回排序后的向量下标
+        -fivenum()                                              求出5个向量的最小值、下四分位数、中位数、上四分位数、最大值
+        -cut()                                                  将向量标签化，因子化
+
+    4.变量
+        由字母，数字和点或下划线字符，动态数据类型
+        =  或者 <-  赋值
+        以.开头的变量为隐藏变量
+
+    5.运算
+        见 W3cSchool
+
+    6.包
+        安装新包:
+            1.直接从CRAN安装
+                install.packages(包名)
+            2.手动安装
+                先下载zip文件
+                install.packages(包地址, repos = NULL, type = "source")
+                    -repos=NULL 来告诉函数不使用 CRAN 中任意一个资源库
+                    -type=”source” 来告诉函数使用源代码安装
+        加载包：
+            library(包名, lib.loc = 包地址)
+
+    7.循环/条件
+        if
+            if( ){
+            } else if( ){
+            } else {
+            }
+
+        switch
+            switch{
+            条件
+            1：
+            2：
+            3:
+                ...
+            }
+
+        for
+            for( ){
+            }
+
+        repeated
+            repeated{
+            }
+
+        break
+            中止循环
+
+        next
+            跳过该次循环
+
+    8.数据重塑
+        -目的
+            解决数据帧格式不同的冲突
+        -向量合并成数据帧
+            cbind(向量...)
+        -给数据帧加入行列
+            rbind(数据帧，加入的数据帧)
+        -合并数据帧
+            merge(
+                数据帧x,
+                数据帧y,
+                ...,
+                by.x(需要匹配的列名),
+                by.y(需要匹配的列名)
+            )
+
+    9.函数
+        -样式:
+            func(参数){
+                 ...
+            }
+        -特点:
+            参数延迟评估： 当参数被使用时，才判断是否正常
+            可以默认参数： x = ?
+
