@@ -209,14 +209,31 @@
   12.连接redis服务器
 	redis-cli -h 地址
 	
-	
-	
-	
-	
-	
-	
-	
-	
+  13.redis数据结构底层
+    参考文档：https://blog.csdn.net/zwx900102/article/details/109543659
+    -字符串 最原始
+        -使用：sds作为数据结构
+        -sds:
+            -保证二进制安全：去掉C字符串需要的\0结尾字符
+            -保存length,读取长度复杂度为1
+            -预分配容量,不会出现缓冲区溢出情况,减少内存分配次数
+    -dictEntry
+    -hash
+        -使用：zip-list + hashtable
+        -数据少时用zip-list,数据多时用hashtable
+        -zip-list:
+            -在hash数据较少时,使用
+            -为减少内存使用,key-value使用拼凑类型
+    -zset 有序集合
+        -集合用链表实现
+        -使用:skip_list跳表做索引
+        -skip_list:
+            -两个连续的链表有个上级链表父节点
+             两个连续的链表父节点又有个上级链表父节点
+	         ...
+            -查询的时候跳着找,有二分思想
+            -复杂度: log(n)
+
 	
 	
 	

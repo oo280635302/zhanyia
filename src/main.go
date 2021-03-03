@@ -35,14 +35,6 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	a := make([]int, 0)
-	a = append(a, 1)
-	b, _ := json.Marshal(&a)
-
-	x := make([]int, 0)
-	json.Unmarshal(b, &x)
-	fmt.Println(x)
-
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
