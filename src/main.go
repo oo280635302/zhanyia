@@ -58,26 +58,6 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func CC() *cs {
-	return nil
-}
-
-func RAND() int {
-	Rank := make(map[int]int, 3395)
-	for i := 1; i <= 3395; i++ {
-		Rank[i] = i
-	}
-
-	i := 1
-	for _, v := range Rank {
-		if v == 1244 {
-			return i
-		}
-		i++
-	}
-	return -1
-}
-
 type PPhoneBindReq struct {
 	AreaCode    string `protobuf:"bytes,1,opt,name=areaCode,proto3" json:"areaCode,omitempty"`
 	AppKey      string `protobuf:"bytes,2,opt,name=appKey,proto3" json:"appKey,omitempty"`

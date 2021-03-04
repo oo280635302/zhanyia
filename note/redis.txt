@@ -7,9 +7,9 @@
   2.redis核心
 	-默认端口号：6379
 	-核心组件：	解析指令,对数据做相应处理
-	-然后将数据保存在内存中，类型有：string,hash,list,set集合,zset集合
+	-然后将数据保存在内存中,类型有：string,hash,list,set集合,zset集合
 		-hash 保存多对键值对的数据
-		-list 前后可以加数据的channel（形容）
+		-list 前后可以加数据的channel（形容)
 	-最后保存在文件里面：.dbf和.dbm
 	
   3.基本操作
@@ -37,7 +37,7 @@
 			-当键名不存在时,会让其值先变成0 再+1
 			-无法对不是数字的值减,会报错
 		-EXISTS 键名		检查给定Key是否存在
-			-存在1，不存在0
+			-存在1,不存在0
 		-EXPIRE 键名 时间(s)	给指定键名生存时间,时间过后就会自动删除
 			-设置成功返回1,失败0
 		-EXPIREAT 键名 时间戳   在到达时间戳后自动删除
@@ -108,7 +108,7 @@
 				-返回1存在,返回0不存在 
 			-删除Set指定元素
 				-srem 键名 元素1 元素2...
-				-成功返回1，不成功返回0
+				-成功返回1,不成功返回0
 			-获取指定key元素个数
 				-SCARD 键名
 			-判断元素是否存在于key中
@@ -178,19 +178,19 @@
   7.set集合(无序)-介绍
 	-元素是无序的
 	-元素的值不能重复
-	-添加时返回0，说明没有添加进去
+	-添加时返回0,说明没有添加进去
 	
   8.redis命令参考大全
 	url:http://redisdoc.com/
 	
   9.redi密码的设置:
 	当没有密码的时候：
-		config get requirepass XXX（password）	设置密码
+		config get requirepass XXX（password)	设置密码
 	当有密码的时候：
 		需要先验证密码：
 			auth XXX
 		再设置密码：	
-			config get requirepass XXX（password）	设置密码
+			config get requirepass XXX（password)	设置密码
 	登录有密码的redis:
 		./src/redis-cli -p 6379 -a XXX
 	
@@ -211,13 +211,98 @@
 	
   13.redis数据结构底层
     参考文档：https://blog.csdn.net/zwx900102/article/details/109543659
-    -字符串 最原始
-        -使用：sds作为数据结构
-        -sds:
-            -保证二进制安全：去掉C字符串需要的\0结尾字符
-            -保存length,读取长度复杂度为1
-            -预分配容量,不会出现缓冲区溢出情况,减少内存分配次数
-    -dictEntry
+    -基本组成
+        -字符串
+            -对c字符串进行了重新定义
+            -使用：sds作为数据结构
+            -sds:
+                -保证二进制安全：去掉C字符串需要的\0结尾字符
+                -保存length,读取长度复杂度为1
+                -预分配容量,不会出现缓冲区溢出情况,减少内存分配次数
+        -dictEntry
+            -顶层obj
+            -键:sds 值:redisObj
+            -同时为了防止hash冲突有拉链表
+        -redisObj
+            -保存数据信息的数据结构
+            -保存的信息有：
+                -type对象类型
+                -encoding编码
+                -lru最后一次被访问时间
+                -refcount被引用次数
+                -ptr实际的数据存储结构
+            -3编码类型
+                -int
+                    当我们用字符串对象存储的是整型,且能用8个字节的long类型进行表示（即263-1)
+                    则Redis会选择使用int编码来存储,而且此时redisObject对象中的ptr指针直接替换为long类型
+                -embstr
+                    当字符串对象中存储的是字符串,且长度小于44(3.2版本之前是39)时,Redis会选择使用embstr编码来存储
+                -sds
+                    当字符串对象中存储的是字符串,且长度大于44时,Redis会选择使用raw编码来存储
+                -编码一旦升级,不会回退
+    -list
+        -使用：linked-list+zip-list(老),quick-list(新)
+        -linked-list
+            -双向列表
+        -zip-list
+            -压缩类型的列表,使用连续内存块的顺序结构
+            -目的：时间换空间,压缩内存利用率
+            -保存上一个节点的长度和当前节点的长度,然后依次推理出上下节点的位置
+            -组成：
+                -zlbytes
+                    -记录压缩列表占用内存字节数(包括本身所占用的4个字节)
+                -zltail
+                    -记录压缩列表尾节点距离压缩列表的起始地址有多少个字节(通过这个值可以计算出尾节点的地址)
+                -zllen
+                    -记录压缩列表中包含的节点数量,当列表值超过可以存储的最大值(65535)时,次值固定存储65535,因此此时需要遍历整个压缩列表才能计算出真实节点数
+                -zlentry
+                    -压缩列表中的各个节点,长度由存储的实际数据决定
+                    -prevlen
+                        -存储了前一个entry的长度
+                        -当链表的前一个entry占用字节数小于254,此时prevlen只用1个字节进行表示.
+                        -当链表的前一个entry占用字节数大于等于254,此时prevlen用5个字节来表示,
+                         其中第1个字节的值是254（相当于是一个标记,代表后面跟了一个更大的值）,后面4个字节才是真正存储前一个entry的占用字节数
+                    -encoding
+                        -存储了当前entry所保存数据的类型以及长度
+                        -可以直接存储0-12小整数 11110001 - 11111101 ((1-13) - 1)
+                    -entry-data
+                        -具体的数据
+                        -小整数不用存
+                -zlend
+                    -特殊字符0xFF(十进制255),用来标记压缩列表的末端(其他正常的节点没有被标记为255的,因为255用来标识末尾,后面可以看到,正常节点都是标记为254)
+        -quick-list
+            -linked-list和zip-list的结合,双向列表+列表内是个zip-list
+            -数据结构
+                -quicklist
+                    typedef struct quicklist {
+                        quicklistNode *head;//列表头节点
+                        quicklistNode *tail;//列表尾节点
+                        unsigned long count;//ziplist中一共存储了多少元素,即:每一个quicklistNode内的count相加
+                        unsigned long len; //双向链表的长度,即quicklistNode的数量
+                        int fill : 16;//填充因子
+                        unsigned int compress : 16;//压缩深度 0-不压缩
+                    } quicklist;
+                -quicklistNode
+                    typedef struct quicklistNode {
+                        struct quicklistNode *prev;//前一个节点
+                        struct quicklistNode *next;//后一个节点
+                        unsigned char *zl;//当前指向的ziplist或者quicklistLZF
+                        unsigned int sz;//当前ziplist占用字节
+                        unsigned int count : 16;//ziplist中存储的元素个数,16字节(最大65535个)
+                        unsigned int encoding : 2; //是否采用了LZF压缩算法压缩节点 1：RAW 2:LZF
+                        unsigned int container : 2; //存储结构,NONE=1, ZIPLIST=2
+                        unsigned int recompress : 1; //当前ziplist是否需要再次压缩(如果前面被解压过则为true,表示需要再次被压缩)
+                        unsigned int attempted_compress : 1;//测试用
+                        unsigned int extra : 10; //后期留用
+                    } quicklistNode;
+                -compress 压缩深度 0-不压缩
+                    -首尾X元素不压缩
+                    -设计原因:很多场景都是两端的元素访问率较高,而中间元素访问率相对较低
+                    -可以通过参数 list-compress-depth 控制
+                -zl
+                    -zl指针默认指向了ziplist,sz属性记录了当前ziplist占用的字节
+                    -不过这仅仅限于当前节点没有被压缩(LZF压缩算法)的情况,如果当前节点被压缩了,那么zl指针会指向另一个对象quicklistLZF,quicklistLZF是一个4+N字节的结构
+                    -可以通过参数 list-max-ziplist-size 控制
     -hash
         -使用：zip-list + hashtable
         -数据少时用zip-list,数据多时用hashtable
@@ -234,13 +319,38 @@
             -查询的时候跳着找,有二分思想
             -复杂度: log(n)
 
-	
-	
-	
-	
-	
-	
-	
+quicklistNode的zl指针
+zl指针默认指向了ziplist,sz属性记录了当前ziplist占用的字节,不过这仅仅限于当前节点没有被压缩(LZF压缩算法)的情况,如果当前节点被压缩了,那么zl指针会指向另一个对象quicklistLZF,quicklistLZF是一个4+N字节的结构：
+
+typedef struct quicklistLZF {
+    unsigned int sz;// LZF大小
+    char compressed[];//被压缩的内容
+} quicklistLZF;
+1
+2
+3
+4
+quicklist对比原始两种列表的改进
+quicklist同样采用了linkedlist的双端列表特性,然后quicklist中的每个节点又是一个ziplist,所以quicklist就是综合平衡考虑了空间碎片和读写性能两个维度。使用quicklist需要注意以下2点：
+
+1、如果ziplist中的entry个数过少,极端情况就是只有1个entry,此时就相当于退化成了一个普通的linkedlist。
+2、如果ziplist中的entry过多,那么也会导致一次性需要申请的内存空间过大,而且因为ziplist本身的就是以时间换空间,所以会过多entry也会影响到列表对象的读写性能。
+ziplist中的entry个数可以通过参数list-max-ziplist-size来控制：
+
+list-max-ziplist-size 1
+1
+注意：这个参数可以配置正数也可以配置负数。正数表示限制每个节点中的entry数量,如果是负数则只能为-1~-5
+
+-1:每个ziplist最多只能为4KB
+-2:每个ziplist最多只能为8KB
+-3:每个ziplist最多只能为16KB
+-4:每个ziplist最多只能为32KB
+-5:每个ziplist最多只能为64KB
+总结
+本文主要介绍了Redis中5种常用数据类型中的列表类型底层的存储结构,并分别对其两种底层数据linkedlist和ziplist进行了分析对比,最后分析了Redis3.2之后的底层数据类型quicklist的存储原理。
+
+下一篇,我们将分析Redis中5种常用数据类型中的第3种哈希对象的底层存储结构。
+
 	
 	
 	
