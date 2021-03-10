@@ -35,6 +35,15 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
+	age := 0
+	t1 := time.Unix(1583818313, 0)
+	t2 := time.Now()
+
+	if int(t2.Month())*100+t2.Day()-(int(t1.Month())*100+t1.Day()) > 0 {
+		age++
+	}
+	age += t2.Year() - t1.Year()
+
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
@@ -179,36 +188,28 @@ func csMysql() {
 	db.SetConnMaxLifetime(600 * time.Second)
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
-	//stm, err := db.Prepare("insert into `cs`.`1E` (`key1`,`key2`,`value1`,`value2`) value (?,?,?,?)")
-	//if err != nil {
-	//	fmt.Println("insert has err:", err)
-	//	return
-	//}
-	//for i := 23004; i <= 100000; i++ {
-	//	r, err := stm.Exec(i, i, i, i)
-	//	if err != nil {
-	//		fmt.Println(err)
-	//		return
-	//	}
-	//	fmt.Println(r.LastInsertId())
-	//}
-	//a := []int64{1,2,3}
-	//b, _ := json.Marshal(a)
-	//r,err:= db.Exec("insert into `cs`.`cs` (`key`,`arr`) value (?,?)",1,b)
-	//if err != nil {
-	//	fmt.Println("ins err:",err)
-	//	return
-	//}
-	//fmt.Println(r.LastInsertId())
 
-	rows, err := db.Query("select `key` from `cs`.`cs` where  `id` in (" + "1,2,3,4" + ")")
+	arr := []string{"xxx", "yyy"}
+
+	s := ""
+
+	for _, val := range arr {
+		if s == "" {
+			s += "'" + val + "'"
+		} else {
+			s += ",'" + val + "'"
+		}
+	}
+	str := fmt.Sprintf("select `id` from `cs`.`robots` where  `password` in (%s)", s)
+	fmt.Println(str)
+	rows, err := db.Query(str)
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
 	for rows.Next() {
-		key := ""
+		key := 0
 		rows.Scan(&key)
 		fmt.Println(key)
 	}

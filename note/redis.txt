@@ -9,7 +9,7 @@
 	-核心组件：	解析指令,对数据做相应处理
 	-然后将数据保存在内存中,类型有：string,hash,list,set集合,zset集合
 		-hash 保存多对键值对的数据
-		-list 前后可以加数据的channel（形容)
+		-list 前后可以加数据的channel(形容)
 	-最后保存在文件里面：.dbf和.dbm
 	
   3.基本操作
@@ -185,12 +185,12 @@
 	
   9.redi密码的设置:
 	当没有密码的时候：
-		config get requirepass XXX（password)	设置密码
+		config get requirepass XXX(password)	设置密码
 	当有密码的时候：
 		需要先验证密码：
 			auth XXX
 		再设置密码：	
-			config get requirepass XXX（password)	设置密码
+			config get requirepass XXX(password)	设置密码
 	登录有密码的redis:
 		./src/redis-cli -p 6379 -a XXX
 	
@@ -233,7 +233,7 @@
                 -ptr实际的数据存储结构
             -3编码类型
                 -int
-                    当我们用字符串对象存储的是整型,且能用8个字节的long类型进行表示（即263-1)
+                    当我们用字符串对象存储的是整型,且能用8个字节的long类型进行表示(即263-1)
                     则Redis会选择使用int编码来存储,而且此时redisObject对象中的ptr指针直接替换为long类型
                 -embstr
                     当字符串对象中存储的是字符串,且长度小于44(3.2版本之前是39)时,Redis会选择使用embstr编码来存储
@@ -261,7 +261,7 @@
                         -存储了前一个entry的长度
                         -当链表的前一个entry占用字节数小于254,此时prevlen只用1个字节进行表示.
                         -当链表的前一个entry占用字节数大于等于254,此时prevlen用5个字节来表示,
-                         其中第1个字节的值是254（相当于是一个标记,代表后面跟了一个更大的值）,后面4个字节才是真正存储前一个entry的占用字节数
+                         其中第1个字节的值是254(相当于是一个标记,代表后面跟了一个更大的值),后面4个字节才是真正存储前一个entry的占用字节数
                     -encoding
                         -存储了当前entry所保存数据的类型以及长度
                         -可以直接存储0-12小整数 11110001 - 11111101 ((1-13) - 1)
@@ -311,47 +311,73 @@
             -原型:
                 typedef struct dict {
                     dictType *type;//字典类型的一些特定函数
-                    void *privdata;//私有数据，type中的特定函数可能需要用到
+                    void *privdata;//私有数据,type中的特定函数可能需要用到
                     dictht ht[2];//哈希表(注意这里有2个哈希表)
-                    long rehashidx; //rehash索引，不在rehash时，值为-1
+                    long rehashidx; //rehash索引,不在rehash时,值为-1
                     unsigned long iterators; //正在使用的迭代器数量
                 } dict;
 
                 typedef struct dictht {
                     dictEntry **table;//哈希表数组
                     unsigned long size;//哈希表大小
-                    unsigned long sizemask;//掩码大小，用于计算索引值，总是等于size-1
+                    unsigned long sizemask;//掩码大小,用于计算索引值,总是等于size-1
                     unsigned long used;//哈希表中的已有节点数
                 } dictht;
             -ht
                 -两个哈希表存数据
-                -而Redis在默认情况下使用的是ht[0]，不会为ht[1]初始化分配空间
+                -而Redis在默认情况下使用的是ht[0],不会为ht[1]初始化分配空间
                 -rehash时使用第二个hash:
                     -rehash条件：
                         -1.负载因子大于等于1且dict_can_resize设置为1时
                         -2.负载因子大于等于安全阈值(dict_force_resize_ratio=5)时
                         -负载因子=哈希表已使用节点数/哈希表大小(即：h[0].used/h[0].size)
                     -rehash步骤
-                        -1.为字典dict的ht[1]哈希表分配空间，其大小取决于当前哈希表已保存节点数(即：ht[0].used)。
-                         (a).扩展操作则ht[1]的大小为2n中第一个大于等于ht[0].used * 2属性的值(比如used=3，此时23就是第一个大于used * 2 的值(22<6且23>6))。
-                         (b).收缩操作则ht[1]大小为2n中第一个大于等于ht[0].used的值。
-                        -2.将字典中的属性rehashix的值设置为0，表示正在执行rehash操作。
-                        -3.将ht[0]中所有的键值对依次重新计算哈希值，并放到ht[1]数组对应位置，完成一个键值对的rehash之后rehashix的值需要加1。
-                        -4.当ht[0]中所有的键值对都迁移到ht[1]之后，释放ht[0]，并将ht[1]修改为ht[0]，然后再创建一个新的ht[1]数组，为下一次rehash做准备。
-                        -5.将字典中的属性rehashix设置为-1，表示rehash已经结束
+                        -1.为字典dict的ht[1]哈希表分配空间,其大小取决于当前哈希表已保存节点数(即：ht[0].used).
+                         (a).扩展操作则ht[1]的大小为2n中第一个大于等于ht[0].used * 2属性的值(比如used=3,此时23就是第一个大于used * 2 的值(22<6且23>6)).
+                         (b).收缩操作则ht[1]大小为2n中第一个大于等于ht[0].used的值.
+                        -2.将字典中的属性rehashix的值设置为0,表示正在执行rehash操作.
+                        -3.将ht[0]中所有的键值对依次重新计算哈希值,并放到ht[1]数组对应位置,完成一个键值对的rehash之后rehashix的值需要加1.
+                        -4.当ht[0]中所有的键值对都迁移到ht[1]之后,释放ht[0],并将ht[1]修改为ht[0],然后再创建一个新的ht[1]数组,为下一次rehash做准备.
+                        -5.将字典中的属性rehashix设置为-1,表示rehash已经结束
                     -渐进式rehash
-                        上面介绍的这种方式因为不是一次性全部rehash，而是分多次来慢慢的将ht[0]中的键值对rehash到ht[1]的操作就称之为渐进式rehash。
-                        渐进式rehash可以避免了集中式rehash带来的庞大计算量，采用了分而治之的思想。
-                        在渐进式rehash过程中，因为还可能会有新的键值对存进来，此时Redis的做法是新添加的键值对统一放入ht[1]中，这样就确保了ht[0]键值对的数量只会减少。
-                        当执行rehash操作时需要执行查询操作，此时会先查询ht[0]，查找不到结果再到ht[1]中查询。
+                        上面介绍的这种方式因为不是一次性全部rehash,而是分多次来慢慢的将ht[0]中的键值对rehash到ht[1]的操作就称之为渐进式rehash.
+                        渐进式rehash可以避免了集中式rehash带来的庞大计算量,采用了分而治之的思想.
+                        在渐进式rehash过程中,因为还可能会有新的键值对存进来,此时Redis的做法是新添加的键值对统一放入ht[1]中,这样就确保了ht[0]键值对的数量只会减少.
+                        当执行rehash操作时需要执行查询操作,此时会先查询ht[0],查找不到结果再到ht[1]中查询.
         -ziplist和hashtable的编码转换
-            -当一个哈希对象可以满足以下两个条件中的任意一个，哈希对象会选择使用ziplist编码来进行存储：
-                1.哈希对象中的所有键值对总长度(包括键和值)小于64字节（这个阈值可以通过参数hash-max-ziplist-value 来进行控制）。
-                2.哈希对象中的键值对数量小于512个（这个阈值可以通过参数hash-max-ziplist-entries 来进行控制）。
-                一旦不满足这两个条件中的任意一个，哈希对象就会选择使用hashtable来存储。
-
-    -zset 有序集合
-        -集合用链表实现
+            -当一个哈希对象可以满足以下两个条件中的任意一个,哈希对象会选择使用ziplist编码来进行存储：
+                1.哈希对象中的所有键值对总长度(包括键和值)小于64字节(这个阈值可以通过参数hash-max-ziplist-value 来进行控制).
+                2.哈希对象中的键值对数量小于512个(这个阈值可以通过参数hash-max-ziplist-entries 来进行控制).
+                一旦不满足这两个条件中的任意一个,哈希对象就会选择使用hashtable来存储.
+    -set
+        -集合使用intset+hashtable
+        -intset
+            intset(整数集合)可以保存类型为int16_t,int32_t,int64_t的整数值,并且保证集合中没有重复元素.
+            -原型：
+                typedef struct intset {
+                    uint32_t encoding;//编码方式
+                    uint32_t length;//当前集合中的元素数量
+                    int8_t contents[];//集合中具体的元素
+                } intset;
+            -encoding
+                encoding记录了当前集合的编码方式，主要有三种：
+                -INTSET_ENC_INT16
+                 此时contents[]内的每个元素都是一个int16_t类型的整数值，范围是：-32768 ~ 32767(-215 ~ 215-1)
+                -INTSET_ENC_INT32
+                 此时contents[]内的每个元素都是一个int32_t类型的整数值，范围是：-2147483648 ~ 2147483647(-231 ~ 231-1)
+                -INTSET_ENC_INT64
+                 此时contents[]内的每个元素都是一个int64_t类型的整数值，范围是：-9223372036854775808 ~ 9223372036854775807(-263 ~ 263-1)
+            -contents[]
+                contents[]虽然结构的定义上写的是int8_t类型，但是实际存储类型是由上面的encoding来决定的
+            -整数集合的升级
+                -假如一开始整数集合中的元素都是16位的，采用了int16_t类型来存储，此时需要再存储一个32位的整数，那么就需要对原先的整数集合进行升级，升级之后才能将32位的整数放入整数集合内.
+                -升级主要有4个步骤：
+                    1.根据新添加元素的类型来扩展底层数组空间的大小，按照升级后现有元素的位数来分配新的空间.
+                    2.将现有的元素进行类型转换，并将转换类型后的元素从后到前逐个重新放回到数组内.
+                    3.将新元素放到数组的头部或者尾部（因为触发升级的条件就是当前数组的整数类型无法存储新元素，所以新元素要么比现有元素都大，要么就比现有元素都小）.
+                    4.将encoding属性修改为最新的编码，并且同步修改length属性.
+    -zset
+        -有序集合用链表实现
         -使用:skip_list跳表做索引
         -skip_list:
             -两个连续的链表有个上级链表父节点
@@ -360,8 +386,9 @@
             -查询的时候跳着找,有二分思想
             -复杂度: log(n)
 
-
-	
+  14.redis事务ACID
+    -ACID
+        -
 	
 	
 	
