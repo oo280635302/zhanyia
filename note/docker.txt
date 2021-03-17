@@ -29,8 +29,8 @@
 			下载安装脚本,然后执行
 			...参考blog
 
-	-windows的docker安装
-		参考blog
+	-windows下子系统ubuntu的docker安装
+		https://blog.csdn.net/lupengfei1009/article/details/94637398
 		
   3.docker基本操作(container容器,image镜像)
 	-启动容器：
