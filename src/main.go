@@ -1,15 +1,22 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
+	"github.com/tealeg/xlsx"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
 	"math/rand"
 	"net/http"
+	"net/url"
 	"os"
 	"os/signal"
 	"strings"
@@ -20,12 +27,6 @@ import (
 	pb "zhanyia/src/proto"
 )
 
-type Stu struct {
-	Id   int      `json:"id"`
-	Name string   `json:"name"`
-	Pop  []string `json:"pop"`
-}
-
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -34,8 +35,23 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+	age := 0
+	t1 := time.Unix(1583818313, 0)
+	t2 := time.Now()
 
+	if int(t2.Month())*100+t2.Day()-(int(t1.Month())*100+t1.Day()) > 0 {
+		age++
+	}
+	age += t2.Year() - t1.Year()
+
+	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+	//csXlsx()
+	//csGorm()
+	//httpReq()
+	//csMysql()
+	//csMongo()
+
+	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -51,10 +67,86 @@ func main() {
 	fmt.Println("bye bye")
 }
 
+type PPhoneBindReq struct {
+	AreaCode    string `protobuf:"bytes,1,opt,name=areaCode,proto3" json:"areaCode,omitempty"`
+	AppKey      string `protobuf:"bytes,2,opt,name=appKey,proto3" json:"appKey,omitempty"`
+	CallerNum   string `protobuf:"bytes,3,opt,name=callerNum,proto3" json:"callerNum,omitempty"`
+	CalleeNum   string `protobuf:"bytes,4,opt,name=calleeNum,proto3" json:"calleeNum,omitempty"`
+	Duration    int64  `protobuf:"varint,5,opt,name=duration,proto3" json:"duration,omitempty"`
+	MaxDuration int64  `protobuf:"varint,6,opt,name=maxDuration,proto3" json:"maxDuration,omitempty"`
+	RecordFlag  bool   `protobuf:"varint,7,opt,name=recordFlag,proto3" json:"recordFlag,omitempty"`
+	NotifyUrl   string `protobuf:"bytes,8,opt,name=notifyUrl,proto3" json:"notifyUrl,omitempty"`
+}
+
+func httpReq() {
+	token := "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNjA4ODAwODY4LCJleHAiOjE2MDk0MDU2Njh9._P0RBvYGsa4F6FCoVpOrKpIz06-QsRxpbJHH9A4gWyg"
+
+	req := &PPhoneBindReq{}
+	req.AppKey = "488441998952435da895286632e82f40"
+	req.AreaCode = "028"
+	req.CalleeNum = "13982552218"
+	req.CallerNum = "13980494026"
+	req.RecordFlag = true
+	req.Duration = 6 * 60 * 60
+	req.MaxDuration = 30
+	req.NotifyUrl = "https://api.xiaokayun.cn/api/v1/privacy/phone/notify"
+	param, _ := json.Marshal(req)
+
+	request, err := http.NewRequest("POST", "http://117.172.236.74:30011"+"/v1/privacy/open/axb/binding", strings.NewReader(string(param)))
+	if err != nil {
+		fmt.Println("绑定隐私号 http newRequest has err:", err)
+		return
+	}
+
+	request.Header.Set("Content-Type", "application/json;charset=utf-8")
+	request.Header.Set("Authorization", token)
+
+	client := &http.Client{Timeout: time.Second * 3}
+	resp, err := client.Do(request)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		fmt.Println("绑定隐私号 http 请求失败 err:", err, resp)
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("绑定隐私号 io real 失败", err)
+		return
+	}
+	defer resp.Body.Close()
+	fmt.Println(resp)
+	res := make(map[string]interface{})
+	if err = json.Unmarshal(body, &res); err != nil {
+		fmt.Println("绑定隐私号 解析body 失败", err)
+		return
+	}
+	fmt.Println(res)
+	return
+}
+
+func getPublicToken() {
+	resp, err := http.PostForm("http://117.172.236.74:30011"+"/v1/platform/login", url.Values{
+		"appKey":      {"488441998952435da895286632e82f40"},
+		"platformKey": {"73f1d74553e6c802070142e254c8f277"},
+	})
+	if err != nil || resp.StatusCode != http.StatusOK {
+		fmt.Println("1:", err, resp)
+		return
+	}
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		fmt.Println("获取公服Token GetToken 读取body err:", err)
+		return
+	}
+	defer resp.Body.Close()
+	m := make(map[string]interface{})
+	json.Unmarshal(body, &m)
+	fmt.Println(m)
+}
+
 type cs struct {
-	Id    int64
-	Key   string
-	Value string
+	Id    int64  `json:"id"`
+	Key   string `json:"key"`
+	Value string `json:"value"`
 }
 
 func csGorm() {
@@ -65,18 +157,26 @@ func csGorm() {
 	}
 	defer db.Close()
 	db.LogMode(true)
-	arr := make([]*cs, 0)
 
-	cc := []int{1, 2}
+	cc := make([]*cs, 0)
+	cc = append(cc, &cs{
+		Key:   "18",
+		Value: "18",
+	})
+	cc = append(cc, &cs{
+		Key:   "18",
+		Value: "18",
+	})
 
-	bd := db.Table("cs.cs").Select("*").Where("`value` in (?)", cc).Find(&arr)
-	if bd.Error != nil {
-		fmt.Println(bd.Error)
-		return
+	for _, v := range cc {
+		bd := db.Table("cs.cs").Create(v)
+		if bd.Error != nil {
+			fmt.Println(bd.Error)
+			return
+		}
+		fmt.Println(bd.Value.(*cs))
 	}
-	for _, v := range arr {
-		fmt.Println(*v)
-	}
+
 }
 
 func csMysql() {
@@ -88,18 +188,30 @@ func csMysql() {
 	db.SetConnMaxLifetime(600 * time.Second)
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
-	stm, err := db.Prepare("insert into `cs`.`1E` (`key1`,`key2`,`value1`,`value2`) value (?,?,?,?)")
+
+	arr := []string{"xxx", "yyy"}
+
+	s := ""
+
+	for _, val := range arr {
+		if s == "" {
+			s += "'" + val + "'"
+		} else {
+			s += ",'" + val + "'"
+		}
+	}
+	str := fmt.Sprintf("select `id` from `cs`.`robots` where  `password` in (%s)", s)
+	fmt.Println(str)
+	rows, err := db.Query(str)
 	if err != nil {
-		fmt.Println("insert has err:", err)
+		fmt.Println(err)
 		return
 	}
-	for i := 23004; i <= 100000; i++ {
-		r, err := stm.Exec(i, i, i, i)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(r.LastInsertId())
+
+	for rows.Next() {
+		key := 0
+		rows.Scan(&key)
+		fmt.Println(key)
 	}
 }
 
@@ -192,4 +304,60 @@ func csRedis() {
 
 	t, _ := r.PTTL("123").Result()
 	fmt.Println(t == time.Millisecond*-2)
+}
+
+func csMongo() {
+	client, err := mongo.NewClient(options.Client().ApplyURI("mongodb://localhost:27017"))
+	if err != nil {
+		fmt.Println("conn : ", err)
+		return
+	}
+	ctx, _ := context.WithTimeout(context.Background(), 10*time.Second)
+	err = client.Connect(ctx)
+	err = client.Ping(ctx, readpref.Primary())
+	if err != nil {
+		fmt.Println("PING ERROR:", err)
+		return
+	}
+	cur, err := client.Database("db1").Collection("employ").Find(ctx, bson.D{
+		{
+			"$or", []interface{}{
+				bson.D{
+					{
+						"id", bson.D{
+							{"$lte", 1},
+						},
+					},
+				},
+				bson.D{
+					{
+						"id", bson.D{
+							{"$gte", 3},
+						},
+					},
+				},
+			},
+		},
+	})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	for cur.Next(ctx) {
+		a := make(map[string]interface{}, 0)
+		err = cur.Decode(&a)
+		fmt.Println(err, a)
+	}
+
+}
+
+func csXlsx() {
+	file, err := xlsx.OpenFile("E://downfile/EmployTemplate_1612401111603.xlsx")
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	s := file.Sheet["sheet1"]
+	//fmt.Println(len(s.Rows))
+	fmt.Println(s)
 }

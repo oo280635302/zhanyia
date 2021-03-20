@@ -1,0 +1,75 @@
+
+
+    1.内存页缓存PageCache
+        -概念：
+            Page cache是通过将磁盘中的数据缓存到内存中,从而减少磁盘I/O操作,从而提高性能。
+            此外,还要确保在page cache中的数据更改时能够被同步到磁盘上,后者被称为page回写(page writeback)。
+            一个inode对应一个page cache对象,一个page cache对象包含多个物理page
+        -page cache：
+            Page cache由内存中的物理page组成,其内容对应磁盘上的block。
+            page cache的大小是动态变化的,可以扩大,也可以在内存不足时缩小。
+            cache缓存的存储设备被称为后备存储(backing store),注意我们在block I/O一文中提到的：一个page通常包含多个block,这些block不一定是连续的
+        -读cache：
+            读得时候,先在page cache找,找不到miss再去磁盘读。
+            可以只缓存一个文件的部分内容,不需要将整个文件缓存
+        -写cache：
+            直接往cache中写入并标记dirty,并且不写入磁盘
+            加入dirty list,周期性将page的内容写入磁盘
+        -cache回收：
+            使用two-list算法,是LRU算法的变种
+            参考*算法*的two-list解释
+        -flusher线程群：
+            线程群的特点是让一个线程负责一个存储设备(比如一个磁盘驱动器),多少个存储设备就用多少个线程。
+            这样可以避免阻塞或者竞争的情况,提高效率。
+            当空闲内存低于阈值时,内核就会调用wakeup_flusher_threads()来唤醒一个或者多个flusher线程,将数据写回磁盘。
+            为了避免dirty数据在内存中驻留过长时间(避免在系统崩溃时丢失过多数据),内核会定期唤醒一个flusher线程,将驻留时间过长的dirty数据写回磁盘。
+        -内核在下面三种情况下会进行会将dirty page写回磁盘：
+            -用户进程调用sync() 和 fsync()系统调用
+            -空闲内存低于特定的阈值（threshold）
+            -Dirty数据在内存中驻留的时间超过一个特定的阈值
+
+    2.linux网络
+        -文档资料:https://www.linuxprobe.com/linux-network-scripts.html
+        -基本配置文件：
+            网络连接配置文件：
+            -地址：/etc/sysconfig/network-scripts/ifcfg-eth0
+                -DEVICE=eth0             #关联的设备名称
+                -BOOTPROTO={static|dhcp|none|bootp}      #表示引导协议static|none表示静态；dhcp表示动态
+                -IPADDR=192.168.10.10    #设置IP地址
+                -NETMASK=255.255.255.0   #设置子网掩码
+                -GATEWAY=192.168.10.1    #设置网关
+                -ONBOOT=yes|no           #开机时是否自动激活网络接口
+                -HWADDR=00:1E:0B:8F:B0:D0     #硬件地址要与硬件中的地址保持一致可省
+                -DNS1=202.106.0.20            #指定DNS地址
+                -USERCTL=yes|no               #表示是否允许普通用户启用或禁用此接口
+                -PEERDNS=yes|no               #表示是否在BOOTPROTO为dhcp时接受由dhcp服务器指定的dns地址
+        -DNS配置文件：
+            -地址：/etc/resolv.conf/
+                -nameserver x.x.x.x     #dns地址
+        -控制网络是否开启和IPv6是否有效和主机名设置文件：
+            -地址：/etc/sysconfig/network
+                -NETWORKING=YES|NO
+                -NETWORKING_IPV6=yes|no
+                -HOSTNAME=hostname
+                -NETWORKING=YES|NO
+                -NETWORKING_IPV6=yes|no
+                -HOSTNAME=hostname
+        -定义主机映像文件：
+            -地址：/etc/hosts
+                -172.168.10.1  www.baidu.com  alias
+        -网卡命名方式：
+            lo：本地回环用于本机客户端访问本机服务器程序
+            ppp#：点对点
+            eth#：以太网网卡
+            RHEL5.0中/etc/modprobe.conf：根据alias定义网卡名称
+            RHEL6.0中/etc/udev/rules.d/70-persistent-net.rules：中根据MAC地址定义网卡名称
+        -网络管理工具
+            -定义:Linux目前提供两种网络管理工具，一种是network，一种是NetworkManager。
+            -Network
+                network是控制网络接口配置信息修改后，网络服务必须重新启动，来激活网络新配置，
+                从而使得配置生效。这部分操作对服务而言和重新启动系统时是一样的作用。控制脚本是/etc/init.d/network这个文件，
+                可以用这个文件后面加上下面的参数来操作网络服务。例如：
+                    /etc/init.d/network restart
+                同样也可以用service这个命令来操作网络服务例如：
+                    service network restart
+            -NetworkManager
