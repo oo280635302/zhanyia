@@ -35,21 +35,13 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	age := 0
-	t1 := time.Unix(1583818313, 0)
-	t2 := time.Now()
-
-	if int(t2.Month())*100+t2.Day()-(int(t1.Month())*100+t1.Day()) > 0 {
-		age++
-	}
-	age += t2.Year() - t1.Year()
-
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
 	//httpReq()
 	//csMysql()
 	//csMongo()
+	fmt.Println("123")
 
 	return
 	// 持久化

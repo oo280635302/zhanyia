@@ -18,7 +18,7 @@
 	-node节点：
 		pod			
 		kubelet		创建容器,位置Pod生命周期
-		kube proxy	投影pod端口映射,同时负责负载均衡
+		kube-proxy	投影pod端口映射,同时负责负载均衡
 		container	一个container == 一个docker
 		
   3.pod
@@ -98,7 +98,36 @@
 			概念：不管哪里都可以被调用
 		-元数据型：
 			概念：通过某项的指标进行扩展
-	
+
+  7.k8s概念知识：
+    -k8s的组件：
+        1 Master 组件
+            1.1 kube-apiserver      对外接口
+            1.2 ETCD                对集群数据进行的存储
+            1.3 kube-controller-manager         控制器管理中心
+
+            1.4 cloud-controller-manager
+            1.5 kube-scheduler
+            1.6 插件 addons
+                1.6.1 DNS
+                1.6.2 用户界面
+                1.6.3 容器资源监测
+                1.6.4 Cluster-level Logging
+        2 节点（Node）组件
+            2.1 kubelet
+            2.2 kube-proxy
+            2.3 docker
+            2.4 RKT
+            2.5 supervisord
+            2.6 fluentd
+    -k8s的对象：
+        Kubernetes对象是Kubernetes系统中的持久实体。Kubernetes使用这些实体来表示集群的状态。
+    -Kubernetes Namespace
+        命名空间,用于分隔不同集群
+    -k8s label
+        标签，方便调度、访问
+    -k8s Volume
+        将文件持久化 有很多方案
 		
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
@@ -124,7 +153,7 @@
 		
  ----------------------------------------------------rancher-------------------------------------------------------------
     中文文档地址：https://docs.rancher.cn/docs/rancher2/overview/_index/
-    1.
+
 		
 		
 		
