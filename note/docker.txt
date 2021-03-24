@@ -73,6 +73,7 @@
 		可以用sh脚本写个循环：
 			docker run -d ubuntu /bin/sh -c "while true;do echo hello world;sleep 1;done"
 			-c 后面跟程序
+			--privileged root权力启动
 	-查看容器日志：
 		docker logs [-f] [-t] [--tail] 容器名
 			-f 是否跟踪日志,default=false
