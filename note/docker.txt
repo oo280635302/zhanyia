@@ -36,6 +36,9 @@
 	-启动容器：
 		docker run IMAGE [命令] [参数]
 		IMAGE 使用的镜像系统
+		    -p XX:XX 端口映射
+		    -v XX:XX 目录映射
+		    -e key=val 传递环境变量
 	-启动交互式容器(类似于linux终端)：
 		docker -i -t IMAGE /bin/bash
 			-i 为容器始终打开标准输入,default:false
@@ -44,7 +47,7 @@
 		docker ps [-a] [-l]
 			-a 所有容器
 			-l 查看最新建的容器
-	-查看某个容器的详细信息
+	-获取容器/镜像的元数据
 		docker inspect [容器名字]
 	-自定义容器名：
 		docker run --name=自定义名 -i -t IMAGE /bin/bash
@@ -54,7 +57,7 @@
 		docker rm 容器名
 	-使用自带帮助文件，查看命令详细介绍
 		man docker-XX
-  
+
   4.守护式容器	
 	-特点：
 		能够长期运行
@@ -246,8 +249,22 @@
 		docker info 
 	-当不用远程连接时：
 		export DOCKER_HOST=""
-		
-		
+
+  10.Dockerfile
+    -行业规则：
+        指令大写，内容小写，第一行一定是FORM基准镜像
+    -docker build
+        -使用dockerfile的方式构建镜像
+    -核心指令：
+        -USER        启动使用的用户
+        -WORKDIR     启动时跳转到的目录
+        -ADD
+        -EXPOSE
+        -RUN
+        -ENV
+        -CMD
+        -ENTRYPOINT
+
 		
 		
 		
