@@ -153,8 +153,12 @@
 		
  ----------------------------------------------------rancher-------------------------------------------------------------
     中文文档地址：https://docs.rancher.cn/docs/rancher2/overview/_index/
+    本地启动：
+        docker run -d -p 8080:80 -p 8443:443 --privileged \
+         --restart=unless-stopped \
+         -v /home/z1/program/rancher_data:/var/lib/rancher \
+         rancher/rancher:stable
 
-		
 		
 		
 		

@@ -39,6 +39,8 @@
 		    -p XX:XX 端口映射
 		    -v XX:XX 目录映射
 		    -e key=val 传递环境变量
+            -d 后台运行容器
+            -privileged 特权启动
 	-启动交互式容器(类似于linux终端)：
 		docker -i -t IMAGE /bin/bash
 			-i 为容器始终打开标准输入,default:false
@@ -57,6 +59,16 @@
 		docker rm 容器名
 	-使用自带帮助文件，查看命令详细介绍
 		man docker-XX
+    -重启启动所有的容器
+        docker restart $(docker ps -a | awk '{ print $1}' | tail -n +2)
+    -启动所有的容器
+        docker start $(docker ps -a | awk '{ print $1}' | tail -n +2)
+    -关闭所有的容器
+        docker stop $(docker ps -a | awk '{ print $1}' | tail -n +2)
+    -删除所有的容器
+        docker rm $(docker ps -a | awk '{ print $1}' | tail -n +2)
+    -删除所有的镜像
+        docker rmi $(docker images | awk '{print $3}' |tail -n +2)
 
   4.守护式容器	
 	-特点：
@@ -251,7 +263,38 @@
 	-当不用远程连接时：
 		export DOCKER_HOST=""
 
-  10.Dockerfile
+  10.docker用户组
+    -docker只能root和docker用户组才能访问docker server引擎
+    -建立docker组：
+        sudo groupadd docker
+    -将当前用户加入docker组：
+        sudo usermod -aG docker $USER
+    -切换当前会话到新 group
+        newgrp - docker
+
+  11.清理docker所有文件
+    docker stop $(docker ps -aq)
+    docker system prune -f
+    docker volume rm $(docker volume ls -q)
+    docker image rm $(docker image ls -q)
+    sudo rm -rf /etc/ceph \
+       /etc/cni \
+       /etc/kubernetes \
+       /opt/cni \
+       /opt/rke \
+       /run/secrets/kubernetes.io \
+       /run/calico \
+       /run/flannel \
+       /var/lib/calico \
+       /var/lib/etcd \
+       /var/lib/cni \
+       /var/lib/kubelet \
+       /var/lib/rancher/rke/log \
+       /var/log/containers \
+       /var/log/pods \
+       /var/run/calico
+
+  11.Dockerfile
     -行业规则：
         指令大写，内容小写，第一行一定是FORM基准镜像
     -docker build
@@ -259,14 +302,32 @@
     -核心指令：
         -USER        启动使用的用户
         -WORKDIR     启动时跳转到的目录
-        -ADD
-        -EXPOSE
-        -RUN
+        -ADD         将原文件拷贝到容器文件内,如果是压缩文件会自动解压
+        -EXPOSE      声明需要暴露的端口
+        -RUN         执行命令
+            -因为每次RUN都会在创建一层镜像，因此尽量用 \&& 压缩语句
         -ENV
-        -CMD
-        -ENTRYPOINT
-
-		
+            -定义环境变量
+        -CMD         启动时执行命令
+            -因为是默认行为，所有操作会被覆盖，对比ENTERPOINT是会被自动覆盖
+            -三种使用：
+                1. CMD ["command","param2"]     // exec写法
+                2. CMD command param            // shell写法
+                3. CMD ["param1","param2"]      // 为ENTERPOINT提供参数的写法
+        -ENTRYPOINT  启动时执行命令
+            -需要显示被覆盖
+                --entrypoint xx xx 的情况才会被覆盖
+            -两种使用：
+                1.ENTRYPOINT ["command", "param1", "param2"]     // 这是 exec 模式的写法，注意需要使用双引号。
+                2.ENTRYPOINT command param1 param2               // 这是 shell 模式的写法。
+        -ARG        为dockerfile构建变量
+        -VOLUME     默认挂载数据卷
+        -ONBUILD    延迟构建镜像,当以当前镜像为基础镜像，去构建下一级镜像的时候执行
+            -后面跟指令
+        -HEALTHCHECK 健康检查
+            -eg:
+                // 每5分钟检查一次是否能连通主页,延迟3s,失败就退出容器
+                HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
 		
 		
 		

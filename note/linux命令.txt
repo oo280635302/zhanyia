@@ -62,12 +62,23 @@
 			- >>：表示追加
 		- 管道 |：  输出命令|输入命令
 	16.超级用户命令
-		-sodu
+		-sudo
 	17.查看当前系统的版本信息
 		-cat /proc/version
     18.检查linux服务器的文件系统的磁盘空间占用情况
         -df
             -h 方便观看
+    19. 关闭用户图形界面
+        sudo systemctl set-default multi-user.target
+        sudo reboot
+    20. 开启用户图形界面
+        sudo systemctl set-default graphical.target
+        sudo reboot
+    21. 18.0.4以上DNS设置
+        sudo apt install resolvconf
+        sudo vim /etc/resolvconf/resolv.conf.d/head
+        添加nameserver 8.8.8.8
+        sudo service resolvconf restart
 		
   2.linux终端命令格式
 	-[]  表示内容可选;
