@@ -69,6 +69,10 @@
         docker rm $(docker ps -a | awk '{ print $1}' | tail -n +2)
     -删除所有的镜像
         docker rmi $(docker images | awk '{print $3}' |tail -n +2)
+    -重启docker服务器
+        service docker restart
+    -查看docker配置信息
+        docker info
 
   4.守护式容器	
 	-特点：

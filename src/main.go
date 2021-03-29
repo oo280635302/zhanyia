@@ -35,15 +35,14 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
 	//httpReq()
 	//csMysql()
 	//csMongo()
-	fmt.Println("123")
+	//fmt.Println("123")
 
-	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

@@ -157,7 +157,7 @@
         docker run -d -p 8080:80 -p 8443:443 --privileged \
          --restart=unless-stopped \
          -v /home/z1/program/rancher_data:/var/lib/rancher \
-         rancher/rancher:stable
+         rancher/rancher:v2.4-head
 
 		
 		

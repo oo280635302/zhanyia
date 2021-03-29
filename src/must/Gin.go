@@ -32,7 +32,7 @@ func GinListener(l *Limit) {
 	})
 
 	//监听端口默认为8080
-	r.Run(":8000")
+	r.Run(":8080")
 }
 
 type Limit struct {
