@@ -298,7 +298,7 @@
        /var/log/pods \
        /var/run/calico
 
-  11.Dockerfile
+  12.Dockerfile
     -行业规则：
         指令大写，内容小写，第一行一定是FORM基准镜像
     -docker build
@@ -333,9 +333,17 @@
                 // 每5分钟检查一次是否能连通主页,延迟3s,失败就退出容器
                 HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
 		
-		
-		
-		
+  13.docker账号管理
+    -登录
+        docker login [OPTIONS] [SERVER]
+        -u :登陆的用户名
+        -p :登陆的密码
+        // 服务器默认为官方仓库
+    -注销
+        docker logout [OPTIONS] [SERVER]
+    -查看用户名
+        docker info | sed '/Username:/!d;s/.* //'
+
 		
 		
 		

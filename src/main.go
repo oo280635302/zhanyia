@@ -35,14 +35,16 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
-	must.GinListener(must.NewLimitTicker(60*time.Second, 10))
+	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
 	//httpReq()
 	//csMysql()
 	//csMongo()
 	//fmt.Println("123")
+	//cs()
 
+	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -134,12 +136,6 @@ func getPublicToken() {
 	fmt.Println(m)
 }
 
-type cs struct {
-	Id    int64  `json:"id"`
-	Key   string `json:"key"`
-	Value string `json:"value"`
-}
-
 func csGorm() {
 	db, err := gorm.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
@@ -148,25 +144,6 @@ func csGorm() {
 	}
 	defer db.Close()
 	db.LogMode(true)
-
-	cc := make([]*cs, 0)
-	cc = append(cc, &cs{
-		Key:   "18",
-		Value: "18",
-	})
-	cc = append(cc, &cs{
-		Key:   "18",
-		Value: "18",
-	})
-
-	for _, v := range cc {
-		bd := db.Table("cs.cs").Create(v)
-		if bd.Error != nil {
-			fmt.Println(bd.Error)
-			return
-		}
-		fmt.Println(bd.Value.(*cs))
-	}
 
 }
 

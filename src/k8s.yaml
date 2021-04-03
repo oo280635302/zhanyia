@@ -1,0 +1,90 @@
+## k8s
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ${projectname}
+  namespace: ${ENV}
+
+spec:
+  minReadySeconds: 2
+  replicas: ${replicas}
+  strategy:
+    rollingUpdate:
+      maxSurge: 25%
+      maxUnavailable: 0
+    type: RollingUpdate
+  selector:
+    matchLabels:
+      name: ${projectname}
+      version: $version
+  template:
+    metadata:
+      labels:
+        name: ${projectname}
+        version: $version
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: name
+                      operator: In
+                      values:
+                        - ${projectname}
+                topologyKey: kubernetes.io/hostname
+      terminationGracePeriodSeconds: 60  ##k8s将会给应用发送SIGTERM信号，可以用来正确、优雅地关闭应用,默认为30秒
+      containers:
+        - name: ${projectname}
+          image: ${image}
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: log
+              mountPath:  /app/log
+              readOnly: false
+            - name: tz-config
+              mountPath: /etc/localtime
+          env:
+            - name: MY_POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: MY_POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  fieldPath: status.podIP
+            - name:
+          ports:
+            - containerPort: ${projectPort}
+          livenessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 15
+            periodSeconds: 20
+            successThreshold: 1
+            tcpSocket:
+              port: ${projectPort}
+            timeoutSeconds: 2
+          readinessProbe:
+            failureThreshold: 3
+            initialDelaySeconds: 5
+            periodSeconds: 10
+            successThreshold: 2
+            tcpSocket:
+              port: ${projectPort}
+            timeoutSeconds: 2
+      imagePullSecrets:
+        - name: harbor-login
+      volumes:
+        - name: log
+          nfs:
+            server: ${nfsIp}
+            path: ${nfsPath}
+        - name: tz-config
+          hostPath:
+            path: /usr/share/zoneinfo/Asia/Shanghai
