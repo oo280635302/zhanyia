@@ -344,7 +344,15 @@
     -查看用户名
         docker info | sed '/Username:/!d;s/.* //'
 
-		
+  14.docker的网络模式：
+    -nat 网桥模式 （默认）
+    -none 无网络
+        --net=none
+    -host 随主机
+        --net=host
+    -联合网络
+        多个docker使用同一个网络命名空间
+        --net=container:XXXX    指定使用同一个网络的docker
 		
 		
 		
