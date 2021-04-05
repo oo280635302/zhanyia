@@ -22,35 +22,38 @@
 		container	一个container == 一个docker
 		
   3.pod
-	-概念：每个pod都有一个pause容器
+	-概念：k8s最小的逻辑单元
+	-一个pod可以运行多个容器，(1pod多容器叫边车模式)
 	-同一个pod里面的容器共享网络与存储卷，
 	 如在里面直接localhost就能访问另外一个容器的端口
 	 所以同pod不同容器端口不能相同	
-	-控制器管理：
-		-ReplicationController
-			控制副本数保持在用户定义的数量
-		-ReplicaSet
-			在ReplicationController基础上,支持集合式selector
-		-Deployment（前三一般用这个）
-			ReplicaSet的管理器，且多出一些功能（如：rolling-update）
-		-Horizontal Pod Autosacling
-			仅使用于Deployment与ReplicaSet
-			弹性扩展,可以设置当cpu利用率到达一定数额时,增加容器来分担利用率
-			可以设置：最多容器数,最少容器数,cpu
-		-StatefulSet有状态服务（有数据存储的服务）
-			稳定的持久化服务,即pod重新调度访问相同数据
-			稳定的网络标志,pod名和host名不变
-			有序部署,有序扩展,即根据顺序依次启动
-			有序删除,有序收回
-		-DaemonSet
-			确保node上运行一个pod副本, 
-		-Job
-			负责批处理任务
-			执行脚本任务,保证pod成功结束,即脚本执行成功
-		-CronJob
-			有时间管理的Job
-	-kubernetes服务发现
-		根据pod标签的标志来获取到我们所需要的服务
+
+  3.5 pod控制器
+    -概念：用以pod启动的模板，同时保证pod的预期运行（副本数、生命周期、健康状态检查...等）
+    -目的：控制pod
+    -控制器管理：
+    		-ReplicationController
+    			控制副本数保持在用户定义的数量
+    		-ReplicaSet
+    			在ReplicationController基础上,支持集合式selector
+    		-Deployment 无状态服务*最常用*
+    			ReplicaSet的管理器，且多出一些功能（如：rolling-update）
+            -StatefulSet 有状态服务（有数据存储的服务）
+                稳定的持久化服务,即pod重新调度访问相同数据
+                稳定的网络标志,pod名和host名不变
+                有序部署,有序扩展,即根据顺序依次启动
+                有序删除,有序收回
+            -DaemonSet
+                确保node上运行一个pod副本,
+    		-Horizontal Pod Autosacling
+    			仅使用于Deployment与ReplicaSet
+    			弹性扩展,可以设置当cpu利用率到达一定数额时,增加容器来分担利用率
+    			可以设置：最多容器数,最少容器数,cpu
+    		-Job
+    			负责批处理任务
+    			执行脚本任务,保证pod成功结束,即脚本执行成功
+    		-CronJob
+    			有时间管理的Job
 		
   4.kubernetes网络通讯方式
 	-k8s假定pod在扁平化的网络空间中
@@ -122,13 +125,29 @@
             2.6 fluentd
     -k8s的对象：
         Kubernetes对象是Kubernetes系统中的持久实体。Kubernetes使用这些实体来表示集群的状态。
-    -Kubernetes Namespace
-        命名空间,用于分隔不同集群
-    -k8s label
-        标签，方便调度、访问
+    -k8s 资源
+        用于定义每种逻辑功能，每个资源有apiVersion,kind,metadata,spec定义清单,status等概念
+    -k8s Name
+        定义资源的名称
+    -k8s Namespace
+        命名空间,用于分隔不同集群（项目）
+    -k8s Label
+        标签，方便调度、访问、管理
+    -k8s annotations
+        注解 类似标签,不受字数限制
+    -k8s Label选择器
+        用于过滤标签,然后对筛选出的标签进行操作
     -k8s Volume
         将文件持久化 有很多方案
-		
+    -k8s service
+        用于提供相同服务Pod的对外访问接口
+        一个service可用于那些pod由label选择器决定
+        提供第L4层流量调度,ip+port
+    -k8s Ingress
+        主要用于提供对外暴露接口的pod
+        OSI的第L7层
+        可以调度不同业务域，不同Url访问路径的业务流量
+
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
     -名词
@@ -153,8 +172,12 @@
 		
  ----------------------------------------------------rancher-------------------------------------------------------------
     中文文档地址：https://docs.rancher.cn/docs/rancher2/overview/_index/
+    本地启动：
+        docker run -d -p 8080:80 -p 8443:443 --privileged \
+         --restart=unless-stopped \
+         -v /home/z1/program/rancher_data:/var/lib/rancher \
+         rancher/rancher:v2.4-head
 
-		
 		
 		
 		
