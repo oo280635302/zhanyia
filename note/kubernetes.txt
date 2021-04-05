@@ -148,6 +148,23 @@
         OSI的第L7层
         可以调度不同业务域，不同Url访问路径的业务流量
 
+  8.k8s 网络流量调度
+    -Namespace 废弃
+    -Iptables 快废弃
+    -ipvs 虚拟网络
+
+  9.k8s安装
+    -视频链接: https://www.bilibili.com/video/BV1nr4y1T7Bf?p=35&spm_id_from=pageDriver
+    -9.1 安装bind9 DNS服务器,控制host下所有主机
+    -9.2 准备签发证书环境
+        -安装CFSSL 或者 openSSL
+        -创建生成CA
+    -9.3 部署docker环境
+    -9.4 部署harbor镜像仓库
+    -9.5 部署nginx
+
+
+
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
     -名词

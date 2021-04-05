@@ -168,3 +168,6 @@ canvas :https://github.com/hustcc/canvas-nest.js  棍棍跟着走
         -概念:
             目标导向型行动计划（简称GOAP）是一种能够轻松呈现给你的代理选择的AI系统，
             也是帮助你可以无需维持一个庞大且复杂的有限状态机而做出明智的决策的机器
+
+24.dns服务
+    linux--bind9--开源软件
