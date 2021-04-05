@@ -125,13 +125,29 @@
             2.6 fluentd
     -k8s的对象：
         Kubernetes对象是Kubernetes系统中的持久实体。Kubernetes使用这些实体来表示集群的状态。
-    -Kubernetes Namespace
-        命名空间,用于分隔不同集群
-    -k8s label
-        标签，方便调度、访问
+    -k8s 资源
+        用于定义每种逻辑功能，每个资源有apiVersion,kind,metadata,spec定义清单,status等概念
+    -k8s Name
+        定义资源的名称
+    -k8s Namespace
+        命名空间,用于分隔不同集群（项目）
+    -k8s Label
+        标签，方便调度、访问、管理
+    -k8s annotations
+        注解 类似标签,不受字数限制
+    -k8s Label选择器
+        用于过滤标签,然后对筛选出的标签进行操作
     -k8s Volume
         将文件持久化 有很多方案
-		
+    -k8s service
+        用于提供相同服务Pod的对外访问接口
+        一个service可用于那些pod由label选择器决定
+        提供第L4层流量调度,ip+port
+    -k8s Ingress
+        主要用于提供对外暴露接口的pod
+        OSI的第L7层
+        可以调度不同业务域，不同Url访问路径的业务流量
+
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
     -名词
