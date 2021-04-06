@@ -321,9 +321,37 @@
     9.1 curl
     -概念：linux常见的用于http请求的工具
 
-    9.2
-
-
+  10. linux网络相关
+    -Ubuntu18.0.4以上版本设置静态ip:
+        在 /etc/netplan/xxx.yml 文件下修改:
+            network:
+              version: 2
+              renderer: networkd
+              ethernets:
+                ens33:
+                  addresses: [192.168.56.11/24]
+                  gateway4: 192.168.56.2
+                  nameservers:
+                    addresses: [192.168.56.2, 8.8.8.8]
+                  dhcp4: no
+                  optional: no
+        应用至ip地址:
+            sudo netplan apply
+    -查看ip、网关、子网掩码等情况
+        route -n
+    -建立bind9 DNS服务器
+        -下载:
+            sudo apt install bind9
+        -启动：
+            sudo systemctl start bind9
+        -停止:
+            sudo systemctl stop bind9
+        -重启：
+            sudo systemctl restart bind9
+        -状态：
+            sudo systemctl status bind9
+        -博客地址:
+            https://www.jianshu.com/p/330359b2b06e
 
 
 
