@@ -155,15 +155,36 @@
 
   9.k8s安装
     -视频链接: https://www.bilibili.com/video/BV1nr4y1T7Bf?p=35&spm_id_from=pageDriver
-    -9.1 安装bind9 DNS服务器,控制host下所有主机
-    -9.2 准备签发证书环境
-        -安装CFSSL 或者 openSSL
-        -创建生成CA
-    -9.3 部署docker环境
-    -9.4 部署harbor镜像仓库
-    -9.5 部署nginx
-
-
+    -笔记文档: https://www.yuque.com/grep/kubernetes/cdiy10#ChFxb
+    -9.1 部署前准备
+        -1 安装bind9 DNS服务器,控制host下所有主机
+        -2 准备签发证书环境
+            -安装CFSSL 或者 openSSL
+            -创建生成CA证书
+            -/opt/certs
+        -3 部署docker环境
+        -4 部署harbor镜像仓库
+        -5 部署nginx
+    -9.2 主节点部署
+        -1 部署ETCD
+            -生成了CA证书的服务器上建立证书请求文件 etcd-peer-csr.json
+            -生成证书和私钥:
+                cfssl gentcert -ca=ca.pem -ca-key=ca-key.pem -config=ca-config.json -profile=peer etcd-peer-csr.json | cfssl-json -bare etcd-peer
+            -下载etcd
+            -配置etcd启动脚本 在里面配置证书/私钥
+            -install supervisord 下载进程守护软件，守护并启动etcd
+                -在/etcd/supervisord.d/etcd.ini创建supervisord启动ETCD的文件
+            -重复: 上述步骤 部署奇数个ETCD集群,注意ETCD启动shell的监听端口要改
+            -检测: 任一节点 ./etcdctl cluster-health 检查集群是否正确部署
+        -2 部署apiserver
+            -官网下载 k8s 所有服务
+            -类似ETCD一样签发 etcd对apiserver的client证书,与其他服务请求apiserver的server证书
+            -创建k8s资源配置清单,做日志审计用 一般叫: audit.yaml
+            -创建apiserver启动sh脚本
+            -同用superviosd创建进程启动守护ini,并启动起来
+                superviosrctl update 启动
+                superviosrctl status 查看状态
+        -3 部署L4反向代理
 
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
