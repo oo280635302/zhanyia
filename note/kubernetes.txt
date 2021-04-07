@@ -165,7 +165,7 @@
         -3 部署docker环境
         -4 部署harbor镜像仓库
         -5 部署nginx
-    -9.2 主节点部署
+    -9.2 MASTER节点部署
         -1 部署ETCD
             -生成了CA证书的服务器上建立证书请求文件 etcd-peer-csr.json
             -生成证书和私钥:
@@ -181,10 +181,29 @@
             -类似ETCD一样签发 etcd对apiserver的client证书,与其他服务请求apiserver的server证书
             -创建k8s资源配置清单,做日志审计用 一般叫: audit.yaml
             -创建apiserver启动sh脚本
-            -同用superviosd创建进程启动守护ini,并启动起来
-                superviosrctl update 启动
-                superviosrctl status 查看状态
+            -同用supervisord创建进程启动守护ini,并启动起来
+                supervisorctl update 启动
+                supervisorctl status 查看状态
         -3 部署L4反向代理
+            -安装nignx
+                -配置stream代理选择的几台主机为反代
+            -安装keepalived(vip) 主从vip 做浮动ip
+        -4 部署kube-controller-manager
+            -启动sh脚本+supervisord
+            -连本机apiserver不用证书
+        -5 部署kube-scheduler
+            -启动sh脚本+supervisord
+            -连本机apiserver不用证书
+    -9.3 NODE节点部署
+        -1 kubelet部署
+            -
+        -2 kube-proxy部署
+            -
+
+  10.k8s命令
+    -检查集群健康
+        kubectl get cs
+    -
 
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念

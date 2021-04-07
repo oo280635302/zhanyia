@@ -354,7 +354,11 @@
             https://www.jianshu.com/p/330359b2b06e
     -netstat -luntp 查看开放的端口
 
-
+  11.linux文件夹的意思
+    /bin                    系统的必备执行
+    /usr/bin                应用软体工具的必备执行
+    /sbin                   系统管理的必备
+    /usr/sbin               网路管理的必备
 
 
 
