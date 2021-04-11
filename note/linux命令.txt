@@ -321,6 +321,12 @@
     9.1 curl
     -概念：linux常见的用于http请求的工具
 
+    9.2 supervisor
+    -概念：守护进程的工具
+
+    9.3 keepaliver
+    -概念：高可用浮点ip的工具
+
   10. linux网络相关
     -Ubuntu18.0.4以上版本设置静态ip:
         在 /etc/netplan/xxx.yml 文件下修改:
@@ -360,25 +366,133 @@
     /sbin                   系统管理的必备
     /usr/sbin               网路管理的必备
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+  12.shell脚本
+    -声明使用的编译器:
+        #!/bin/bash
+        -注意: sh要加执行权限执行,才会使用声明的编译器
+    -变量:
+        -创建变量
+            xxx="123"
+        -使用变量
+            $xxx,${xxx}
+        -只读变量
+            readonly 变量名
+        -删除变量
+            unset 变量名
+        -提取字符串
+            $xxx:索引:长度
+        -获取字符串长度
+            ${#xxx}
+        -注意：shell脚本可以使用环境变量
+    -数组
+        -创建数组：
+            xxx=(1 2 3)
+            xxx[0]=1
+        -读取数组:
+            ${xxx[索引]}
+        -读取全部数组
+            ${xxx[@]}
+        -获取数组长度
+            ${#xxx[@]}
+        -获取数组单个元素长度
+            ${#xxx[索引]}
+    -注释：
+        -单行：
+            # xxx
+        -多行
+            :<< XXX
+            XXX
+    -参数：
+        -获取flag参数
+            $参数索引
+            ${参数索引}
+            -注意：索引0是执行命令 1开始是真正的传递参数
+        -获取参数个数
+            $#
+        -字符串显示所有传递的参数
+            $*
+            $@
+        -脚本运行的pid号
+            $$
+        -后台运行的最后一个pid号
+            $!
+    -运算符
+        与go差不多
+    -控制台输出
+        -echo
+            --e开启转义输出:
+                eg: echo -e "\n"
+        -printf
+            -类似go
+    -检查某个条件是否成立:
+         test
+        -数值测试：
+            -等于
+                -eq
+            -不等于
+                -ne
+            -大于
+                -gt
+            -大于等于
+                -eq
+            -小于
+                -lt
+            -小于等于
+                -le
+        -字符串测试：
+            -等于
+                =
+            -不等于
+                !=
+            -字符串长度为零
+                -z 字符串
+            -字符串的长度不为零
+                -n 字符串
+        -文件测试：
+            -文件存在
+                -e
+            -如果文件存在且可读,可写,可执行
+                -r -w -x
+            -如果文件存在且至少有一个字符
+                -s
+            -如果文件存在且为目录则为真
+                -d
+        -test逻辑操作符：
+            与( -a )、或( -o )、非( ! )
+    -流量控制：
+        -if：
+            if condition1
+            then
+                command1
+            elif condition2
+            then
+                command2
+            else
+                commandN
+            fi
+        -for:
+            for var in item1 item2 ...
+            do
+                command1
+            done
+            或
+            for (()) ;do
+                command;
+            done;
+        -while:
+            while condition
+            do
+                command
+            done
+    -函数
+        xx(){
+            command
+            return int(0-255)
+        }
+        -获取函数返回
+            $?
+    -引用sh文件
+        . 文件地址
 
 
 
