@@ -18,7 +18,6 @@ require (
 	github.com/tealeg/xlsx v1.0.5 // indirect
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	github.com/willf/bitset v1.1.10 // indirect
-	go.mongodb.org/mongo-driver v1.4.1
-	golang.org/x/net v0.0.0-20200202094626-16171245cfb2
+	go.mongodb.org/mongo-driver v1.4.1 // indirect
 	google.golang.org/grpc v1.29.1
 )

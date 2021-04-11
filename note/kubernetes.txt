@@ -196,11 +196,34 @@
             -连本机apiserver不用证书
     -9.3 NODE节点部署
         -1 kubelet部署
-            -
+            -签发证书,并创建k8s-node配置
+            -授权 k8s-node 用户绑定集群角色 system:node ，让 k8s-node 成为具备运算节点的权限
+                -vim k8s-node.yaml
+                     apiVersion: rbac.authorization.k8s.io/v1
+                     kind: ClusterRoleBinding
+                     metadata:
+                       name: k8s-node
+                     roleRef:
+                       apiGroup: rbac.authorization.k8s.io
+                       kind: ClusterRole
+                       name: system:node
+                     subjects:
+                     - apiGroup: rbac.authorization.k8s.io
+                       kind: User
+                       name: k8s-node
+                -kubectl create -f k8s-node.yaml
+                -kubectl get clusterrolebinding k8s-node
+            -准备pause基础镜像
+                -目的：初始化网络空间、ipc空间、uts空间
+            -创建kubelet启动脚本,同时创建进程守护进程
         -2 kube-proxy部署
-            -
-
-  10.k8s命令
+            -proxy目的：管理/维护pod网络和集群网络和节点网络
+            -签发证书,创建k8s-proxy配置
+            -加载ipvs模块
+                #!/bin/bash
+                for i in $(ls /usr/lib/modules/$(uname -r)/kernel/net/netfilter/ipvs|grep -o "^[^.]*");do echo $i; /sbin/modinfo -F filename $i >/dev/null 2>&1 && /sbin/modprobe $i;done
+            -创建k8s启动脚本,同时创建进程守护进程
+  10.kubectl命令
     -检查集群健康
         kubectl get cs
     -
