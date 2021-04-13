@@ -15,9 +15,9 @@ require (
 	github.com/jinzhu/gorm v1.9.12
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
-	github.com/tealeg/xlsx v1.0.5 // indirect
+	github.com/tealeg/xlsx v1.0.5
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	github.com/willf/bitset v1.1.10 // indirect
-	go.mongodb.org/mongo-driver v1.4.1 // indirect
+	go.mongodb.org/mongo-driver v1.4.1
 	google.golang.org/grpc v1.29.1
 )

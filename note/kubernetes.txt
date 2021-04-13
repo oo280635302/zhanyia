@@ -224,9 +224,46 @@
                 for i in $(ls /usr/lib/modules/$(uname -r)/kernel/net/netfilter/ipvs|grep -o "^[^.]*");do echo $i; /sbin/modinfo -F filename $i >/dev/null 2>&1 && /sbin/modprobe $i;done
             -创建k8s启动脚本,同时创建进程守护进程
   10.kubectl命令
-    -检查集群健康
-        kubectl get cs
-    -
+    -命令大全：
+        http://docs.kubernetes.org.cn/683.html
+    -查询
+        Usage:  kubectl get resource [-o wide|json|yaml] [-n namespace]
+        Man:    获取资源的相关信息，-n 指定名称空间，-o 指定输出格式
+                resource可以是具体资源名称，如pod nginx-xxx；也可以是资源类型，如pod；或者all(仅展示几种核心资源，并不完整)
+                -A, --all-namespace 表示显示所有名称空间
+        -检查集群健康
+            kubectl get cs
+        -查看名称空间
+            kubectl get namespaces
+    -描述
+        Usage: kubectl describe (-f FILENAME | TYPE [NAME_PREFIX | -l label] | TYPE/NAME) [-n namespace]
+        Man:   描述某个资源信息
+        -eg:
+            kubectl describe svc nginx-web
+    -创建
+        Uage:   kubectl create -f filename.yaml
+                kubectl create resourece [options]
+        Man:    根据清单文件或者指定的资源参数创建资源
+        -创建名称空间
+            kubectl create namespace app
+        -创建deployment
+            kubectl create deployment app-deploy --image=ubuntu:latest -n app
+    -创建service资源
+        Usage: Usage:  kubectl expose TYPE NAME [--port=port] [--protocol=TCP|UDP|SCTP] [--target-port=n] [--name=name] [--external-ip=external-ip-of-service] [options]
+        Man:    TYPE为deployment,NAME为depoly资源名称，port和target-port分别为集群和pod的端口
+        -eg:
+            kubectl expose deployment app-deploy --port=80 --target-port=80 --name=app-svc -n app
+    -扩展
+        Usage:  kubectl scale --replicas=COUNT TYPE NAME [options]
+        Man:    对资源进行扩缩容，即修改副本数
+        -eg:
+            kubectl scale --replicas=5 deployment xxx
+    -删除
+        Usage:  kubectl delete ([-f FILENAME] | [-k DIRECTORY] | TYPE [(NAME | -l label | --all)]) [options]
+        Man:    删除指定资源
+        -删除名称空间
+            kubectl delete namespace app
+
 
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
