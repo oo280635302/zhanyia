@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
@@ -43,6 +44,14 @@ func main() {
 	//csMongo()
 	//fmt.Println("123")
 	//cs()
+	version := flag.Bool("version", false, "How version!")
+
+	if !*version {
+		{
+			a := 12
+			fmt.Println(a)
+		}
+	}
 
 	return
 	// 持久化
@@ -72,27 +81,23 @@ type PPhoneBindReq struct {
 }
 
 func httpReq() {
-	token := "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNjA4ODAwODY4LCJleHAiOjE2MDk0MDU2Njh9._P0RBvYGsa4F6FCoVpOrKpIz06-QsRxpbJHH9A4gWyg"
 
-	req := &PPhoneBindReq{}
-	req.AppKey = "488441998952435da895286632e82f40"
-	req.AreaCode = "028"
-	req.CalleeNum = "13982552218"
-	req.CallerNum = "13980494026"
-	req.RecordFlag = true
-	req.Duration = 6 * 60 * 60
-	req.MaxDuration = 30
-	req.NotifyUrl = "https://api.xiaokayun.cn/api/v1/privacy/phone/notify"
+	req := map[string]interface{}{
+		"app_key":    "36db954333b14bf9ad14f7f5bfa24fde",
+		"company_id": 1,
+		"channel":    1,
+		"timestamp":  1618983874,
+	}
+
 	param, _ := json.Marshal(req)
 
-	request, err := http.NewRequest("POST", "http://117.172.236.74:30011"+"/v1/privacy/open/axb/binding", strings.NewReader(string(param)))
+	request, err := http.NewRequest("PUT", "https://api.xiaokacloud.com/api/v1/small/read_advertise", strings.NewReader(string(param)))
 	if err != nil {
 		fmt.Println("绑定隐私号 http newRequest has err:", err)
 		return
 	}
 
 	request.Header.Set("Content-Type", "application/json;charset=utf-8")
-	request.Header.Set("Authorization", token)
 
 	client := &http.Client{Timeout: time.Second * 3}
 	resp, err := client.Do(request)
