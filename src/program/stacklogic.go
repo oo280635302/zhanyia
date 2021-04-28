@@ -1210,7 +1210,7 @@ func DecodeAtIndex(S string, K int) string {
 	return string(realS[k-1])
 }
 
-// 计算右侧小于当前元素的个数
+// 计算右侧小于当前元素的个数----------------------------------------------------------------------
 // 思路：暴力 从右到左遍历 每个数都往右边找比他小的数计数 找到相等的就不用找了 直接加上其计数值 440ms/4.3mb
 func CountSmaller(nums []int) []int {
 	n := len(nums)
@@ -1232,6 +1232,46 @@ func CountSmaller(nums []int) []int {
 
 	}
 	return res
+}
+
+// 去除最外层的括号----------------------------------------------------------------------------
+// 思路：左右括号一定会闭合，因此跳过每次最外层的左括号，让其他括号去配对，配对不上的就是跳过的左括号的右括号让他剔除
+func removeOuterParentheses(S string) string {
+	s := strings.Builder{}
+	cnt := 0
+	for _, v := range S {
+		if v == '(' {
+			if cnt > 0 {
+				s.WriteRune(v)
+			}
+			cnt++
+		} else {
+			cnt--
+			if cnt > 0 {
+				s.WriteRune(v)
+			}
+		}
+	}
+	return s.String()
+}
+
+// 相邻字母不能相同------------------------------------------------------------------------------
+// 思路：栈
+func removeDuplicates(S string) string {
+	r := make([]uint8, 0)
+
+	for i := 0; i < len(S); i++ {
+		if len(r) == 0 {
+			r = append(r, S[i])
+			continue
+		}
+		if S[i] == r[len(r)-1] {
+			r = r[:len(r)-1]
+		} else {
+			r = append(r, S[i])
+		}
+	}
+	return string(r)
 }
 
 // todo 需要补充的知识 树状数组

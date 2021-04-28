@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
@@ -25,6 +24,7 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
@@ -44,14 +44,7 @@ func main() {
 	//csMongo()
 	//fmt.Println("123")
 	//cs()
-	version := flag.Bool("version", false, "How version!")
-
-	if !*version {
-		{
-			a := 12
-			fmt.Println(a)
-		}
-	}
+	program.Ingress()
 
 	return
 	// 持久化
