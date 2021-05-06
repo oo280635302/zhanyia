@@ -1,5 +1,7 @@
 package program
 
+import "math/bits"
+
 /*
 	位元数知识点：
 		异^：
@@ -65,4 +67,11 @@ func findTheDifference(s string, t string) byte {
 		r ^= v
 	}
 	return byte(r)
+}
+
+// 两个数字对应二进制位不同的位置的数目-----------------------------------------------------------------------------------
+// 思路：异
+func hammingDistance(x int, y int) int {
+	z := x ^ y
+	return bits.OnesCount(uint(z))
 }

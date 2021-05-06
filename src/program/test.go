@@ -4,11 +4,7 @@ import (
 	"fmt"
 )
 
-type CS struct {
-	Name int64 `json:"name,default=123"`
-}
-
 func Ingress() {
-	res := findTheDifference("abcd", "abecd")
+	res := hammingDistance(3, 4)
 	fmt.Println("res:", res)
 }
