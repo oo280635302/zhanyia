@@ -188,6 +188,7 @@
             -安装nignx
                 -配置stream代理选择的几台主机为反代
             -安装keepalived(vip) 主从vip 做浮动ip
+                -目的：下游kubelet服务通信,能不因为apiserver一台结点故障就无法访问
         -4 部署kube-controller-manager
             -启动sh脚本+supervisord
             -连本机apiserver不用证书
@@ -196,7 +197,14 @@
             -连本机apiserver不用证书
     -9.3 NODE节点部署
         -1 kubelet部署
-            -
+            -创建kubelet证书
+            -用kubectl创建配置文件
+                kubectl config xxx xxx
+                -set-cluster
+                -set-credentials
+                -set-context
+                -use-context
+            -编写k8s-node.yaml
         -2 kube-proxy部署
             -
 
