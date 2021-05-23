@@ -412,8 +412,24 @@
          -v /home/z1/program/rancher_data:/var/lib/rancher \
          rancher/rancher:v2.4-head
 
-		
-		
+ ----------------------------------------------------istio-------------------------------------------------------------------
+    istio：服务网格的实现
+    -安装和卸载
+        -下载
+            curl -L https://istio.io/downloadistio | ISTIO_VERSION=x.x.x sh -
+            or
+            wget https://github.com/istio/istio/releases/download/x.x.x/istio-x.x.x-linux.tar.gz
+        -设置环境变量
+            export PATH=$PATH:/root/istio/istio-x.x.x/bin
+        -验证istioctl安装成功与否
+            isitoctl version
+        -安装istio
+            istioctl mainfest apply --set profile=demo
+        -查看可安装的istio版本
+            istioctl profile list
+        -
+
+
 		
 
 
