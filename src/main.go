@@ -24,6 +24,7 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 	pb "zhanyia/src/proto"
 )
 
@@ -34,7 +35,6 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
 	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
 	//csXlsx()
 	//csGorm()
@@ -43,6 +43,7 @@ func main() {
 	//csMongo()
 	//fmt.Println("123")
 	//cs()
+	program.Ingress()
 
 	return
 	// 持久化
@@ -60,39 +61,24 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-type PPhoneBindReq struct {
-	AreaCode    string `protobuf:"bytes,1,opt,name=areaCode,proto3" json:"areaCode,omitempty"`
-	AppKey      string `protobuf:"bytes,2,opt,name=appKey,proto3" json:"appKey,omitempty"`
-	CallerNum   string `protobuf:"bytes,3,opt,name=callerNum,proto3" json:"callerNum,omitempty"`
-	CalleeNum   string `protobuf:"bytes,4,opt,name=calleeNum,proto3" json:"calleeNum,omitempty"`
-	Duration    int64  `protobuf:"varint,5,opt,name=duration,proto3" json:"duration,omitempty"`
-	MaxDuration int64  `protobuf:"varint,6,opt,name=maxDuration,proto3" json:"maxDuration,omitempty"`
-	RecordFlag  bool   `protobuf:"varint,7,opt,name=recordFlag,proto3" json:"recordFlag,omitempty"`
-	NotifyUrl   string `protobuf:"bytes,8,opt,name=notifyUrl,proto3" json:"notifyUrl,omitempty"`
-}
-
 func httpReq() {
-	token := "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZW1wIiwicGF5bG9hZCI6IjQ4ODQ0MTk5ODk1MjQzNWRhODk1Mjg2NjMyZTgyZjQwIiwiaXNzIjoi5Zub5bed5bCP5ZKW56eR5oqA5pyJ6ZmQ5YWs5Y-4IiwiaWF0IjoxNjA4ODAwODY4LCJleHAiOjE2MDk0MDU2Njh9._P0RBvYGsa4F6FCoVpOrKpIz06-QsRxpbJHH9A4gWyg"
 
-	req := &PPhoneBindReq{}
-	req.AppKey = "488441998952435da895286632e82f40"
-	req.AreaCode = "028"
-	req.CalleeNum = "13982552218"
-	req.CallerNum = "13980494026"
-	req.RecordFlag = true
-	req.Duration = 6 * 60 * 60
-	req.MaxDuration = 30
-	req.NotifyUrl = "https://api.xiaokayun.cn/api/v1/privacy/phone/notify"
+	req := map[string]interface{}{
+		"app_key":    "36db954333b14bf9ad14f7f5bfa24fde",
+		"company_id": 1,
+		"channel":    1,
+		"timestamp":  1618983874,
+	}
+
 	param, _ := json.Marshal(req)
 
-	request, err := http.NewRequest("POST", "http://117.172.236.74:30011"+"/v1/privacy/open/axb/binding", strings.NewReader(string(param)))
+	request, err := http.NewRequest("PUT", "https://api.xiaokacloud.com/api/v1/small/read_advertise", strings.NewReader(string(param)))
 	if err != nil {
 		fmt.Println("绑定隐私号 http newRequest has err:", err)
 		return
 	}
 
 	request.Header.Set("Content-Type", "application/json;charset=utf-8")
-	request.Header.Set("Authorization", token)
 
 	client := &http.Client{Timeout: time.Second * 3}
 	resp, err := client.Do(request)
@@ -157,29 +143,20 @@ func csMysql() {
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
 
-	arr := []string{"xxx", "yyy"}
+	//arr := []string{"xxx", "yyy"}
 
-	s := ""
-
-	for _, val := range arr {
-		if s == "" {
-			s += "'" + val + "'"
-		} else {
-			s += ",'" + val + "'"
-		}
-	}
-	str := fmt.Sprintf("select `id` from `cs`.`robots` where  `password` in (%s)", s)
-	fmt.Println(str)
-	rows, err := db.Query(str)
+	stm, err := db.Prepare("insert into `cs`.`cs` (`key`,`value`) values (?,?);")
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("err1", err)
 		return
 	}
-
-	for rows.Next() {
-		key := 0
-		rows.Scan(&key)
-		fmt.Println(key)
+	for i := 19; i < 29; i++ {
+		r, err := stm.Exec(i, i)
+		if err != nil {
+			fmt.Println("err2", err)
+			return
+		}
+		fmt.Println(r.LastInsertId())
 	}
 }
 

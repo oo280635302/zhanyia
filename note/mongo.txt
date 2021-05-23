@@ -72,4 +72,64 @@
 6.特别操作
     -回收磁盘空间
         db.repairDatabase()
-    -
+
+7.mongo 集群部署
+    -mongo的事务必须要在集群下才能使用并且Mongo版本号必须在4.0.0以上
+    -下载解压:
+        wget https://fastdl.mongodb.org/linux/mongodb-linux-x86_64-rhel70-4.4.5.tgz
+        tar -zxvf ....
+    -创建data目录，log目录，etc目录
+    -创建配置文件mongo.conf
+        # 数据库文件
+        dbpath=/home/mongo/data
+        # 日志相关
+        logpath=/home/mongo/logs/mongo.log
+        logappend=true
+        # 启动日志
+        journal=true
+        # 过滤无用日志
+        quiet=true
+        # 端口
+        port=27017
+        # 守护进程
+        fork=true
+        # 是否验证权限
+        auth=false
+        # 副本集名称
+        replSet=rs0
+        # 需要所有ip访问
+        bind_ip_all=true
+        # 访问白名单 逗号分隔
+        bind_ip=x.x.x.x,x.x.x.x
+        # 操作日志文件的最大大小，单位m
+        oplogSize=100
+        # 进程文件
+        pidfilepath=/xx/xx
+        # 是否预先分配存储
+        noprealloc=true
+        # 为每一个数据库按照数据库名建立文件夹存放
+        directoryperdb=true
+
+    -守护进程启动mongo
+        mongod -f /home/mongo/etc/mongo.cfg
+    -这时候需要初始化集群
+        master:   rs.initiate()
+                  rs.add(hostname:port)
+    -查看集群状态：
+        rs.status()
+    -以上服务器部署完成
+    -连接服务器：
+        注意点：
+            为了事务必须副本集连接 replicaSet=rs0
+            连接副本集需要连接副本集所有服务,如需要单连接主节点需要声明 connect=direct
+        以上及：
+            mongodb://admin:123456@172.10.10.1/?replicaSet=rs0&connect=direct
+
+8.用户权限
+    db.createUser(
+         {
+           user:"admin",
+           pwd:"123456",
+           roles:[{role:"root",db:"admin"}]
+         }
+      )

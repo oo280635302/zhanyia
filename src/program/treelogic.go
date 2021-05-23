@@ -139,3 +139,73 @@ func generateTreesDfs(start, end int) []*TreeNode {
 	}
 	return res
 }
+
+// 树的深度-------------------------------------------------------------------------------------------------------------
+// 思路1：广度搜索 将每层节点统计出来 层层递进 算出最终层数
+func maxDepthByBreadth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+	cur := []*TreeNode{root}
+	ds := 0
+
+	for {
+		if len(cur) == 0 {
+			break
+		}
+
+		node := make([]*TreeNode, 0)
+		for _, v := range cur {
+			if v.Left != nil {
+				node = append(node, v.Left)
+			}
+			if v.Right != nil {
+				node = append(node, v.Right)
+			}
+		}
+		cur = node
+
+		ds++
+	}
+
+	return ds
+}
+
+// 思路2：深度优先
+func maxDepthByDepth(root *TreeNode) int {
+	if root == nil {
+		return 0
+	}
+
+	return max(maxDepthByDepth(root.Left), maxDepthByDepth(root.Right)) + 1
+}
+
+// 二叉树的层序遍历------------------------------------------------------------------------------------------------------
+// 思路：广度优先
+func levelOrder(root *TreeNode) [][]int {
+	if root == nil {
+		return nil
+	}
+	lv := make([][]int, 0)
+	//lv = append(lv,[]int{root.Val})
+	cur := []*TreeNode{root}
+
+	for len(cur) > 0 {
+		node := make([]*TreeNode, 0)
+		curInt := make([]int, 0)
+
+		for _, v := range cur {
+			if v.Left != nil {
+				node = append(node, v.Left)
+			}
+			if v.Right != nil {
+				node = append(node, v.Right)
+			}
+			curInt = append(curInt, v.Val)
+		}
+		cur = node
+		lv = append(lv, curInt)
+	}
+
+	return lv
+}

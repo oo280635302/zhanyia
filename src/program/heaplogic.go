@@ -1,8 +1,10 @@
 package program
 
+import "container/heap"
+
 // 堆有关的算法问题 -- LeetCode
 
-// 堆工具-------------------------------------------------------------------------------------------------------------
+// 堆工具---------------------------------------------------------------------------------------------------------------
 
 // 堆排序
 func HeapSort(s []int) {
@@ -52,11 +54,9 @@ type IHeap []int
 func (h IHeap) Len() int           { return len(h) }
 func (h IHeap) Less(i, j int) bool { return h[i] < h[j] }
 func (h IHeap) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
-
 func (h *IHeap) Push(x interface{}) {
 	*h = append(*h, x.(int))
 }
-
 func (h *IHeap) Pop() interface{} {
 	old := *h
 	n := len(old)
@@ -65,7 +65,7 @@ func (h *IHeap) Pop() interface{} {
 	return x
 }
 
-// 有序矩阵中第K小的元素------------------------------------------------------------------------------------------
+// 有序矩阵中第K小的元素-------------------------------------------------------------------------------------------------
 // 思路：将矩阵转成数组 然后 堆排序(任何排序都可以) 40ms/7mb
 func kthSmallest(matrix [][]int, k int) int {
 	// 将矩阵转成数组
@@ -75,4 +75,27 @@ func kthSmallest(matrix [][]int, k int) int {
 	}
 	HeapSort(arr)
 	return arr[k-1]
+}
+
+// 石头组消耗碰撞，得出最后剩余的石头重量---------------------------------------------------------------------------------
+// 思路：堆，每次吐出两个比较得出结果后
+func lastStoneWeight(stones []int) int {
+	h := IHeap{}
+	h = stones
+	heap.Init(&h)
+	for h.Len() > 1 {
+		// 吐两个最大出来
+		a1 := heap.Pop(&h).(int)
+		a2 := heap.Pop(&h).(int)
+		if a1-a2 == 0 {
+			continue
+		} else {
+			heap.Push(&h, a1-a2)
+		}
+	}
+	r := 0
+	if h.Len() != 0 {
+		r = heap.Pop(&h).(int)
+	}
+	return r
 }
