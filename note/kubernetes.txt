@@ -381,6 +381,34 @@
             - key: string
             path: string
 
+  11.Ingress
+    -公开了从集群外部到集群内服务的 HTTP 和 HTTPS 路由，根据Ingress规则进行转发到Services
+    -分为：Ingress controller 和 Ingress 服务
+    -Ingress controller控制器
+        -目前有： AWS， GCE 和 nginx Ingress
+        -用于Ingress服务规则的执行，实际工作者
+    -Ingress 服务
+        -制定Ingress规则，k8s资源的一种
+        -eg:
+            apiVersion: networking.k8s.io/v1
+            kind: Ingress
+            metadata:
+              name: minimal-ingress
+              annotations:
+                nginx.ingress.kubernetes.io/rewrite-target: /
+            spec:
+              rules:
+              - http:
+                  paths:
+                  - path: /testpath
+                    pathType: Prefix
+                    backend:
+                      service:
+                        name: test
+                        port:
+                          number: 80
+            -注意：ingress一般使用annotations注解配置选项
+        -
 
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
@@ -421,6 +449,7 @@
             wget https://github.com/istio/istio/releases/download/x.x.x/istio-x.x.x-linux.tar.gz
         -设置环境变量
             export PATH=$PATH:/root/istio/istio-x.x.x/bin
+        **需要在k8s能访问API server的节点上执行，否则无效
         -验证istioctl安装成功与否
             isitoctl version
         -安装istio
@@ -428,6 +457,7 @@
         -查看可安装的istio版本
             istioctl profile list
         -
+    -
 
 
 		
