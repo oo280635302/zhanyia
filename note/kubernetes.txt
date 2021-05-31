@@ -397,18 +397,36 @@
               annotations:
                 nginx.ingress.kubernetes.io/rewrite-target: /
             spec:
+              defaultBackend:
+                serviceName: xxx
+                servicePort: 80
               rules:
-              - http:
+              - host: errand.kuaixg.cn
+                http:
                   paths:
-                  - path: /testpath
-                    pathType: Prefix
+                  - path: /
+                    pathType:Prefix
                     backend:
-                      service:
-                        name: test
-                        port:
-                          number: 80
+                      serviceName: errand
+                      servicePort: 80
             -注意：ingress一般使用annotations注解配置选项
-        -
+    -Ingress规则
+        -host
+            未指定host将会允许所有请求流入backend
+            指定host(www.baidu.com)只能该域名流入的才能进入backend
+        -path
+            指定匹配的path才能流入指定的backend
+            pathType指路径规则
+                -Exact 精确匹配
+                -Prefix 前缀匹配
+            eg: path:/xx  需要www.baidu.com/xx 才能进入指定backend
+    -Resource资源后端
+        指向同一名字空间中的另一个K8s中的资源
+        -eg:
+            resource:
+              apiGroup: k8s.example.com
+              kind: StorageBucket
+              name: static-assets
 
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
@@ -442,6 +460,18 @@
 
  ----------------------------------------------------istio-------------------------------------------------------------------
     istio：服务网格的实现
+    -特性：
+        -流量管理  简化调度过程
+        -安全  保证网络通信的安全
+        -可观察  有监控
+    -流量管理：
+        -简介
+            -依赖于自带的envoy代理
+                    -自动检测集群中的服务与endpoint
+                    -envoy默认使用轮询转发到负载均衡池
+                        -更多调度策略+特殊规则 通过API添加配置到istio进行管理
+        -虚拟服务：
+            -
     -安装和卸载
         -下载
             curl -L https://istio.io/downloadistio | ISTIO_VERSION=x.x.x sh -
@@ -460,14 +490,6 @@
     -
 
 
-		
-
-
-
-		
-		
-		
-		
 		
 		
 		
