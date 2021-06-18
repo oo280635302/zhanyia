@@ -3573,3 +3573,10 @@
             if true == closed {
                 log.Println("调度器(流水线)已关闭.")
         }
+
+  62.MPG 调度 | 算法 | 协程
+    -名词解释:
+        -M: machine    系统线程
+        -P: processor  协程调度器
+        -G: goroutine  协程
+    -

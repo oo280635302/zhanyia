@@ -35,15 +35,10 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-	//must.GinListener(must.NewLimitTicker(60*time.Second, 10))
-	//csXlsx()
-	//csGorm()
-	//httpReq()
-	//csMysql()
-	//csMongo()
-	//fmt.Println("123")
-	//cs()
+
 	program.Ingress()
+
+	fmt.Println(len("1623982819540905984"))
 
 	return
 	// 持久化
@@ -59,6 +54,10 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func curTime(unix int64) int64 {
+	return ((unix-16*3600)/86400 + 1) * 86400
 }
 
 func httpReq() {

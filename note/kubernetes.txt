@@ -6,11 +6,11 @@
 		开源
 		弹性伸缩
 		负载均衡
-		
+
   2.kubernetes组件
 	-must服务：
 		scheduler	调度器			分配任务的
-		apisever	服务器			操作访问的入口
+		apiserver	服务器			操作访问的入口
 		replication controller	控制器	负责根据需求增加删除pod容器副本
 	-etcd：（持久化）
 		键值对数据库---可信赖的分布式键值存储服务
@@ -32,12 +32,12 @@
     -概念：用以pod启动的模板，同时保证pod的预期运行（副本数、生命周期、健康状态检查...等）
     -目的：控制pod
     -控制器管理：
-    		-ReplicationController
-    			控制副本数保持在用户定义的数量
-    		-ReplicaSet
-    			在ReplicationController基础上,支持集合式selector
-    		-Deployment 无状态服务*最常用*
-    			ReplicaSet的管理器，且多出一些功能（如：rolling-update）
+            -ReplicationController
+                控制副本数保持在用户定义的数量
+            -ReplicaSet
+                在ReplicationController基础上,支持集合式selector
+            -Deployment 无状态服务*最常用*
+                ReplicaSet的管理器，且多出一些功能（如：rolling-update）
             -StatefulSet 有状态服务（有数据存储的服务）
                 稳定的持久化服务,即pod重新调度访问相同数据
                 稳定的网络标志,pod名和host名不变
@@ -45,15 +45,15 @@
                 有序删除,有序收回
             -DaemonSet
                 确保node上运行一个pod副本,
-    		-Horizontal Pod Autosacling
-    			仅使用于Deployment与ReplicaSet
-    			弹性扩展,可以设置当cpu利用率到达一定数额时,增加容器来分担利用率
-    			可以设置：最多容器数,最少容器数,cpu
-    		-Job
-    			负责批处理任务
-    			执行脚本任务,保证pod成功结束,即脚本执行成功
-    		-CronJob
-    			有时间管理的Job
+            -Horizontal Pod Autosacling
+                仅使用于Deployment与ReplicaSet
+                弹性扩展,可以设置当cpu利用率到达一定数额时,增加容器来分担利用率
+                可以设置：最多容器数,最少容器数,cpu
+            -Job
+                负责批处理任务
+                执行脚本任务,保证pod成功结束,即脚本执行成功
+            -CronJob
+                有时间管理的Job
 		
   4.kubernetes网络通讯方式
 	-k8s假定pod在扁平化的网络空间中
@@ -75,7 +75,7 @@
 		将Service通过nodepod进行映射然后访问
 	-Flannel网络规划服务
 		让集群的不同节点主机创建的在全集群ip地址唯一
-	-Flanned远程端口访问方案
+	-Flannel远程端口访问方案
 		跨主机的扁平化网络根据多次ip封装解析做到跨主机访问	
 		etcd存储已分配的ip地址
 		监控etcd每个pod实际地址,并维护pod节点路由表
@@ -96,7 +96,6 @@
 		-名称空间级别：
 			概念：只有在该名称下 才能被调用
 			-工作负载型资源：
-				
 		-集群级别：
 			概念：不管哪里都可以被调用
 		-元数据型：
@@ -108,7 +107,6 @@
             1.1 kube-apiserver      对外接口
             1.2 ETCD                对集群数据进行的存储
             1.3 kube-controller-manager         控制器管理中心
-
             1.4 cloud-controller-manager
             1.5 kube-scheduler
             1.6 插件 addons
@@ -131,6 +129,13 @@
         定义资源的名称
     -k8s Namespace
         命名空间,用于分隔不同集群（项目）
+        命令:
+            kubectl create namespace xxx
+        YAML:
+            apiVersion: v1
+            kind: Namespace
+            metadata:
+              name: new-namespace
     -k8s Label
         标签，方便调度、访问、管理
     -k8s annotations
@@ -428,6 +433,8 @@
               kind: StorageBucket
               name: static-assets
 
+  12.
+
  -------------------------------------------华为云容器CCE------------------------------------------------------------------
  1.概念
     -名词
@@ -460,6 +467,7 @@
 
  ----------------------------------------------------istio-------------------------------------------------------------------
     istio：服务网格的实现
+    -作用：在k8s服务发现不满足服务通信的需求时再引入
     -基本功能特性：
         -流量管理  简化调度过程
             -负载均衡
@@ -493,6 +501,8 @@
                     -envoy默认使用轮询转发到负载均衡池
                         -更多调度策略+特殊规则 通过API添加配置到istio进行管理
     -安装和卸载
+        -文档地址：
+            https://istio.io/latest/zh/docs/setup/platform-setup/
         -下载
             curl -L https://istio.io/downloadistio | ISTIO_VERSION=x.x.x sh -
             or
@@ -506,8 +516,27 @@
             istioctl mainfest apply --set profile=demo
         -查看可安装的istio版本
             istioctl profile list
-        -
-    -
+    -流量控制：
+        -配置请求路由
+            kubectl apply -f samples/bookinfo/networking/virtual-service-all-v1.yaml
+            yaml:
+                - apiVersion: networking.istio.io/v1beta1
+                  kind: VirtualService
+                  ...
+                  spec:
+                    hosts:
+                    - details
+                    http:
+                    - route:
+                      - destination:
+                          host: details
+                          subset: v1
+    -核心组件：
+        -envoy
+            -代理，以字面意思理解即可，服务的网络代理，管理流量出入，类似于k8s的work-node。
+            -特性：动态服务发现、负责均衡、TLS终端、http/grpc代理、熔断器、健康检查、基于百分比流量分割的分阶段发布、故障注入、丰富指标
+        -istiod
+            -中心，提供整体的服务发现、证书管理
 
 
 		
