@@ -38,8 +38,6 @@ func main() {
 
 	program.Ingress()
 
-	fmt.Println(len("1623982819540905984"))
-
 	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

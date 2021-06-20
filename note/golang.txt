@@ -3579,4 +3579,5 @@
         -M: machine    系统线程
         -P: processor  协程调度器
         -G: goroutine  协程
-    -
+    -P由环境变量GOMAXPROCS决定数量
+    -每个P会执行当前GOROUTINE,并且未执行GOROUTINE会形成
