@@ -9,6 +9,7 @@
 		-网络编程
 		-内存数据库
 		-云平台
+    -使用 CSP(Communicating Sequential Processes) 并发模型
 	
   2.运行程序
 	-go env 	查看go权限配置信息
@@ -3574,7 +3575,8 @@
                 log.Println("调度器(流水线)已关闭.")
         }
 
-  62.MPG 调度 | 算法 | 协程
+  62.MPG  协程 | 调度 | 算法 | GOROUTINE
+    -链接: https://studygolang.com/articles/26921
     -名词解释:
         -M: machine    内核线程,由GO生成
         -P: processor  协程调度器
@@ -3626,18 +3628,203 @@
         G0
             G0是每次启动一个M都会第一个创建的gourtine，G0仅用于负责调度的G，G0不指向任何可执行的函数,
             每个M都会有一个自己的G0。在调度或系统调用时会使用G0的栈空间, 全局变量的G0是M0的G0
-    -
+    -生命周期:
+        package main
+        import "fmt"
+        func main(){
+            fmt.Println("Hello world")
+        }
+        1.接下来我们来针对上面的代码对调度器里面的结构做一个分析。
+        2.也会经历如上图所示的过程：
+        3.runtime创建最初的线程m0和goroutine g0，并把2者关联。
+        4.调度器初始化：初始化m0、栈、垃圾回收，以及创建和初始化由GOMAXPROCS个P构成的P列表。
+        5.示例代码中的main函数是main.main，runtime中也有1个main函数——runtime.main，代码经过编译后，runtime.main会调用main.main，程序启动时会为runtime.main创建goroutine，称它为main goroutine吧，然后把main goroutine加入到P的本地队列。
+        6.启动m0，m0已经绑定了P，会从P的本地队列获取G，获取到main goroutine。
+        7.G拥有栈，M根据G中的栈信息和调度信息设置运行环境
+        8.M运行G
+        9.G退出，再次回到M获取可运行的G，这样重复下去，直到main.main退出，runtime.main执行Defer和Panic处理，或调用runtime.exit退出程序。
+        10.调度器的生命周期几乎占满了一个Go程序的一生，runtime.main的goroutine执行之前都是为调度器做准备工作，runtime.main的goroutine运行，才是调度器的真正开始，直到runtime.main结束而结束
 
+  63.Channel 通道 | 原理 | 通信
+    -链接：https://segmentfault.com/a/1190000023961580
+    -底层类型：
+        type hchan struct {
+           qcount   uint            // 当前队列中剩余元素个数
+           dataqsiz uint            // 环形队列长度，即缓冲区的大小
+           buf      unsafe.Pointer  // 环形队列指针
+           elemsize uint16          // 每个元素的大小
+           closed   uint32          // 表示当前通道是否处于关闭状态 0开1关
+           elemtype *_type          // 元素类型，用于数据传递过程中的赋值
+           sendx    uint            // 环形缓冲区的状态字段 指示缓冲区的当前索引
+           recvx    uint            // 环形缓冲区的状态字段 指示缓冲区的当前索引
+           recvq    waitq           // 等待读消息的goroutine队列
+           sendq    waitq           // 等待写消息的goroutine队列
+           lock mutex               // 互斥锁
+        }
+    -以数据示例:
+        -底层数据：
+            hchan struct {
+                qcount uint : 0
+                dataqsiz uint : 3
+                buf unsafe.Pointer : 0xc00007e0e0
+                elemsize uint16 : 8
+                closed uint32 : 0
+                elemtype *runtime._type : &{
+                    size:8
+                    ptrdata:0
+                    hash:4149441018
+                    tflag:7
+                    align:8
+                    fieldalign:8
+                    kind:130
+                    alg:0x55cdf0
+                    gcdata:0x4d61b4
+                    str:1055
+                    ptrToThis:45152
+                    }
+                sendx uint : 0
+                recvx uint : 0
+                recvq runtime.waitq :
+                    {first:<nil> last:<nil>}
+                sendq runtime.waitq :
+                    {first:<nil> last:<nil>}
+                lock runtime.mutex :
+                    {key:0}
+            }
+    -写入流程
+        1、锁定整个通道结构。
+        2、确定写入。尝试recvq从等待队列中等待goroutine，然后将元素直接写入goroutine。
+        3、如果recvq为Empty，则确定缓冲区是否可用。如果可用，从当前goroutine复制数据到缓冲区。
+        4、如果缓冲区已满，则要写入的元素将保存在当前正在执行的goroutine的结构中，并且当前goroutine将在sendq中排队并从运行时挂起。
+        5、写入完成释放锁。
+    -读取流程
+        1、先获取channel全局锁
+        2、尝试sendq从等待队列中获取等待的goroutine，
+        3、 如有等待的goroutine，没有缓冲区，取出goroutine并读取数据，然后唤醒这个goroutine，结束读取释放锁。
+        4、如有等待的goroutine，且有缓冲区（此时缓冲区已满），从缓冲区队首取出数据，再从sendq取出一个goroutine，将goroutine中的数据存入buf队尾，结束读取释放锁。
+        5、如没有等待的goroutine，且缓冲区有数据，直接读取缓冲区数据，结束读取释放锁。
+        6、如没有等待的goroutine，且没有缓冲区或缓冲区为空，将当前的goroutine加入recvq排队，进入睡眠，等待被写goroutine唤醒。结束读取释放锁。
+    -select
+        -原理：监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作
+        -select从channel中读出数据的顺序是随机的
+    -range
+        -可以持续从channel读取数据，一直到channel被关闭，当channel中没有数据时会阻塞当前goroutine，与读channel时阻塞处理机制一样
+    -deadlock
+        指两个或两个以上的协程的执行过程中，由于竞争资源或由于彼此通信而造成的一种阻塞的现象。
+        在非缓冲信道若发生只流入不流出，或只流出不流入，就会发生死锁
+        -避免: 写的时候注意即可
 
+  64.sync.Pool
+    -概念：
+        sync.Pool 可以将暂时不用的对象缓存起来,待下次需要的时候直接使用
+    -作用：
+        解决需要频繁、回收内存的地方。
+        不用再次经过内存分配,复用对象的内存,减轻 GC 的压力,提升系统的性能
+    -场景：
+        多goroutine的情况下创建同一个对象 数量过大 导致GC压力增大,形成 "并发⼤－占⽤内存⼤－GC 缓慢－处理并发能⼒降低－并发更⼤" 的恶性循环
+    -总结：
+        1.复用
+        2.协程安全
+        3.存入的对象不会清空数据(但也不要利用这个来获取之前的数据),需要手动清理
+        4.Pool对象受GC影响,不适合链接池
+        5.数量无上限,但是受GC临界值制约
+        6.procPin 将 G 和 P 绑定,防止 G 被抢占。在绑定期间,GC 无法清理缓存的对象
+        7.加入 victim 机制前,sync.Pool 里对象的最⼤缓存时间是一个 GC 周期,当GC开始时,没有被引⽤的对象都会被清理掉
+        8.加入 victim 机制后,最大缓存时间为两个 GC 周期
+        9.Victim Cache 本来是计算机架构里面的一个概念,是 CPU 硬件处理缓存的一种技术,sync.Pool 引入的意图在于降低 GC 压力的同时提高命中率
+        10.sync.Pool 的最底层使用切片加链表来实现双端队列，并将缓存的对象存储在切片中
+    -例子：
+        pool = &sync.Pool {
+                New: func()interface{} {
+                    return new(Person)
+                },
+            }
+        p := pool.Get().(*Person)
+        p.Reset()
+        pool.Put(p)
+    -源码分析:
+        -Pool结构体：
+            type Pool struct {
+                noCopy noCopy  // Pool 不希望被复制
+                // 每个 P 的本地队列，实际类型为 [P]poolLocal
+                local     unsafe.Pointer    // local fixed-size per-P pool, actual type is [P]poolLocal
+                // [P]poolLocal的大小
+                localSize uintptr           // size of the local array
+                victim     unsafe.Pointer   // local from previous cycle
+                victimSize uintptr          // size of victims array
+                // 自定义的对象创建回调函数，当 pool 中无可用对象时会调用此函数
+                New func() interface{}
+            }
+            type poolLocal struct {
+                poolLocalInternal
 
+                // 将 poolLocal 补齐至两个缓存行的倍数，防止 false sharing,
+                // 每个缓存行具有 64 bytes，即 512 bit
+                // 目前我们的处理器一般拥有 32 * 1024 / 64 = 512 条缓存行
+                // 伪共享，仅占位用，防止在 cache line 上分配多个 poolLocalInternal
+                pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
+            }
+            // Local per-P Pool appendix.
+            type poolLocalInternal struct {
+                // P 的私有缓存区，使用时无需要加锁
+                private interface{}
+                // 公共缓存区。本地 P 可以 pushHead/popHead；其他 P 则只能 popTail
+                shared  poolChain
+            }
+            -pad:
+                目的：防止 false sharing
+                场景：因为cpu以cache line为单位,当要修改一个字节时会加载1个单位的所有字节,导致其他线程读取发生cache miss的情况,还需要重新加载进cache对性能有影响
+                解决：增加一个 pad，补齐缓存行，让相关的字段能独立地加载到缓存行就不会出现 false sharding 了
+            -poolChain 双向链表：
+                -结构体：
+                    type poolChain struct {
+                        // 只有生产者会 push to，不用加锁
+                        head *poolChainElt
 
+                        // 读写需要原子控制。 pop from
+                        tail *poolChainElt
+                    }
+                    type poolChainElt struct {
+                        poolDequeue
 
+                        // next 被 producer 写，consumer 读。所以只会从 nil 变成 non-nil
+                        // prev 被 consumer 写，producer 读。所以只会从 non-nil 变成 nil
+                        next, prev *poolChainElt
+                    }
+                    type poolDequeue struct {
+                        // headTail 包含一个 32 位的 head 和一个 32 位的 tail 指针。这两个值都和 len(vals)-1 取模过。
+                        // tail 是队列中最老的数据，head 指向下一个将要填充的 slot
+                        // slots 的有效范围是 [tail, head)，由 consumers 持有。
+                        headTail uint64
 
+                        // vals 是一个存储 interface{} 的环形队列，它的 size 必须是 2 的幂
+                        // 如果 slot 为空，则 vals[i].typ 为空；否则，非空。
+                        // 一个 slot 在这时宣告无效：tail 不指向它了，vals[i].typ 为 nil
+                        // 由 consumer 设置成 nil，由 producer 读
+                        vals []eface
+                    }
+                    -poolDequeue
+                        被实现为单生产者、多消费者的固定大小的无锁（atomic 实现） Ring 式队列（底层存储使用数组，使用两个指针标记 head、tail）。
+                        生产者可以从 head 插入、head 删除，而消费者仅可从 tail 删除。
+                    -headTail
+                        指向队列的头和尾，通过位运算将 head 和 tail 存入 headTail 变量中。
+        -Get 流程
+            1.首先，调用 p.pin() 函数将当前的 goroutine 和 P 绑定，禁止被抢占，返回当前 P 对应的 poolLocal，以及 pid。
+            2.然后直接取 l.private，赋值给 x，并置 l.private 为 nil。
+            3.判断 x 是否为空，若为空，则尝试从 l.shared 的头部 pop 一个对象出来，同时赋值给 x。
+            4.如果 x 仍然为空，则调用 getSlow 尝试从其他 P 的 shared 双端队列尾部“偷”一个对象出来。
+            5.Pool 的相关操作做完了，调用 runtime_procUnpin() 解除非抢占。
+            6.最后如果还是没有取到缓存的对象，那就直接调用预先设置好的 New 函数，创建一个出来。
+        -Put 流程
+            1.先绑定 g 和 P，然后尝试将 x 赋值给 private 字段。
+            2.如果失败，就调用 pushHead 方法尝试将其放入 shared 字段所维护的双端队列中。
 
-
-
-
-
-
-
+  65.noCopy 静态检查机制 | 不复制
+    -链接：https://golang.org/issues/8005#issuecomment-190753527
+    -目的：保证结构体实例在第一次使用后不被复制
+    -实现：
+        type noCopy struct{}
+        func (*noCopy) Lock()   {}
+        func (*noCopy) Unlock() {}
+    -检测：使用 go vet 工具可以检测
 
