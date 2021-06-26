@@ -3138,21 +3138,42 @@
 	    解析其他人的二维码会有奇怪的错误
 
   50.pprof 性能分析工具包
-    -库：net/http/pprof"
-    -性能数据监听demo：
-        import (
-            "log"
-            "net/http"
+    -相关包:
+        net/http/pprof
+        runtime/pprof
+        区别：其实net/http/pprof中只是使用runtime/pprof包来进行封装了一下，并在http端口上暴露出来
+    -如何使用包:
+        1.使用http包的web服务:
             _ "net/http/pprof"
-        )
-
-        func main() {
+        2.服务进程:
+            引包 + 监听端口
+            "net/http/pprof"
             go func() {
-                http.ListenAndServe("0.0.0.0:6060", nil)
+                    log.Println(http.ListenAndServe("localhost:6060", nil))
             }()
-        }
-    -访问页面：
-        http://127.0.0.1:6060/debug/pprof/
+        3.应用程序
+            设置prof输出文件 + 手动启动输出
+            "runtime/pprof"
+            f, err := os.Create(*cpuprofile)
+            if err != nil {
+              log.Fatal(err)
+            }
+            pprof.StartCPUProfile(f)
+            defer pprof.StopCPUProfile()
+    -查看pprof信息
+        http://localhost:xxxx/debug/pprof
+    -生成CPU状态图
+        先安装graphviz,连接：http://www.graphviz.org/download/
+        调用go tool pprof http://localhost:xxxx/debug/pprof/profile
+        30秒数据收集
+        输入web进入页面
+    -查看已保存的profile文件
+        go tool pprof profile profile文件地址
+        输入web进入页面
+    -查看Heap
+        go tool pprof http://localhost:xxxx/debug/pprof/heap
+    -查看GOROUTINE
+        go tool pprof http://localhost:xxxx/debug/pprof/goroutine
 
   51.github信息整合
       https://github.com/jaywcjlove/golang-tutorial （Go语言快速入门 ）

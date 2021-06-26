@@ -5,7 +5,6 @@ import (
 )
 
 func Ingress() {
-	return
-	res := hammingDistance(3, 4)
+	res := fibonacci(6)
 	fmt.Println("res:", res)
 }

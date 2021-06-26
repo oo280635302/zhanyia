@@ -19,7 +19,7 @@
 		-2.存储器的基本组成
 			-存储体->存储单元->存储元件(0/1表示)
 			-组成：
-				-MAR存储器地址寄存器memory address regster：
+				-MAR存储器地址寄存器memory address register：
 					用于反映存储单元的个数
 				-MDR存储器数据寄存器：
 					反映存储字长

@@ -14,8 +14,10 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
+	_ "net/http/pprof"
 	"net/url"
 	"os"
 	"os/signal"
@@ -38,7 +40,17 @@ func main() {
 
 	program.Ingress()
 
-	return
+	go func() {
+		log.Println(http.ListenAndServe(":6060", nil))
+	}()
+	x := 0
+	for {
+
+		x += 1
+		fmt.Println("123", x)
+		time.Sleep(time.Second)
+	}
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

@@ -93,3 +93,20 @@ func checkStrSame(a, b string) bool {
 	}
 	return true
 }
+
+// 斐波那契数列---------------------------------------------------------------------------------------------------------
+func fibonacci(x int) int {
+	if x == 1 {
+		return 0
+	}
+	if x == 2 || x == 3 {
+		return 1
+	}
+	n, nf1, nf2 := 0, 1, 1
+	for i := 3; i < x; i++ {
+		n = nf1 + nf2 // 当前数 = 前1+前2
+		nf2 = nf1     // 前2 = 前1
+		nf1 = n       // 前1 = 当前数
+	}
+	return n
+}

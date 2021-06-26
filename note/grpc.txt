@@ -119,6 +119,8 @@
 			*只有创建函数才能调用取消函数,不要将其传递出去*
 		-context.WithDeadline(父ctx,结束时间)	指定结束时间关闭父ctx,返回子ctx	
 		-context.WithTimeout(父ctx,持续时间)	指定持续时间后关闭父ctx,返回子ctx
+
+  5.原理
 		
 		
 		
