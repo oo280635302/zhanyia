@@ -31,7 +31,13 @@
 		-git或者gitee或者gitlab...官网 个人设置->安全设置->ssh公钥->添加公钥->粘贴到 公钥 处->确定
 	-6)：
 		-git clone 你的仓库吧！
-		
+    -配置文件地址:
+        -用户全局:
+            windows: C:\Users\Administrator\.gitconfig
+            Linux: ~/.gitconfig
+        -当前项目:
+            项目：项目文件夹/.git/config
+
   3.接收
 	git pull		从远程获取最新的版本到本地，并自动merge
 	git fetch		从远程获取最新版本到本地，不会自动merge
@@ -72,3 +78,31 @@
 	git config --system --unset credential.helper       清理系统凭证助手
     git config --global credential.helper wincred       清理全局凭证助手
     git credential-manager uninstall                    清除掉缓存在git中的用户名和密码
+
+  11.代理设置
+    【需要挂了vpn！！！】
+    -命令行设置：
+        socket:
+            git config --global http.proxy socks5://127.0.0.1:10808
+                --local     本地
+                --system    系统全局
+            git config --global https.proxy socks5://127.0.0.1:10808
+        http:
+            git config --global http.proxy http://127.0.0.1:10809
+            git config --global https.proxy https://127.0.0.1:10809
+    -文件设置:
+        [http]
+        proxy = socks5://127.0.0.1:1080
+        [https]
+        proxy = socks5://127.0.0.1:1080
+    -配置文件地址:
+        -全局:
+            windows: C:\Users\Administrator\.gitconfig
+            Linux: ~/.gitconfig
+        -当前项目:
+            项目：项目文件夹/.git/config
+    -取消代理
+        git config --global --unset http.proxy
+        git config --global --unset https.proxy
+    -查看配置代理:
+        git config -l --global
