@@ -121,6 +121,8 @@
 		-context.WithTimeout(父ctx,持续时间)	指定持续时间后关闭父ctx,返回子ctx
 
   5.原理
+    -链接: https://segmentfault.com/a/1190000019608421
+    -
 		
 		
 		

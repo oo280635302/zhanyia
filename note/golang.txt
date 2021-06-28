@@ -1,9 +1,9 @@
   
-  1.go特点：
+  1.go特点: 
 	-不需要依赖环境,文件可以直接拷贝使用
 	-支持内存垃极回收,不完美
 	-支持高并发
-	-适用范围：
+	-适用范围: 
 		-服务器编程
 		-分布式系统
 		-网络编程
@@ -17,7 +17,7 @@
 	-go语言以包package为管理单位
 	-每个文件必须先声明包
 	-程序必须有个main包(对应入口函数),一个工程只有一个main函数
-	-实例：
+	-实例: 
 			package main 
 			import "fmt"
 			func main(){
@@ -27,7 +27,7 @@
 	-go run xx.go 直接运行go代码,不生成可以执行程序
 	-go run ./	windows 直接运行同文件夹下面all文件
 	-go bulid xx.go 编译go代码,生成可执行程序
-	-go终端操作：
+	-go终端操作: 
 		-build		编译go代码,生成可执行程序
 		-clean		用于清除执行其他go命令遗留下来的目录和文件
 		-doc		执行godoc命令以打印指定代码包
@@ -56,7 +56,7 @@
 	-float64	8	精确到小数15位
 	-complex64	8	复数类型
 	-complex128	16	复数类型
-		-实例：
+		-实例: 
 			var t complex128 = 1.4 + 3.5i
 		-取实部
 			real(变量)
@@ -69,17 +69,17 @@
 	-字符是单引号,字符串双引号
 	-字符串都是字符+\0组成
 	-值类型和引用类型	
-		-值类型：
+		-值类型: 
 			int,float,bool,string,数组,结构体stuct
 		-引用类型
 			指针,slice切片,map,管道chan,interface
 	
   4.变量
-	-格式：var 变量名 类型
+	-格式: var 变量名 类型
 	-声明了的变量必须要使用,且只需要声明一次
 	-只声明了的变量未赋值,默认值为0
 	-命名规范如其他
-	-实例：
+	-实例: 
 		var a int 
 		var a int = 20
 		a := 30
@@ -92,7 +92,7 @@
 			b = 2.0
 		)//自动推导
 	-golang可以交叉赋值:
-		-实例：
+		-实例: 
 			a, b := 10, 20
 			a, b = b, a //a= 20,b= 10
 	-匿名变量
@@ -106,9 +106,9 @@
 
   5.常量
 	-不会变的常量
-	-格式：const 常量名 类型
+	-格式: const 常量名 类型
 	-格式与变量机会一致
-	-实例：
+	-实例: 
 		const a int 
 		const a int = 20
 		const (
@@ -146,7 +146,7 @@
 	
   6.工具包
 	-import "xx" 使用工具包
-	-import . "XX"	这个格式：无需通过包名,调用函数
+	-import . "XX"	这个格式: 无需通过包名,调用函数
 	-import 别名 "XX"	给包取别名
 	-import _"XX"		不调用包的函数,但是会执行init函数
 	-fmt
@@ -170,18 +170,18 @@
 					- %.2f   默认宽度,精度2 ; %9.2f  宽度9,精度2 ; %9.f   宽度9,精度0
 		-fmt.Scanf	
 			-阻塞等待用户输入
-			-实例：
+			-实例: 
 				var a int 
 				fmt.Scanf("%d\n",&a)
 				//说明当检测到\n回车后,解析输入的格式化内容
 		-fmt.Scan
-			-实例：
+			-实例: 
 				fmt.Scan(&a)
 		-fmt.Scanln
-			-实例：
+			-实例: 
 				fmt.Scanln(&a)
 		-fmt.Sprintf("字符串%d", 变量)	格式化转字符串
-			-实例：
+			-实例: 
 				fmt.Sprintf("张三%d", i)
 				
 	-time
@@ -209,10 +209,10 @@
 		-获取命令行的参数
 		-os.Args 	获取用户传递的参数,数组类型,0索引为运行的地址+程序
 		-os.Open("地址")	打开一个文件,返回文件指针,错误信息
-			-实例：
+			-实例: 
 				file,error := os.Open("E:/go_test/image/640.gif")
 		-XX.close()			关闭一个文件,返回错误信息
-			-实例：
+			-实例: 
 				error := file.close()
 		-XX.read()
 		-os.Stdin			标准输入(终端输入)
@@ -262,7 +262,7 @@
 		-sort.ints(切片类型变量)			对切片类型变量进行增量排序				
 		-sort.Sort(切片类型结构体)		对切片类型结构体排序
 			-需要满足3个接口方法才能排序
-			-实例：
+			-实例: 
 				type hero struct {
 					name string
 					age  int
@@ -344,7 +344,7 @@
 			-scmp.Store(X)		存储
 			-scmp.Load(X)		获取
 			-scmp.Delete(X)		删除
-			-实例：
+			-实例: 
 				var scene sync.Map
 				// 将键值对保存到sync.Map
 				scene.Store("greece", 97)
@@ -370,7 +370,7 @@
 		-ioutil.WriteFile(filname,data,perm)	想一个文件写入数据,没有就根据权限创建,返回error
 			-参数:文件地址,数据,权限
 		-ioutil.ReadDir(dirName)		查询一个目录的目录信息,返回[]os.FileInfo,err
-			-参数：目录地址
+			-参数: 目录地址
 	-path 		path实现了对斜杠分隔的路径的实用操作函数。
 		-path.Join(地址,下级地址名)		将地址path合并在一起
 	-syscall    系統操作相關包
@@ -428,7 +428,7 @@
 		
   8.类型别名
 	-type 新名字 类型名
-	-实例：
+	-实例: 
 		type char byte
  
   9.运算符
@@ -463,7 +463,7 @@
   10.流程控制
 	-与js很像
 	-if语句
-		-格式：
+		-格式: 
 			if ... {
 				...
 			}else if{
@@ -471,35 +471,35 @@
 			}else{
 				...
 			}
-		-实例：
+		-实例: 
 			if a:=0 {
 				fmt.println(a)
 			}else{
 				fmt.println("结束")
 			}
 	-switch
-		-格式：	
+		-格式: 	
 			switch 变量{
-			case 条件1：
+			case 条件1: 
 				....
 
-			case 条件2：
+			case 条件2: 
 				....
-			case 条件3：
+			case 条件3: 
 				....	
 			defalut:
 				...
 			}
-		-实例：
+		-实例: 
 			num := 1
 			switch num{
-			case 1：
+			case 1: 
 				fmt.println(1)
 				break
-			case 2：
+			case 2: 
 				fmt.println(2)
 				break
-			case 3：
+			case 3: 
 				fmt.println(3)
 				break
 			defalut:
@@ -509,36 +509,36 @@
 		-break跳出switch语句,默认包括,不写
 		-fallthrough 不跳出switch语句,后面case也要被执行
 		-switch后面可以没有条件,将条件放在case后面
-		-实例：
+		-实例: 
 			num := 1
 			switch {
-			case num == 1：
+			case num == 1: 
 				fmt.println(1)
 				fallthrough
-			case num == 2：
+			case num == 2: 
 				fmt.println(2)
 				fallthrough
-			case num == 3,4,5：
+			case num == 3,4,5: 
 				fmt.println(3,4,5)
 				fallthrough
 			defalut:
 				fmt.println("没找到")
 			}
 	-for循环
-		-格式：	
+		-格式: 	
 			for 初始条件;判断条件;条件变化{
 				....	
 			}
-		-实例：
+		-实例: 
 			for i:=1;i<10;i++{
 				fmt.println(i)
 			}
 	-range迭代
-		-格式：	
+		-格式: 	
 			for X, Y := range str{
 				...	
 			}
-		-实例：
+		-实例: 
 			for i, data := range str{
 				fmt.println(i,data)
 			}
@@ -548,15 +548,15 @@
 	-goto
 		-goto可以用在任何地方,但不能跨函数使用
 		-代码直接跳转到标记的地方
-		-格式：	
+		-格式: 	
 				goto 标签
-			标签：
+			标签: 
 				...	
-		-实例：
+		-实例: 
 				goto End
 			End:
 				fmt.println("结束")
-		-标签+退出多重循环：
+		-标签+退出多重循环: 
 			Exit:
 				for {
 					switch XX{
@@ -575,12 +575,12 @@
 		func FunName(a ,b int,c sting)(){
 			...
 		}
-	-不定参数：
+	-不定参数: 
 		func MyFunc(args ...int){
 			...
 		}
 		-可以传多个数据进去
-		-实例：	
+		-实例: 	
 			func main()  {
 				MyFunc(123,3123)	
 			}
@@ -595,8 +595,8 @@
 			}
 			a = FunName()
 		-可以有多个返回值
-	-规范：函数名字：大写共有public,小写私有private
-	-递归函数：
+	-规范: 函数名字: 大写共有public,小写私有private
+	-递归函数: 
 		-实例:
 			func test01(i int)i{
 				if i == 1{
@@ -615,8 +615,8 @@
 			firstTest = Add
 			result = firstTest(10, 20)
 		-主要作用于多态,配合回调函数使用
-	-回调函数：
-		-实例：
+	-回调函数: 
+		-实例: 
 			func Add(a, b int) int {
 				return a + b
 			}
@@ -628,7 +628,7 @@
 			a := Calc(1, 1, Add)
 	-匿名函数,闭包
 		-匿名函数就是没有名字的函数
-		-格式：
+		-格式: 
 			f1 := func(){
 				...
 			}
@@ -644,7 +644,7 @@
 					fmt.printf("%d", a) //20	
 				}
 			-闭包不关心捕获的变量和常量是否超出作用域,只要闭包还在使用,变量将会一直存在
-			-实例：
+			-实例: 
 				package main
 				import "fmt"
 				
@@ -665,7 +665,7 @@
 	-延迟调用defer
 		-defer后面跟的代码会当函数其他代码执行完后调用
 		-如果有多个defer会先执行后面的defer代码再执行前面的defer代码
-		-实例：
+		-实例: 
 			func main(){
 				defer fmt.Println("1") 
 				fmt.Println("2") 
@@ -679,7 +679,7 @@
 		-包被调用时,首先执行的函数
 	-动态分配空间的new()函数
 		-自动分配一个内存地址
-		-格式：	
+		-格式: 	
 			XX = new(数据类型)
 		-不需要清理,有自动gc
 		-实例:
@@ -699,11 +699,11 @@
 		-**int		类型 保存*int的地址
 		-*地址变量	指向该地址的值,可以重新赋值
 			-必须要有合法的指向内存地址才能操作
-		-指针类型变量默认值为：nil
+		-指针类型变量默认值为: nil
 			-实例:
 				var p *int
 				Printf("%v",p)	//<nil>
-		-实例：
+		-实例: 
 			a := 1
 			var p *int = &a
 			Printf("%v,%v",&a,p) //0xc0000100b8,0xc0000100b8
@@ -712,22 +712,22 @@
 		-相关函数new函数
 		
 	-数组
-		-创建数组： var 变量 [长度]int
+		-创建数组:  var 变量 [长度]int
 		-数组是同一类型的集合,长度固定
-		-初始化数组：
+		-初始化数组: 
 				var a [X]int = [X]int{1, 2, 3, ...}
 			-声明同时赋值
 			-可以部分初始化
 				a := [5]int{1,2,3} 		//[1 2 3 0 0]
-			-指定某元素赋值：
+			-指定某元素赋值: 
 				a := [5]int{1:10, 4:20} //[0 10 0 0 20]
-		-二维数组：
+		-二维数组: 
 			-数组里面嵌套数组
 			-var 变量 [X][Y]int
-			-初始化二维数组：
+			-初始化二维数组: 
 				a := [3][4]int{{1,2,3,4},{5,6,7,8},{9,10,11,12}} 
 				-{大括号同一行}
-			-实例：
+			-实例: 
 				var a [3][3]int
 				var k int
 				for i := 0;i < 3;i++{
@@ -755,7 +755,7 @@
 				}
 			-想要数组参数的函数与外部的数组相同
 				-数组指针做参数
-				-实例：
+				-实例: 
 				fmt.Println(a)
 				b := [5]int{1,2,3,4,5}
 				modify(&b)
@@ -767,39 +767,39 @@
 				
 	-slice切片
 		-动态数组(其实不是数组了)
-		-格式： a := [...]int{1 ,2, 3, 4}
-		-取slice的一部分：	a[low:high:max]
+		-格式:  a := [...]int{1 ,2, 3, 4}
+		-取slice的一部分: 	a[low:high:max]
 			-low	下标的起点
 			-high	下标终点(不包括)
 			-max	cap(容量)+low
 			-cap()函数		查看变量的容量
 		-make()函数	
-			-格式：
+			-格式: 
 				变量 := make(切片类型, 长度, 容量)
-			-实例：
+			-实例: 
 				a := make([]int, 5, 10)
-		-切片截取：
+		-切片截取: 
 			-s[n]			切片s中索引位置为n的项
 			-s[:]			全部截取
 			-s[low:]		从low到末尾
 			-s[:high]		从0到high
 			-s[low:high]	从low到high
-		-切片和底层数组的关系是：
+		-切片和底层数组的关系是: 
 			-地址指向同一个地方
 			-切出来的数组指针指向与底层数组一样
 			-因此修改切出来的数组,也会改变原数组
 		-内置函数
 			-append			给slice末尾追加数据	
-				-格式：变量 = append(变量, 数据)
-				-实例：	a = append(a, 5)
+				-格式: 变量 = append(变量, 数据)
+				-实例: 	a = append(a, 5)
 				-如果append时超过了原slice的容量,会两倍的扩容
 				**append()的第二个数据不能是切片,[]int...可以把切片打散
-			-删除数据：
+			-删除数据: 
 				-a = append(a[:index],a[index+1:]...)
 				-使用append函数,将切片切开再拼接
 			-copy			将复制的数组的数据覆盖掉被覆盖数组
 				-格式: copy(被覆盖, 复制)
-				-实例：
+				-实例: 
 					a := []int{1,2}
 					b := []int{7,7,7,7}
 					copy(b,a)  //{1,2,7,7}
@@ -809,28 +809,28 @@
 			
 	-map数据类型	
 		-键值对数据类型
-		-格式：map[keytype]valuetype
+		-格式: map[keytype]valuetype
 			-keytype不能是切片或者函数类型
 			-keytype是唯一的
 		-map只有len长度,没有cap容量
-		-make创建：
-			-格式：make(map[keytype]valuetype,长度)
+		-make创建: 
+			-格式: make(map[keytype]valuetype,长度)
 			-提前分配长度,减少运行速度
-		-map的遍历：
+		-map的遍历: 
 			-for key, value :=range map{
 				...
 				}
 			-遍历出来的结果顺序是不定的
-		-value, ok ：=m[X] 会返回两个数据
+		-value, ok : =m[X] 会返回两个数据
 			-如果m[X]存在, value为他的值,ok为Ture
 			-如果m[X]不存在, value为空值,ok为False
-		-map的操作：
+		-map的操作: 
 			-给map类型里的数据赋值
-				-格式：
+				-格式: 
 					变量[X] = xxx
 				-有赋值,没有追加
 			-删除map的数据
-				-格式：
+				-格式: 
 					delete(map变量名, key键名)
 				-实例:	
 					delete(m, 1)//删除了m里面1这个键值对
@@ -839,37 +839,37 @@
 		
 	-结构体
 		-聚合的数据类型
-		-格式：
+		-格式: 
 			type 结构体名 struct{
 				变量1	类型1
 				变量2	类型2
 			}
-		-实例：
+		-实例: 
 			type Student struct{
 				id 		int
 				name 	string
 			}
-		-初始化：
+		-初始化: 
 			-顺序初始化
-				-格式：	
+				-格式: 	
 					var 变量 结构体名 = 结构体名{数据1, 数据2}
 				 or	变量 := 结构体名{数据1, 数据2}
-				-实例：
+				-实例: 
 					var s1 Student =Student{01, "张三"}
 				*顺序初始化必须都初始化
 			-指定成员初始化	
-				-格式：
+				-格式: 
 					var 变量 结构体名 = 结构体名{变量1:数据1, 变量2:数据2}
 				 or	变量 := 结构体名{变量1:数据1, 变量2:数据2}
-				-实例：	
+				-实例: 	
 					s1 := Student{id: 01, name: "张三"}
 				-指定成员的初始化,其余没指定的默认为0	
 			-指针初始化
-				-格式：
+				-格式: 
 					var 变量 *结构体名 = &结构体名{变量1:数据1, 变量2:数据2}
 				 or	变量 := &结构体名{变量1:数据1, 变量2:数据2}
 		-结构体成员,普通变量
-			-格式：
+			-格式: 
 				var 变量 结构体名
 				变量.变量1 = XX	 //进行赋值
 		-结构体成员,指针变量
@@ -880,19 +880,19 @@
 				a1.id = 123		//这里的 a1 == (*a1)
 				fmt.Println(a) 		//{123}	
 				fmt.Println(*a1)	//{123}	
-			-实例2：
+			-实例2: 
 				p2 := new(Name)
 				p2.id = 132
 				p2.name = "lisi"
 				fmt.Println(p2) 		//&{132 lisi}	
 		-结构体的比较
 			-同类型结构体内容相同 就 全等
-				-实例：
+				-实例: 
 					p1 := Name{1,"13da"}
 					p2 := Name{1,"13da"}
 					fmt.Println(p1==p2)	 //	ture
 			-两个同类型结构体可以相互赋值
-				-实例：
+				-实例: 
 					p1 := Name{1,"13da"}
 					p2 := Name{3,"13da"}
 					p2 = p1
@@ -907,7 +907,7 @@
 		
   14.冒泡排序
 	-依次对比每个数组之间数然后排序
-	-实例：
+	-实例: 
 		var a [10]int
 		n := len(a)
 		for i := 0;i < n;i++{
@@ -925,7 +925,7 @@
   15.面向对象编程
 	-匿名字段初始化	
 		-类似于继承,可以让结构体拥有另一结构体的成员	
-		-实例：
+		-实例: 
 			type Person struct{
 				name string 
 			}
@@ -937,21 +937,21 @@
 		-使用匿名函数
 			var s Student = Student{Person{"张三"}} //{{"张三"}}
 		-初始化规则与结构体一致
-			-特殊：
+			-特殊: 
 				s1 := Student{Person: Person{name: "张三"}}
 				-给匿名字段里面指定成员初始化
 		-成员操作
 			-与结构体一致
-			-特殊：
+			-特殊: 
 				s1.Person = Person{"张三"}
 				-可以给匿名的字段单独整体赋值
 		-同名字段
 			-如果遇到同名字段,会给结构体本身的先操作
 			-如果非要操作匿名字段
-				-实例：
+				-实例: 
 					s.Person.name = "李四"
 		-非结构体匿名字段
-			-实例：
+			-实例: 
 				type str string
 				type Person struct{
 					name string 
@@ -961,10 +961,10 @@
 					int		//可以没有名字
 					str		//自定义数据类型
 				}
-			-使用：	
+			-使用: 	
 				s1 := Student{Person{"wangwu"},666,"你好"}
 		-结构体指针匿名字段
-			-实例：	
+			-实例: 	
 				type str string
 				type Person struct{
 					name string 
@@ -974,12 +974,12 @@
 					int		//可以没有名字
 					str		//自定义数据类型
 				}
-			-使用：	
+			-使用: 	
 				s2 := Student{&Person{"wangwu"},666,"你好"}
 	-方法
 		-指定数据类型才可以调用的函数叫方法
 		-被 指定数据类型 创建出来的方法只能通过 这个数据类型的变量来调用
-		-实例：
+		-实例: 
 			type Person struct{
 				name string
 			}
@@ -992,7 +992,7 @@
 			}
 			//sss() 只能被 Person类型的变量调用
 		-可以通过传入地址,修改变量本身的值
-			-实例：
+			-实例: 
 			type Person struct{
 				name string
 			}
@@ -1016,7 +1016,7 @@
 			-不管传入变量是地址还是值,都会转换成需要的参数传递进去
 		-继承
 			-类型继承了其他类型,会将其会员和方法都继承了
-			-实例：
+			-实例: 
 				type Person struct{
 					name string
 				}
@@ -1038,17 +1038,17 @@
 			-想要调用继承的方法用显示调用(参考同名字段)
 				-变量.原数据类型.方法()		使用的是旧方法
 		-方法值
-			-实例：
+			-实例: 
 				p := Person{"zhangsan"}
 				f := p.sss
 				f()  ===>	p.sss()
 		-方法表达式
-			-实例：
+			-实例: 
 				p := Person{"zhangsan"}
 				f :=(Person).sss
 				f(p) ===>	p.sss()
 	-接口interface（13.复合类型）
-		-格式：
+		-格式: 
 			type 接口名 interface{
 				method1(参数列表)返回值列表
 				method2(参数列表)返回值列表
@@ -1056,13 +1056,13 @@
 		-可以根据变量的数据类型使用对应的方法
 		-接口的所有方法都调用叫实现接口
 		**每个接口的对应方法都必须写出来,可以不调用**
-			-格式：
+			-格式: 
 				func(t 自定义类型)method1(参数)返回值{
 					...
 				}
 		-非显示实现
 		-
-		-实例1：
+		-实例1: 
 			func main()  {
 				var a Humaner
 				var b stre = "yes"
@@ -1080,7 +1080,7 @@
 			func (p str) sss()  { 
 				fmt.Println(p) 
 			}
-		-实例2：
+		-实例2: 
 			//Usb接口
 			type Usb interface{
 				start()
@@ -1121,7 +1121,7 @@
 				c.working(cam)
 				c.working(p)
 			}
-		-接口的注意事项：
+		-接口的注意事项: 
 			1) 接口本身不能创建实例,但可以指向实例了该接口方法的自定义类型变量
 				-参考实例1
 			2) 接口中所有的方法都没有方法体,即没有实现的方法
@@ -1132,7 +1132,7 @@
 			6) interface类型默认是引用类型
 			7) 空接口能接受任何一个变量,任何一种数据类型
 			8) 如果方法传入的是指针类型,接口需要接受地址！
-				-实例：
+				-实例: 
 				type Usb interface{
 					playb()
 				}
@@ -1151,7 +1151,7 @@
 			-多态根据接口来体现
 			-同一个接口调用不同的实现,呈现的东西不一样
 			-根据多态可以给一个数组添加多个数据类型
-				-实例：
+				-实例: 
 					type Animal interface {
 					}
 					type Monkey string
@@ -1165,14 +1165,14 @@
 						fmt.Print(a) [nihao 123]
 					}
 		-类型断言
-			-情景1：
+			-情景1: 
 				当根据结构体调用一个接口方法时,如果有个结构体有方法,
 				另一个结构没方法,需要进行类型断言来判断是否使用这个方法
-			-情景2：
+			-情景2: 
 				当一个空接口a被赋值了自定义类型point的值,再将a赋给先的point变量时,需要用到类型断言
 			-格式:
-				新变量, 判断是否成功 ：= 变量.(类型)
-			-实例：
+				新变量, 判断是否成功 : = 变量.(类型)
+			-实例: 
 				var a interface{}
 				var b Point = Point{1,2}
 				a = b
@@ -1190,7 +1190,7 @@
 						fmt.Println("convert fail")	//convert fail
 					}
 					fmt.Println(c) //0
-				-实例2：
+				-实例2: 
 					//Usb接口
 					type Usb2 interface{
 						start()
@@ -1242,7 +1242,7 @@
 						...
 				}
 				
-				-实例3：
+				-实例3: 
 					func TypeJudge(item ...interface{}) {//可以传入任意长度任意类型的变量
 						for _,x := range item{
 							switch x.(type) {
@@ -1260,15 +1260,15 @@
 				-数组... 			将数组内容打散
 
   16.项目开发
-	-项目开发的流程：
+	-项目开发的流程: 
 		需求分析--设计阶段--实现代码<-->测试阶段--实施阶段--维护阶段
 
   17.文件操作
 	-文件 是数据源(保存数据的地方)的一种
-	-流：
+	-流: 
 		-数据在数据源(文件)和程序(内存)之间经历的路径
-		-输入流：数据源-->程序
-		-输出流：程序-->数据源
+		-输入流: 数据源-->程序
+		-输出流: 程序-->数据源
 	-文件操作使用到工具包os
 		-os.File封装了所有文件相关操作
 		-File是个结构体
@@ -1278,7 +1278,7 @@
 			-bufio.NewReader()			带缓冲的读取一个文件,返回读取的内容信息
 			-read.ReadString('\n')		当读取到换行符结束,返回内容,错误信息
 			-io.EOF						读到末尾了
-			-实例：
+			-实例: 
 				file,_ := os.Open("E:/go_test/image/110.txt") //开始
 				defer file.Close()	//结束
 				read := bufio.NewReader(file)	//实现file的缓存(分次读取)
@@ -1291,7 +1291,7 @@
 				}
 		-读取文件方法二(小文件)
 			-ioutil.ReadFile("地址")	将文件全部读取,返回内容,错误信息
-			-实例：
+			-实例: 
 				content,_ := ioutil.ReadFile("E:/go_test/image/110.txt")
 				fmt.Printf("%v",string(content)) //string()转换为字符输出时
 		-写文件方法一
@@ -1324,7 +1324,7 @@
 			-os.IsNotExist("错误信息")	根据错误信息判断,返回true文件不存在
 			
 		-拷贝文件(小文件)
-			-实例：
+			-实例: 
 				filePath := "E:/go_test/image/110.txt"
 				data,_ := ioutil.ReadFile(filePath)
 				ioutil.WriteFile("E:/go_test/image/111.txt",data,006)
@@ -1356,7 +1356,7 @@
 				}
 				
   18.命令行参数
-	-根据输入的命令行参数获得值：
+	-根据输入的命令行参数获得值: 
 		os.args
 	-根据指令参数(flag包)
 		flage.stringVar(&user,"u","","说明")
@@ -1365,7 +1365,7 @@
 			-"u"		指定参数-u
 			-""			默认值	
 			-"说明"		说明
-		-实例：
+		-实例: 
 			var user string 
 			var password string 
 			flage.stringVar(&user,"u","","说明1")
@@ -1376,11 +1376,11 @@
 
   19.JSON
 	-Json序列化操作	
-		-概念：将键值对(结构体,map,切片)转换成json字符串
+		-概念: 将键值对(结构体,map,切片)转换成json字符串
 		-引入encoding/json工具包
 		-json.Marshal(...)			将任意类型转换成json字符串,返回data,err
 			-需要string(data),转成字符串格式
-		 -实例：
+		 -实例: 
 			var a map[int]string
 			a = make(map[int]string)
 			// a = make(mapmap[int]string)
@@ -1389,17 +1389,17 @@
 			data,_ := json.Marshal(a)
 			fmt.Printf("%v",string(data))
 		-结构体,指定json序列化后key的名字(设定tag标签,反射机制)
-			-实例：
+			-实例: 
 				type Student struct{
 					Name string `json:"name"`
 				} 
 			*结构体key值必须大写,因为转json是其他包的方法,私有属性传不进去
 			*不会报错,但是传不进去的数据会丢失
 	-json反序列化操作
-		-概念：将 json字符串 转换成 键值对(结构体,map,切片)
+		-概念: 将 json字符串 转换成 键值对(结构体,map,切片)
 		-json.Unmarshal([]byte(str),&键值对变量)			将json字符串转换成任意类型,返回err
 			-需要将str转成字节切片[]byte(str)
-			-实例：
+			-实例: 
 				type Student struct{
 					Id  string 
 					Name string `json:"name"`
@@ -1416,7 +1416,7 @@
 			-反序列化map类型,接受的变量不需要make,反序列化可以自动make
 		-json.Decoder(io.reader)		同Unmarshal,反序列化,使用于流读取的时候,返回一个decoder
 			-decoder.Decode(interface{})	将输入流读取到json编码中 返回err
-			-实例：
+			-实例: 
 				cfg := &IMPublicConfig{}
 				file, err := os.Open("c:/pwd/123.json")
 				if nil != err {
@@ -1432,8 +1432,8 @@
   20.单元测试
 	-可以测试代码是否正确,且在保证代码正常运行,
 	-testing和自带的go test命令来实现单元测试和性能测试
-	-单元测试：	发现程序上的设计和实现逻辑错误
-	-性能测试：	发现程序设计的问题,使程序在高并发的同时保持稳定
+	-单元测试: 	发现程序上的设计和实现逻辑错误
+	-性能测试: 	发现程序设计的问题,使程序在高并发的同时保持稳定
 	-使用方式:
 		1） 创建xx_test.go文件
 		2） 引用"testing" 文件
@@ -1447,7 +1447,7 @@
 				go test -v 测试文件 被测试文件			测试单个文件
 				go test -v -test.run 测试方法			测试单个方法
 				
-	-实例：
+	-实例: 
 		package main
 		import "testing"
 		func TestHello(t *testing.T)  {
@@ -1455,29 +1455,29 @@
 			t.Fatalf(res)  	//错误时的信息,可以在此做判断
 			t.Logf(res)		//成功时的信息
 		}
-	-注意事项：
+	-注意事项: 
 		-在go文件里面没有main函数也能正常运行
 		-测试函数名必须以TestXxxx命名,Xxxx叫啥无所谓 首X必须大写
 		-测试方法是否私有无所谓,都可以被测试
   
   21.gotoutine协程  *并发*
-	-概念：
-		-进程：	一个程序一次执行过程,是系统进行资料分配和调度的基本单元
-		-线程：	进程的执行实例,是程序执行的最小单元,比进程更小的基本单元
+	-概念: 
+		-进程: 	一个程序一次执行过程,是系统进行资料分配和调度的基本单元
+		-线程: 	进程的执行实例,是程序执行的最小单元,比进程更小的基本单元
 		-一个进程可以控制多个线程,同一个进程的多个线程可以并发执行
-		-并发：	多线程程序在单核上运行	//多个线程轮流运行,	其实只有一个cpu运行
-		-并行：	多线程程序在多核上运行	//多个线程各自运行	多CPU同时工作
-		-携程：	给线程再细化更轻量的线程,让单个线程可以控制多个携程
-	-携程的特点：
+		-并发: 	多线程程序在单核上运行	//多个线程轮流运行,	其实只有一个cpu运行
+		-并行: 	多线程程序在多核上运行	//多个线程各自运行	多CPU同时工作
+		-携程: 	给线程再细化更轻量的线程,让单个线程可以控制多个携程
+	-携程的特点: 
 		1、有独立的栈空间
 		2、共享程序的堆空间
 		3、调度由用户控制
 		4、协程时轻量级的线程
 		5、可以轻松开启上万个协程
-	-开启协程方法：
+	-开启协程方法: 
 		go 需要执行的代码
 		-配合time.Sleep()和
-	-实例：
+	-实例: 
 		func main()  {
 			go export1()
 			for index := 0; index < 5; index++ {
@@ -1493,23 +1493,23 @@
 			}
 		}
 		
-	*注意事项：
+	*注意事项: 
 		-主线程退出了,协程及时没有完成也会退出
 		-主线程与协程输出的顺序会不稳定,因为协程创建需要时间。
 	-MPG模式
-		-M：操作系统的主线程(物理线程)
-		-P：协程执行需要的上下文
+		-M: 操作系统的主线程(物理线程)
+		-P: 协程执行需要的上下文
 		-G:	协程
 	-golang设置运行的CPU数
 		-导入包 runtime
 		-使用runtime.NumCPU() 获取当前系统有几个CPU(逻辑CPU)
 		-再使用runtime.GOMAXPROCS(数量)设置使用的CPU数量
-	-查看资源竞争问题：
+	-查看资源竞争问题: 
 		-运行程序时,加上 -race 
-			-实例：	go build -race hello.go
+			-实例: 	go build -race hello.go
 	-防止某个协程发生错误,影响其他程序运行
 		-defer + recover 配合
-		-格式：	
+		-格式: 	
 			defer func(){
 				if err:= recover();err !=nil{
 					...
@@ -1529,7 +1529,7 @@
 				-Mutex		互斥
 			lock.Lock()		加锁
 			lock.Unlock()	解锁
-		-实例：	
+		-实例: 	
 			var a = make(map[int]int)
 			var lock sync.Mutex
 			func Factorial(n int) {
@@ -1552,13 +1552,13 @@
 				lock.Unlock()	//防止报错
 			}
 	-channel（高水平锁）
-		-特点：	
+		-特点: 	
 			1、本质是一个 数据结构-队列
 			2、数据是先进先出
 			3、线程安全,多goroutine访问不需要加锁
 			4、channel有类型
-		-格式：	
-			-创建channel：
+		-格式: 	
+			-创建channel: 
 				var 变量名 chan 数据类型
 				
 					-channel 是引用类型
@@ -1567,21 +1567,21 @@
 			
 			-向channel写入数据	
 				管道名 <- 数据
-				-实例：	
+				-实例: 	
 					intChan <- 10 
 					
 			-从channel读取数据
 				变量 = <-管道名
-				-实例：
+				-实例: 
 					num := <-intChan
 					
 			-channel的关闭
 				close(管道名)
-				-实例：
+				-实例: 
 					close(intChan)
 				-关闭的channel只能读不能写
 				
-		-实例1：(普通使用)
+		-实例1: (普通使用)
 			var intChan chan int
 			intChan = make(chan int,3)
 			intChan <- 1
@@ -1594,7 +1594,7 @@
 			
 			//intChan 是个地址	 地址里面存放的也是地址->指向管道
 			//因此将intChan传入函数,他们调用的是同一个管道
-		-实例2：(涉及多类型)
+		-实例2: (涉及多类型)
 			var intChan chan interface{}
 			intChan = make(chan interface{},3)
 			intChan <- 1
@@ -1613,25 +1613,25 @@
 			-一定要make()初始化
 			-如果没有数据也不能取数据
 		-创建只读只写的channel
-			-只写：
-				-格式：
+			-只写: 
+				-格式: 
 					var 变量名 chan<- 数据类型
-				-实例：
+				-实例: 
 					var intChan	chan<- int
 					intChan = make(chan int,10)
 					
-			-只读：
-				-格式：
+			-只读: 
+				-格式: 
 					var 变量名 <-chan 数据类型
-				-实例：
+				-实例: 
 					var intChan	<-chan int
 					intChan = make(chan int,10)			
 		-channel 的遍历
 			-不能使用普通for循环,要使用for .. range ..
 			-遍历管道前,一定要关闭管道
-			-格式：	
+			-格式: 	
 				for 接受变量 := range 管道名{}
-			-实例：
+			-实例: 
 				var a chan int
 				a = make(chan int ,10)
 				for i:=0; i< 10; i++{
@@ -1643,9 +1643,9 @@
 				}
 				
 		-channel配合协程
-			-特点：让程序自己控制自己执行时间
-			-思路：主程序设定一个管道,当协程的工作完后,给管道一个提示,让主程序关闭
-			-实例1：
+			-特点: 让程序自己控制自己执行时间
+			-思路: 主程序设定一个管道,当协程的工作完后,给管道一个提示,让主程序关闭
+			-实例1: 
 				func writeData(intChan chan int) {//写入管道
 					for i:=0;i<50;i++{
 						intChan <- i
@@ -1659,7 +1659,7 @@
 						if !ok{
 							break
 						}
-						fmt.Println("readData 的数据：",v)
+						fmt.Println("readData 的数据: ",v)
 					}
 					exitChan <- true
 					close(exitChan)	//当读取完成存入exitChan数据
@@ -1676,7 +1676,7 @@
 						}
 					}
 				}		
-			-实例2：
+			-实例2: 
 				var a = make(map[int]int)	//接受map结果
 				var lock sync.Mutex 	//低级互斥锁
 				func Factorial(n int, exitChan chan bool) {
@@ -1706,16 +1706,16 @@
 						}
 					}
 				}
-		-管道阻塞机制：
+		-管道阻塞机制: 
 			-当读取管道 速度慢 时,协程的 管道 写入会在达到达到容量时等待另外一边读取
 			*但是没有读取管道,会直接报错
 	-Select
 		-当一个管道不知道什么时候关闭时使用
-		-格式：
+		-格式: 
 			select{
-				case v := <-管道名1：
+				case v := <-管道名1: 
 					取到了做什么
-				case v := <-管道名2：
+				case v := <-管道名2: 
 					取到了做什么
 				defalut
 					取不到了做什么
@@ -1723,9 +1723,9 @@
 			}
 	
   23.反射
-	-适配器函数：
+	-适配器函数: 
 		-在一个函数里面传去另一个函数名,参数然后他会去调用另一个参数
-	-基本介绍：
+	-基本介绍: 
 		1、反射可以在运行时动态获取变量各种信息,比如变量的类型,类别
 		2、如果是结构体变量,还可以获取结构体本身的信息
 		3、通过反射,可以调用变量的值和方法
@@ -1735,7 +1735,7 @@
 			-type名.Field(X)			获取对应键的第X个字段
 				-xxx.Tag				获取其Tag标签（也是个结构体）
 					-Tag.Get("json")	获取Tag标签的json的值	
-				-实例(获取Tag标签)：
+				-实例(获取Tag标签): 
 					var a Student =Student{
 						Name:"zhangsan",
 						Id:17,
@@ -1759,7 +1759,7 @@
 			-value名.Elem()				获取value持有的指针指向的类型或者值
 				-当传入的是指针类型的数据时使用,不然类别是ptr !!!
 			-value名.SetString("...")	将指针指向的值进行改变
-				-实例：
+				-实例: 
 					var str string = "Tom"
 					fs := reflect.ValueOf(&str)
 					fs.Elem().SetString("jack")
@@ -1790,7 +1790,7 @@
 				fmt.Println(vl)
 		-reflect.Swapper(切片)			返回一个切片内值交换的方法
 			-swap(i,j)					让切片中索引i与索引j交换
-			-实例：
+			-实例: 
 				swap := reflect.Swapper([]int{0,1,2,3})
 				rand.Seed(time.Now().Unix())
 				for i := 3; i >= 0; i-- {
@@ -1806,25 +1806,25 @@
 			变量 := Value类型名.Interface()
 	
   24.网络编程
-	-网络编程分为：TCP编程和http编程
+	-网络编程分为: TCP编程和http编程
 		-TCP socket 编程基于Tcp/ip协议
 		-http编程	
 	-TCP/IP模型	
 		-应用层,传输层,网络层,链路层
-	-传输过程：
+	-传输过程: 
 		数据包->应用层->传输层->网络层->链路层->网卡->网关->路由器-
 		->路由器->网关->网卡->链路层->网络层>传输层->应用层->数据
-	-追包：
+	-追包: 
 		windows命令: tracert 网址	查看本地数据传输到指定网址的经过
-	-端口：
+	-端口: 
 		-只要做服务程序,都必须监听一个端口
 		-该端口就是其他程序和该服务通讯的通道
 		-一台电脑有65535个端口
 		-一个端口只能被一个程序监听
-		windows指令： netstat -anb			查看监听端口的pid连接信息
+		windows指令:  netstat -anb			查看监听端口的pid连接信息
 					  netstat -an			查看本机有哪些端口在监听
 					  telnet 网址 端口号	查看一个网址的端口号是否被监听
-		-端口号分类：
+		-端口号分类: 
 			-0是保留端口
 			-1-1024是固定端口
 				22	SSH远程登录协议
@@ -1839,7 +1839,7 @@
 			-http短连接,数据传输完就结束
 	-net包
 		-网络相关的工具包
-		-创建一个服务器端端口：
+		-创建一个服务器端端口: 
 			-net.Listen(协议,监听地址)		返回在一个本地网络地址laddr上监听的Listener
 				-Listener名.Addr()			返回该接口的网络地址
 				-Listener名.Accept()		等待并返回下一个连接到该接口的连接,返回一个Conn,err
@@ -1848,7 +1848,7 @@
 				-Conn名.Write(字节)				Write从连接中写入数据,返回n字节数量,err错误类型	
 				-Conn名.Close()					关闭该连接
 				-Conn名.SetWriteDeadline(未来时间)	写入超时报错(未来时间-现在时间=超时时间)
-						-这里时间可以写time.Now().Add(time.second) 意思：比现在多1s
+						-这里时间可以写time.Now().Add(time.second) 意思: 比现在多1s
 						-到未来时间还没写入完就会报错超时
 				-Conn名.Read(字节)				Read从连接中读取数据	
 				-Conn名.SetDeadline(时间)		规定时间内未读到数据即超时,返回Err
@@ -1861,10 +1861,10 @@
 	-首先安装git
 	-安装redis第三方库
 	-redigo库
-		-在gopath路径下执行安装指令：
+		-在gopath路径下执行安装指令: 
 			go get github.com/garyburd/redigo/redis(这里有问题)
-		-使用：
-			引入包：github.com/garyburd/redigo/redis
+		-使用: 
+			引入包: github.com/garyburd/redigo/redis
 		-连入redis服务器
 			-redis.Dial("协议","地址+端口")	返回conn和err
 			-Conn名.Close()					关闭服务器
@@ -1875,10 +1875,10 @@
 			-redis.ErrNil					查询结果没有该数据
 			-redis.Strings()				类型断言,返回[]string,err
 			...
-		-实例：
+		-实例: 
 			n, err := redis.Dial("tcp","localhost:6379")
 			if err != nil{
-				fmt.Println("连接错误err：",err)
+				fmt.Println("连接错误err: ",err)
 				return
 			}
 			defer n.Close()
@@ -1891,7 +1891,7 @@
 			fmt.Print(r)
 		-连接池redis.Pool
 			-类似于长连接的服务器与数据的链接,减少反应时间
-			-实例：
+			-实例: 
 				var pool *redis.Pool
 				func init()  {
 					pool=&redis.Pool{
@@ -1930,7 +1930,7 @@
 			client.set(key,value)			类似于redis指令
 			
   26.xorm库操作--关系型数据库（mysql..）
-	-特性：
+	-特性: 
 		1) 数据表结构与Go语言结构相互转换,
 		2) 无视对go结构的修改与删除,只有判断是否满足数据库结构来新增
 		3) 方便链式操作
@@ -1938,11 +1938,11 @@
 		5) xorm操作与sql操作可以混合使用
 		6) 基于LRU规则的缓存
 		7) 数据表乐观锁,多个数据提交时版本混乱提醒
-	-安装方式：
+	-安装方式: 
 		go get github.com/go-xorm/xorm
 	-定义模型
 		-go中xorm是定义结构和tag标签来定义模型
-		-实例：
+		-实例: 
 			type Account struct{
 				Id       int64		--->这里没有tag标签,就会被默认成主键
 				Name     string `xorm:"unique"`	 -->唯一
@@ -1951,22 +1951,22 @@
 			}
 	-创建xorm引擎---初始化函数
 		-启动驱动
-			-目前支持五种驱动：
+			-目前支持五种驱动: 
 				Mysql----->	github.com/Go-SQL-Driver/MySQL
 				MyMysql--->	github.com/ziutek/mymysql/godrv
 				SQLite---->	github.com/mattn/go-sqlite3
 				Postgres-->	github.com/lib/pq
 				MsSql----->	github.com/lunny/godbc
-			-实例：
+			-实例: 
 				import _ "github.com/Go-SQL-Driver/MySQL"(只需初始化)
 		-导入xorm
-			-实例：
+			-实例: 
 				import "github.com/go-xorm/xorm"
-		-启动：
-			-实例：
+		-启动: 
+			-实例: 
 				=======var x *xorm.Engine======
 				x, err = xorm.NewEngine("mysql", "root:111111@/sys?charset=utf8s")	
-			-输入引擎名,数据库表文件;返回：xorm.Engine和err
+			-输入引擎名,数据库表文件;返回: xorm.Engine和err
 		-go与数据库表 结构同步	
 			-x.Sync(new(结构体)) （x为启动引擎的返回值）
 		-实例:
@@ -1986,26 +1986,26 @@
 		-x.SetConnMaxLifetime(X)	设置连接最大生存时间
 	-插入数据	insert	
 		-x.Insert(结构体实例指针)  	可同时插入多条数据
-			-实例：
+			-实例: 
 				x.Insert(&Account{Name:"张三",Balance:125.0})
 		-x.InsertOne(结构体实例指针)	插入一条数据
-		-该记录必须是未存在的,否则会返回错误：
+		-该记录必须是未存在的,否则会返回错误: 
 	-获取数据	get	
 		-方法一:(根据Id)
 			a := &Account{}
 			x.Id(id号).Get(a) 	//返回 是否拥有bool和err
 			-a是一个空的指针结构体,用来接受数据
 			*该方法值对有Id为主键的数据表
-		-方法二：(根据where判断)
-			-实例：
+		-方法二: (根据where判断)
+			-实例: 
 				a := new(Account)
 				has, err := x.Where("name=?", "adn").Get(a)
-		-方法三：(Account结构体存在的非空数据获取)
-			-实例：	
+		-方法三: (Account结构体存在的非空数据获取)
+			-实例: 	
 				a := &Account{Id:1}
 				has, err := x.Get(a)
 	-修改数据	update
-		-实例：
+		-实例: 
 			a.name = "lisi"
 			has,err = x.Update(a) //返回has,err
 	-删除数据 	delete 	
@@ -2013,7 +2013,7 @@
 			_,err := x.Delete(&num{Id:1})	删除id=1的人
 			//传入一个结构体实例指针,返回has,err
 	-批量获取数据	Find
-		-实例：
+		-实例: 
 			num :=&[]Num{
 			}
 			err :=x.Desc("id").Find(num) 	//Desc(...)根据id号排序
@@ -2027,9 +2027,9 @@
 		
 	***XORM高级用法***
 	-事务与回滚		Session
-		-创建session对象：
+		-创建session对象: 
 			sess := x.NewSession()	返回一个结构类型,sess能操作x能完成的很多操作
-		-启动事务：
+		-启动事务: 
 			sess.Begin()
 		-通过session操作数据库
 			sess.Update(...)
@@ -2040,7 +2040,7 @@
 	-统计记录条数	Count
 		-n,err := x.Count(new(Num))	//传入匿名的结构体实例(等于需要表),返回数量与err
 		-也可以配合条件方法,进行筛选
-			例：x.Where("id<10").Count(new(Num))
+			例: x.Where("id<10").Count(new(Num))
 	-迭代查询:
 		-方法一 Iterate
 			//func里面返回的 idx 索引和 bean 任何类型 进行类型断言来使用 
@@ -2049,7 +2049,7 @@
 				....//根据查询到的数据来进行使用。。
 			})
 			//返回err
-			-实例：
+			-实例: 
 				err := x.Iterate(new(Num),func(idx int,bean interface{})(err error){
 					fmt.Printf("%d,%#v\n",idx,bean.(*Num))
 					if idx >100{
@@ -2065,7 +2065,7 @@
 			-2.rows.Close()	 		****用完后一定要关闭rows****
 			-3.rows.Next() 			 判断是否还有下个数据,返回bool
 			-4.rows.Scan(new(Num))	 将接受到的数据获取到并赋给结构体实例,返回err
-			-实例：
+			-实例: 
 				rows,err := x.Rows(new(Num))
 				if err != nil{
 					log.Fatal("迭代失败")
@@ -2080,8 +2080,8 @@
 					}
 					fmt.Println(a)
 				}
-	-日志记录：
-		-开启日志：
+	-日志记录: 
+		-开启日志: 
 			x.ShowSQL = true
 		-将日志保存在文件
 			f,err := os.Create("sql.log")
@@ -2106,7 +2106,7 @@
 			-func(a *Account)AfterInsert(){
 				...
 			}
-	-语句：	
+	-语句: 	
 		engine.Query(...)			根据SQL语句查询
 		engine.Exec(...)			根据SQL语句修改
 		engine.Ping()				检测数据库是否alive	
@@ -2117,7 +2117,7 @@
 			
   26.protobuf---序列化+结构体
 	-官网下载protobuf.
-	-安装库：
+	-安装库: 
 		go get -u github.com/golang/protobuf/{protoc-gen-go,proto}
 	-protobuf文件的写法:(XX.proto)
 		syntax = "proto3"; //指定proto版本
@@ -2134,15 +2134,15 @@
 	-编译成go文件命令:
 		protoc --go_out=. XX.proto
 		
-	-编译成grpc的pb.go：
+	-编译成grpc的pb.go: 
 		protoc --go_out=plugins=grpc:. message.proto
 		protoc --go_out=plugins=grpc:E://roomcardserver/src/grpc message.proto
 		filemgr.exe --action upload --bucket 66server --key layout.json --file E://roomcardserver/src/layout.json
 		filemgr.exe --action upload --bucket 66server --key layout_card.json --file E://roomcardserver/src/layout_card.json
-	-会在同级目录生成：XX.pb.go 文件
-	-使用：	
-		-引用该文件：import "文件地址目录"
-		-例子：
+	-会在同级目录生成: XX.pb.go 文件
+	-使用: 	
+		-引用该文件: import "文件地址目录"
+		-例子: 
 			 package main
 				import (
 				 "log"
@@ -2179,7 +2179,7 @@
 	-Protobuf数据类型
 		-普通类型都差不多
 		-enum枚举	
-		-修饰类型：	
+		-修饰类型: 	
 			-Required	必须字段,必须设置的字段,否则编码异常
 			-Optional	可选字段,可设可不设
 			-Repeated	可选,可以包含多个元素,类似数组
@@ -2189,8 +2189,8 @@
 		-ptypes.Empty(*any.Any)				根据any.Any new一个proto实例
 		-ptypes.UnmarshalAny(*any.Any,&proto.Message)	将Any解析成proto.Message类型
 
-	-proto引用其他proto包||引用同级proto 的问题：
-        -引用其他proto包：
+	-proto引用其他proto包||引用同级proto 的问题: 
+        -引用其他proto包: 
             import "xx/xx.proto";
         -引用同级proto包（一定要加go_package,不然会出现循环引包的问题）
             option go_package = "proto路径";
@@ -2202,18 +2202,18 @@
 	-但前提是gopath里面有这些东西
 	-go mod tidy -v 将三方库的引用整理一下
 	-go mod init 初始化go.mod
-	-使用go.mod后使用自定义包：
-		因为go.mod后项目不能放在gopath下面,以下为引用实例：
+	-使用go.mod后使用自定义包: 
+		因为go.mod后项目不能放在gopath下面,以下为引用实例: 
 			go.mod :
 				module go_test
-			main.go：
+			main.go: 
 				import "go_test/src/message"
     -go mod 命令
-        go mod download 下载模块到本地缓存，缓存路径是 $GOPATH/pkg/mod/cache
-        go mod edit 是提供了命令版编辑 go.mod 的功能，例如 go mod edit -fmt go.mod 会格式化 go.mod
+        go mod download 下载模块到本地缓存,缓存路径是 $GOPATH/pkg/mod/cache
+        go mod edit 是提供了命令版编辑 go.mod 的功能,例如 go mod edit -fmt go.mod 会格式化 go.mod
         go mod graph 把模块之间的依赖图显示出来
         go mod init 初始化模块（例如把原本dep管理的依赖关系转换过来）
-        go mod tidy 增加缺失的包，移除没用的包
+        go mod tidy 增加缺失的包,移除没用的包
         go mod vendor 把依赖拷贝到 vendor/ 目录下
         go mod verify 确认依赖关系
         go mod why 解释为什么需要包和模块
@@ -2224,22 +2224,22 @@
 	-再去go get 就能好好生生下载了
 	
   29.xorm reverse将数据库表结构直接转换成golang的结构体
-	-安装源码：
+	-安装源码: 
 		go get github.com/go-xorm/cmd/xorm
-	-mysql驱动安装：
+	-mysql驱动安装: 
 		go get -u github.com/go-sql-driver/mysql
-	-编译驱动：
+	-编译驱动: 
 		项目目录下,
 		go build -tags mysql
-	-反转数据库结构,生成代码：
+	-反转数据库结构,生成代码: 
 		在项目目录下建立templates/goxorm文件夹
 		这个文件下建立config和struct.go.tpl文件.
 		模板内容可以根据你自己的需要修改
-		-config内容如下：
+		-config内容如下: 
 			lang=go
 			genJson=1
 			prefix=
-		-struct.go.tpl内容如下：
+		-struct.go.tpl内容如下: 
 		
 			package {{.Models}}
 
@@ -2258,7 +2258,7 @@
 			}
 
 			{{end}}
-	-执行命令：(项目目录下,*只能在goland的运行,cmd运行不了？*)
+	-执行命令: (项目目录下,*只能在goland的运行,cmd运行不了？*)
 		xorm reverse mysql 账号:密码@地址/数据库名?charset=utf8 templates/goxorm
 	
   30.goland调试模式
@@ -2266,26 +2266,26 @@
 	-F7 	进入该步骤的内部查看源码	
 		
   31.uuid库
-  	库地址：github.com/satori/go.uuid,
+  	库地址: github.com/satori/go.uuid,
   	该软件包提供了通用唯一标识符（UUID）的纯Go实现。支持创建和解析UUID。
 	-uuid.NewV4() 来获取一个随机的uuid---几乎不会出现重复的情况
 	
   32.go自带的sql库
-	库：database/sql,
+	库: database/sql,
 	sql包提供了保证SQL或类SQL数据库的泛用接口。
 	连接mysql需要先调用Mysql的驱动
 	import _ "github.com/go-sql-driver/mysql"
-	-连接： sql.Open("数据库名","连接信息")		返回DB,err
-		-关闭连接： DB.close()
-		-检查连接：	DB.Ping()		返回err
-		-查询数据： DB.Query("SELECT ...")		返回rows结果集可以查找符合的整个信息,err
+	-连接:  sql.Open("数据库名","连接信息")		返回DB,err
+		-关闭连接:  DB.close()
+		-检查连接: 	DB.Ping()		返回err
+		-查询数据:  DB.Query("SELECT ...")		返回rows结果集可以查找符合的整个信息,err
 			-rows.Close()			关闭rows结果集,防止连接泄露
 			-rows.Scan(&渲染数据)	返回Err	
 			-rows.Next()			查询下一行
 			-rows.Err()				返回的错误,必须有rows.Close
-		-单行查询：	DB.QueryRow()	对比query只查询单条数据
-		-插入更新删除：	DB.Exec()	返回结果,err
-		-事务开始：	DB.Begin()		返回Tx,err
+		-单行查询: 	DB.QueryRow()	对比query只查询单条数据
+		-插入更新删除: 	DB.Exec()	返回结果,err
+		-事务开始: 	DB.Begin()		返回Tx,err
 			-Tx.Exec()				事务更新插入删除
 			-Tx.Query()				事务查询,返回rows,err
 			-Tx.QueryRow()			事务查询单条
@@ -2293,21 +2293,21 @@
 			-Tx.RollBack()			放弃事务,并回滚
   
   33.grpc库
-	库："google.golang.org/grpc"
+	库: "google.golang.org/grpc"
 	google开发的远程过程调用库。
 	组件之间使用grpc通信,虽然各组件之间相互独立,但是跨组件调用函数也能如调用自身的函数一样迅速。
-	模式为：server/client,同时Protobuf定义类型,实现相互调用
+	模式为: server/client,同时Protobuf定义类型,实现相互调用
 	|-----转向grpc.txt-----|
 	
   34.socket.io库
-	库： "github.com/graarh/golang-socketio"
+	库:  "github.com/graarh/golang-socketio"
 	socket.io特点: socket连接+当socket连接失败时降级成http轮训
-	-服务器端：
+	-服务器端: 
 		-gosocketio.NewServer(...)		启动socketio服务,返回server,err
 			-transport.GetDefaultWebsocketTransport()
 		-server.on("方法名",调用的方法...)
 			-调用的方法第一个参数必须带c *gosocketio.Channel,第二个是与客户端同一数据格式
-			-例：
+			-例: 
 				c.On("serverMsg", func(c *gosocketio.Channel,msg []byte) {
 					fmt.Println("server get clientMsg success！")
 					request := &pb.MysqlRBTMessage{}
@@ -2326,10 +2326,10 @@
 		-设置监听信息与地址
 			-http.NewServeMux()					返回一个serverMux,等于一个监听
 			-serveMux.Handle("模式", server)	根据监听模式执行server
-				-例：serveMux.Handle("/socket.io/", server)
+				-例: serveMux.Handle("/socket.io/", server)
 			-http.ListenAndServe(":端口", serveMux)		设置监听地址
 		
-	-客户端：
+	-客户端: 
 		可以使用websocket连接,也可以使用socketio连接
 		-gosocketio.Dial("连接信息",...)	连接server,返回client,err
 			-transport.GetDefaultWebsocketTransport()
@@ -2338,11 +2338,11 @@
 	-更多操作看源码...
 
   35.websocket库
-	库："github.com/gorilla/websocket"
-	-服务器端：	
+	库: "github.com/gorilla/websocket"
+	-服务器端: 	
 		-http.ListenAndServe(地址, nil)			首先打开监听的地址与端口
 		-http.HandleFunc("/", 执行的函数)		监听/执行的函数
-			-执行的函数带2个参数：
+			-执行的函数带2个参数: 
 				-w http.ResponseWriter
 				-r *http.Request
 		-http.HandleFunc("/ws", 执行的函数)		监听/ws执行的函数
@@ -2351,9 +2351,9 @@
 				-conn.Close()					关闭连接
 				-conn.ReadMessage()				读取连接的数据,返回消息类型,消息,错误信息
 				-conn.WriteMessage(消息类型,消息)	给连接发送数据,返回错误
-	-客户端：	
+	-客户端: 	
 		-websocket.DefaultDialer.Dial(url, nil)	连接websocket,返回conn,响应状态,error
-			-url例子：ws://localhost:8000/ws
+			-url例子: ws://localhost:8000/ws
 		-conn.Close()						关闭连接
 		-conn.ReadMessage()				读取连接的数据,返回消息类型,消息,错误信息
 		-conn.WriteMessage(消息类型,消息)	给连接发送数据,返回错误
@@ -2387,10 +2387,10 @@
 		}
 		
   37.列表型方法封装与调用
-	-第一步：
+	-第一步: 
 		创建一个全局map变量,键是代号,值是方法。
 			handleMsgMap := make(map[int]func())
-	-第二步：
+	-第二步: 
 		建立一个新增方法的方法
 			SetHandle(代码,方法){
 				handleMsgMap[代码] = 方法
@@ -2399,13 +2399,13 @@
 			GetHandle(代码)方法{
 				return 方法
 			}
-	-第三步：
+	-第三步: 
 		初始化的时候新增方法
 			SetHandle(代码1,方法1)
 			SetHandle(代码2,方法2)
 			SetHandle(代码3,方法3)
 			SetHandle(代码4,方法4)
-	-第四步：
+	-第四步: 
 		获取方法
 			hand := GetHandle(代码)
 		使用方法
@@ -2413,36 +2413,36 @@
 	-目的,将方法都放在init里面,方便调用,与浏览
 		
   38.golang的模拟Http请求
-	-第一步：
-		创建io.Reader消息的内容：
+	-第一步: 
+		创建io.Reader消息的内容: 
 			bytes.NewBuffer()	参数[]byte,返回实现了io.reader接口的buffer
-	-第二步：	
-		请求：
+	-第二步: 	
+		请求: 
 			http.NewRequest(申请方法,地址,消息内容)	返回response
-	-第三步：
-		读取：
+	-第三步: 
+		读取: 
 			ioutil.ReadAll(response.Body)	返回byte和err
 	
-  39.golang启动http服务：
-	第一步：
+  39.golang启动http服务: 
+	第一步: 
 		监听端口:
 			http.ListenAndServe(端口号,处理事件)	处理事件一般为nil
-		处理事件：
+		处理事件: 
 			http.HandleFunc(http模式,处理事件)	
-		事件：
+		事件: 
 			func httpHandler(w http.ResponseWriter, r *http.Request) {}			
-	第二步：	
-		事件内部设置：
+	第二步: 	
+		事件内部设置: 
 			//设置访问控制的来源
 			w.Header().Set("Access-Control-Allow-Origin", "*")
 			//设置访问控制的方法
 			w.Header().Set("Access-Control-Allow-Methods", "OPTIONS, GET, POST")
-	第三步：	
+	第三步: 	
 		读取申请来的数据:
 			ioutil.ReadAll(r.Body) 			返回byte和err
 		
   40.redis分布式锁
-	-第三方库："github.com/go-redsync/redsync"
+	-第三方库: "github.com/go-redsync/redsync"
 	-1.先创建redis连接池
 		&redis.Pool{
 			MaxIdle:     10,
@@ -2463,21 +2463,21 @@
 		redsync.New(pools) 		返回Redsync
 	-4.用返回的Redsync来使用分布式锁
 		Redsync.NewMutex(锁名,选项...)	返回Mutex
-	-5.选项：
+	-5.选项: 
 		redsync.SetExpiry(时间)		设置给定到期时间
 		redsync.SetTries(次数)		设置尝试获取锁的次数
 		redsync.SetRetryDelay(时间)	设置尝试获取锁的等待时间
-	-6.使用Mutex解锁：
+	-6.使用Mutex解锁: 
 		Mutex.Unlock()				返回成功与否
 
   41.消息队列MQ
-	-概念：一个存放消息的容器,使用该消息时,就从消息里面取出来使用
-	-作用：	平缓峰值：比如高并发直接对数据库操作,使用MQ,将其转为异步处理
-			减少耦合：增加MQ为中间组件,减少其余程序的直接调用
-			队列特性：先进先出,避免之前消息没处理完,之后的消息将其覆盖
+	-概念: 一个存放消息的容器,使用该消息时,就从消息里面取出来使用
+	-作用: 	平缓峰值: 比如高并发直接对数据库操作,使用MQ,将其转为异步处理
+			减少耦合: 增加MQ为中间组件,减少其余程序的直接调用
+			队列特性: 先进先出,避免之前消息没处理完,之后的消息将其覆盖
 	-basic.consume	消费者,当有给他发送的msg到达queue时,直接发送给他
 	-basic.get		只获得一条发送给他的msg,然后他会关闭订阅
-		-**：不应该循环get代替consume
+		-**: 不应该循环get代替consume
 	-AMQP		高级消息队列协议
 	-AMQP库: "github.com/streadway/amqp"
 		-通用-
@@ -2493,32 +2493,32 @@
 				DeliveryMode:uint8		// 暂时或者持续
 				Body:[]byte				//消息内容
 			}
-			-例：
+			-例: 
 				-amqp.Publish("", queueName, false, false, amqp.Publishing{
 					ContentType: "text/plain",
 					Body:        msg,
 				})
 		-接受-
 		-ch.Cancel(消费者,是否不等待)										消费者退出通道队列
-			-参数：consume		消费者名字
-			-参数：noWait		不阻塞,不阻塞的话发送后不需要确认,直接下一个
-			-例：
+			-参数: consume		消费者名字
+			-参数: noWait		不阻塞,不阻塞的话发送后不需要确认,直接下一个
+			-例: 
 				-ch.Cancel(uuid,false)
 			
 		-ch.QueueDeclare(队列名字,持久化,自动删除,私人,不阻塞,参数)			绑定新消费者
-			-参数：name：		队列名
-			-参数：durable		是否持久化
+			-参数: name: 		队列名
+			-参数: durable		是否持久化
 				-配合自动删除,保证服务器,重启消息队列不删除,不常使用
-			-参数：autoDelete	是否自动删除
-			-参数：exclusive	是否私人queue只为一个consume服务
-			-参数：noWait		是否不阻塞
+			-参数: autoDelete	是否自动删除
+			-参数: exclusive	是否私人queue只为一个consume服务
+			-参数: noWait		是否不阻塞
 		-ch.Qos(预计数,预大小,是否全局)										设置接收端为接收消息预留的大小
-			-参数：PrefetchCount	预留长度
-			-参数：PrefetchSize		预留大小
-			-参数：Global			是否全局设置
+			-参数: PrefetchCount	预留长度
+			-参数: PrefetchSize		预留大小
+			-参数: Global			是否全局设置
 		-ch.Consume(队列名,消费者名,自动确定,私人,noLocal,不阻塞,参数)		返回Delivery管道,err
-			-参数：autoAck			是否自动确定
-			-例：
+			-参数: autoAck			是否自动确定
+			-例: 
 				msgList, err := ch.Consume(queueName, uuid, false, false, false, false, nil)
 				for msg := range msgList {
 					fmt.println(msg.body)
@@ -2531,20 +2531,20 @@
 		h.Write([]byte(string))
 	-3.将切片附加到其外的切片上,并将加密结果转为string
 		hex.EncodeToString(h.sum(nil))
-	-实例：
+	-实例: 
 		h := md5.New()
 		h.Write([]byte("密码"+"盐"))
 		hex.EncodeToString(h.sum(nil))
 	
   43.golang的Gin框架
-	-第三方库："github.com/gin-gonic/gn"k
+	-第三方库: "github.com/gin-gonic/gn"k
 	-获取Enigine实例-
 		-gin.Default() 				获取一个Engine的实例,返回router
 		-gin.New()					获取一个Engine的实例,无中间件,返回router
 	-获取参数-	
 		-router.Run(addr)					监听addr端口,不传就监听8080端口
 		-router.GET("...",回调函数)			根据指定get请求,调用指定回调函数				
-			-获取get参数：
+			-获取get参数: 
 			-c.DefaultQuery(键,默认值)		获取参数的键,与键不对应,返回默认值
 			-c.Query(键)					获取参数的键,没有默认值	
 				-c.Request.URL.Query().Get(键) 的简写
@@ -2560,7 +2560,7 @@
 		-router.HEAD("...",回调函数)		根据指定head请求,调用指定回调函数
 		-router.OPTIONS("...",回调函数)		根据指定options请求,调用指定回调函数
 			-func(c *gin.Context){...}		回调函数样式
-			-匹配格式：
+			-匹配格式: 
 				-/XXX		只有/XXX才能进入
 				-/:XXX		/XXX,/AAA,/1...都可以,但不匹配/
 				-/*XXX		以上都匹配
@@ -2582,7 +2582,7 @@
 			-c.MultipartForm()					获取上传的多个文件,返回form,err
 				-form.File["..."]				根据上传参数获取[]*fileHeader
 				-form.RemoveAll()				删除所有表单相关
-		-多文件保存：
+		-多文件保存: 
 			for _,file := range form.File["..."]	{
 				c.SaveUploadedFile(file,地址)
 			}
@@ -2590,7 +2590,7 @@
 		-router.Group("/组名")			创建组,返回routerGroup
 			-g.post()					接受post对应组的参数,调用函数
 			...
-		-例：	
+		-例: 	
 			v1 := router.Group("/v1")
 			{
 				v1.POST("/login", loginEndpoint)
@@ -2614,26 +2614,26 @@
 		-默认日志输出
 			-f, _ := os.Create("gin.log")
 			 gin.DefaultWriter = io.MultiWriter(f)
-		-自定义日志输出,方法一：
+		-自定义日志输出,方法一: 
 			router.Use(gin.LoggerWithFormatter(
 				func(p gin.LogFormatterParams) string {
 					return fmt.Sprintf("%s",
 						p.ClientIP,
 					)
 			}))
-		-自定义日志输出,方法二：（使用logrus）	
+		-自定义日志输出,方法二: （使用logrus）	
 			-根据logrus实例-
 	-模型绑定-
 		-将request.body绑定到结构体中.
 		-绑定时需要根据绑定类型设置tag.
-		-绑定方法：
-			-当确定绑定内容时：
+		-绑定方法: 
+			-当确定绑定内容时: 
 				-MustBindWith()	
 				-BindJson()
-			-当不确定绑定内容时：(一般使用这个)
+			-当不确定绑定内容时: (一般使用这个)
 				-ShouldBindJSON()
 				-ShouldBind()
-		-实例：
+		-实例: 
 			type Login stuct{
 				User string `json:"user" binding:"required"`
 				Password string `json:"password" binding:"-"`
@@ -2643,7 +2643,7 @@
 				c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 				return
 			}
-		-结构体标签binding：
+		-结构体标签binding: 
 			binding:"required"	标记为必须
 			binding:"-"			标记为随意
 		-结构体能绑定uri-
@@ -2666,74 +2666,74 @@
 					route.Run(":8088")
 				}
 		-结构体能绑定HTML复选框-
-			-结构体例：用form
+			-结构体例: 用form
 				type myForm struct {
 					Colors []string `form:"colors[]"`
 				}
 		-绑定Post参数-
-			-结构体例：用form
+			-结构体例: 用form
 				type LoginForm struct {
 					User     string `form:"user" binding:"required"`
 					Password string `form:"password" binding:"required"`
 				}
 	-输出格式渲染-	
-		-意思：将数据转换成特定的格式,如json、proto、xml...
+		-意思: 将数据转换成特定的格式,如json、proto、xml...
 		-XML渲染
-			-例：
+			-例: 
 				c.XML(http.StatusOK, gin.H{"message": "hey", "status": http.StatusOK})
 		-YAML渲染
-			-例：
+			-例: 
 				c.YAML(http.StatusOK, gin.H{"message": "hey", "status": http.StatusOK})
 		-Json渲染
-			-例：
+			-例: 
 				c.JSON(http.StatusOK, 返回的json结构体实例)
 		-ProtoBuf渲染
-			-例：
+			-例: 
 				c.ProtoBuf(http.StatusOK,  返回的proto结构体实例)
 		-SecureJSON渲染-
-			-作用：防止json劫持,如果返回的数据是数组,在其前面加while(1);
-			-例：	
+			-作用: 防止json劫持,如果返回的数据是数组,在其前面加while(1);
+			-例: 	
 				c.SecureJSON(http.StatusOK, 返回的值)
 			*注意该字可以为任何类型,或值*
-			-例1：	
+			-例1: 	
 				c.SecureJSON(http.StatusOK, 1)
 		-JSONP-
-			-作用：使用JSONP可以跨域传输,如果参数中存在回调参数,那么返回的参数将是回调函数的形式
-			-例：	
+			-作用: 使用JSONP可以跨域传输,如果参数中存在回调参数,那么返回的参数将是回调函数的形式
+			-例: 	
 				data := map[string]interface{}{
 					"foo": "bar",
 				}
 				c.JSONP(http.StatusOK, data)
-			-结果：
+			-结果: 
 				http://localhost:8080/JSONP?callback=call123
 				输出:   call123({"foo":"bar"})
 		-AsciiJSON-
-			-作用：会将返回的数据中的非ascii转换成uicode编码
-			-例：	
+			-作用: 会将返回的数据中的非ascii转换成uicode编码
+			-例: 	
 				data := map[string]interface{}{
 					"lang": "GO语言",
 					"tag":  "<br>",
 				}
 				c.AsciiJSON(http.StatusOK, data)
-			-结果：	
+			-结果: 	
 				{"lang":"GO\u8bed\u8a00","tag":"\u003cbr\u003e"}
 		-PureJSON-
-			-作用：一般情况json会将Html字符替换成unicode字符,pureJson可以将其原样输出Html
-			-例：	
+			-作用: 一般情况json会将Html字符替换成unicode字符,pureJson可以将其原样输出Html
+			-例: 	
 				c.PureJSON(200, gin.H{
 					"html": "<b>Hello, world!</b>",
 				})
-			-结果：	
+			-结果: 	
 				{"html":"<b>Hello, world!</b>"}
 	-设置静态文件路径-
-		-意思：访问静态文件需要先设置路径
-		-三种方式：
+		-意思: 访问静态文件需要先设置路径
+		-三种方式: 
 			-route.Static("/assets", "./assets")
 			-route.StaticFS("/assets", http.Dir("./assets"))
 			-route.StaticFile("/assets", "./assets")
 	-返回第三方获取的数据-
-		-意思：将从其他服务器获取到的数据返回
-		-例：	
+		-意思: 将从其他服务器获取到的数据返回
+		-例: 	
 			res, err := http.Get("XXX")
 			if err != nil || res.StatusCode != http.StatusOK {
 				c.Status(http.StatusServiceUnavailable)
@@ -2749,13 +2749,13 @@
 			c.DataFromReader(http.StatusOK, contentLength, contentType, reader, extraHeaders)
 			//c.DataFromReader(状态码,内容长度,内容类型,内容本身,真实的头信息)
 	-Html渲染-
-		-意思：将本地的html页面通过请求渲染给请求方
+		-意思: 将本地的html页面通过请求渲染给请求方
 		-两种方式:
 			-templates下面所有X.tmpl或html文件,匹配就使用
 			route.LoadHTMLGlob("templates/*")
 			-templates下面指定X.html或tmpl,匹配使用
 			router.LoadHTMLFiles("templates/XXX.html", "templates/XXX.html")
-		-例1：
+		-例1: 
 			route.LoadHTMLGlob("templates/*")
 			route.GET("/index", func(c *gin.Context) {
 				c.HTML(http.StatusOK, "index.tmpl", gin.H{
@@ -2763,7 +2763,7 @@
 				})
 			})
 		-例1的templates模板
-			-位置：templates/index.tmpl
+			-位置: templates/index.tmpl
 			<html>
 				<h1>
 					{{ .title }} //这里会被渲染成Main
@@ -2776,7 +2776,7 @@
 				html := template.Must(template.ParseFiles("file1", "file2"))
 				route.SetHTMLTemplate(html)
 			-自定义模板函数
-				-例：
+				-例: 
 					route.Delims("{[{", "}]}")
 					route.SetFuncMap(template.FuncMap{
 						"函数名": 定义的函数,
@@ -2789,15 +2789,15 @@
 					})
 				-raw.tmpl模板:
 					Date: {[{.now | 定义的函数}]}
-				-结果：
+				-结果: 
 					Date: XXXXX
 	-重新定向-	
-		-意思：将访问的链接跳转到其他链接上去,或者是路由跳转
+		-意思: 将访问的链接跳转到其他链接上去,或者是路由跳转
 		-链接重定向- 
 			-c.Redirect(http.StatusMovedPermanently, 跳转到的连接)
 		-路由重定向-	
 			-route.HandleContext(链接)
-			-例：	
+			-例: 	
 				r.GET("/test", func(c *gin.Context) {
 					c.Request.URL.Path = "/test2"
 					r.HandleContext(c)
@@ -2805,11 +2805,11 @@
 				r.GET("/test2", func(c *gin.Context) {
 					c.JSON(200, gin.H{"hello": "world"})
 				})
-	-自定义http配置：
-		-方法一：
+	-自定义http配置: 
+		-方法一: 
 			router := gin.Default()
 			http.ListenAndServe(":8080", router)
-		-方法二：
+		-方法二: 
 			 s := &http.Server{
 				Addr:           ":8080",
 				Handler:        router,
@@ -2820,8 +2820,8 @@
 			s.ListenAndServe()
 		
   44.golang wechat接口调用
-	-第一步：根据app_id,app_secret(来源官方),code(来源用户)获取token
-		-例：	
+	-第一步: 根据app_id,app_secret(来源官方),code(来源用户)获取token
+		-例: 	
 			// 拼接url,然后http获取token
 			u, err := url.Parse("https://api.weixin.qq.com/sns/oauth2/access_token")
 			if err != nil {
@@ -2846,8 +2846,8 @@
 			scope, _ := jMap["scope"].(string)
 			unionId, _ := jMap["unionid"].(string)
 			
-	-第二步：根据accessToken与openId获取玩家信息
-		-例：	
+	-第二步: 根据accessToken与openId获取玩家信息
+		-例: 	
 			// 拼接url,然后http获取用户Id
 			u, err := url.Parse("https://api.weixin.qq.com/sns/userinfo")
 			if err != nil {
@@ -2873,7 +2873,7 @@
 			headimgurl, _ := jMap["headimgurl"].(string)
 		
   45.golang 获取ucloud文件
-	-例：
+	-例: 
 		c := new(ufsdk.Config)
 		c.PublicKey = publicKey
 		c.PrivateKey = privateKey
@@ -2909,10 +2909,10 @@
 		return returnBytes, nil
 		
   46.golang Facebook登录
-	-需要的官方申请：AppId,AppSecret
+	-需要的官方申请: AppId,AppSecret
 	-第一步,获取token与openId
-	-地址：https://graph.facebook.com/v6.0/oauth/access_token
-	-例：
+	-地址: https://graph.facebook.com/v6.0/oauth/access_token
+	-例: 
 		// 定义类型	
 		type exchangeToken struct {
 			AccessToken string `json:"access_token"`
@@ -2948,7 +2948,7 @@
 		err = json.NewDecoder(resp.Body).Decode(&exTkn)
 	-第二步,根据openId与token获取用户Info
 	-地址:https://graph.facebook.com/v6.0/v6.0/me
-	-例：
+	-例: 
 		// 定义类型
 		type userData struct {
 			Id     string `json:"id"`
@@ -2976,9 +2976,9 @@
 		// 解析内容
 		var facebookUserData userData
 		err = json.NewDecoder(resp.Body).Decode(&facebookUserData)
-	-第三步根据用户id获取用户照片：
-	-地址示例：https://graph.facebook.com/2768660213253677/picture?type=large&redirect=false
-	-例：
+	-第三步根据用户id获取用户照片: 
+	-地址示例: https://graph.facebook.com/2768660213253677/picture?type=large&redirect=false
+	-例: 
 		// 定义类型
 		type headImageData struct {
 		Data struct {
@@ -3011,7 +3011,7 @@
 		err = json.NewDecoder(resp.Body).Decode(&headImg)
 	
   47.golang base64图片验证码
-	-库："github.com/mojocn/base64Captcha"
+	-库: "github.com/mojocn/base64Captcha"
 	-获取默认存储store
 		-base64Captcha.DefaultMemStore
 	-验证码diver
@@ -3031,7 +3031,7 @@
 
   48.golang http操作大全 *补全*
   
-	-get请求：(3个都相等)
+	-get请求: (3个都相等)
 		- http.Get("url")				// 封装完好的get请求
 		
 		- clt := http.Client{}			// 获取一个http的Client
@@ -3040,7 +3040,7 @@
 		- req,err := http.NewRequest("GET", "url", nil)		// 获取http申请 
 		  res,err := http.DefaultClient.Do(req)				// 使用client的方式执行请求
 	
-	-post请求：
+	-post请求: 
 		- data := url.Values{}								// 消息本体
 		  body := strings.NewReader(data.Encode())			// 将消息转为io流
 		  resp, err := http.Post(url,content-type, body)	// 发送请求
@@ -3114,7 +3114,7 @@
         // 读取一张
         qrMatrix, err := qrcode.Decode(fi)
         if err != nil {
-            fmt.Println("读取二维码错误：",err.Error())
+            fmt.Println("读取二维码错误: ",err.Error())
             return
         }
         fmt.Println(qrMatrix.Content)
@@ -3134,14 +3134,14 @@
         if err !=nil{
             fmt.Println("生成指定颜色二维码到指定地址失败",)
         }
-	-备注：
+	-备注: 
 	    解析其他人的二维码会有奇怪的错误
 
   50.pprof 性能分析工具包
     -相关包:
         net/http/pprof
         runtime/pprof
-        区别：其实net/http/pprof中只是使用runtime/pprof包来进行封装了一下，并在http端口上暴露出来
+        区别: 其实net/http/pprof中只是使用runtime/pprof包来进行封装了一下,并在http端口上暴露出来
     -如何使用包:
         1.使用http包的web服务:
             _ "net/http/pprof"
@@ -3163,7 +3163,7 @@
     -查看pprof信息
         http://localhost:xxxx/debug/pprof
     -生成CPU状态图
-        先安装graphviz,连接：http://www.graphviz.org/download/
+        先安装graphviz,连接: http://www.graphviz.org/download/
         调用go tool pprof http://localhost:xxxx/debug/pprof/profile
         30秒数据收集
         输入web进入页面
@@ -3181,7 +3181,7 @@
       https://github.com/astaxie/build-web-application-with-golang （A golang ebook intro how to build a web with golang ）
       https://github.com/rubyhan1314/Golang-100-Days （Golang - 100天从新手到大师 ）
       https://github.com/jiujuan/go-collection （Golang从入门到跑路）
-      https://github.com/overnote/over-golang （Golang笔记：[进度80%]Go语法、Go并发思想、Go与web开发、Go微服务设施等 ）
+      https://github.com/overnote/over-golang （Golang笔记: [进度80%]Go语法、Go并发思想、Go与web开发、Go微服务设施等 ）
       https://github.com/yinggaozhen/awesome-go-cn （一个很棒的Go框架、库和软件的中文收录大全。）
 	
   52.kafka的使用
@@ -3213,13 +3213,13 @@
             kafkaConfig.Consumer
                 -Group              群组管理
                 -Offsets            偏移量
-        -群组设置：
+        -群组设置: 
             -kafkaConfig.Group
                 -Notifications      平衡通知将返回
                 -PartitionStrategy  分区策略
                     -cluster.StrategyRoundRobin     轮询
                     -cluster.StrategyRange          随机
-        -管道协程大小设置：
+        -管道协程大小设置: 
             -kafkaConfig.ChannelBufferSize
     -获取生产者
         -sarama.NewAsyncProducer(地址数组, &kafkaConfig.Config)     获取异步生产者
@@ -3237,10 +3237,10 @@
         }
 
   53.golang操作excel库
-    -库："github.com/360EntSecGroup-Skylar/excelize"
-    -打开excel文件：
+    -库: "github.com/360EntSecGroup-Skylar/excelize"
+    -打开excel文件: 
         excelize.OpenFile("D:/excelMe.xlsx")    返回f, err
-    -获取指定sheet的rows：
+    -获取指定sheet的rows: 
         f.GetRows("Sheet1") 返回rows,err
         -rows 是个 二位切片
         -第一层是 行  第二层是 列
@@ -3250,40 +3250,40 @@
         -f.Write()
 
   54.go编译指令
-    -格式： //go:XXX
-    -目的：在编译的时候-告诉编译器 接下来的func或其他 在编译时要进行特殊处理
+    -格式:  //go:XXX
+    -目的: 在编译的时候-告诉编译器 接下来的func或其他 在编译时要进行特殊处理
     //go:noinline  不要内联
-        -作用：
+        -作用: 
             在调用该指令的函数时,不是通过函数来调用,而是调用函数本体的一种优化方法
-        -优点：
+        -优点: 
             -减少函数调用的开销
             -消除了分支,性能会有所提升
-        -缺点：
+        -缺点: 
             -复制代码带来 代码长度增加
             -如果有大量重复代码,反而会降低缓存命中率,尤其对 CPU 缓存是致命的
-        -综合：
+        -综合: 
             谨慎使用,要考虑平衡,短小而且工作量小的函数,使用内联是有益的
     //go:nosplit 跳过栈溢出检测
-        -作用：
+        -作用: 
             栈每次都有一个检测是否需要增长的机制,nosplit跳过每次去判断是否要栈增长
-            意味着：栈固定到2048字节
-        -优点：
+            意味着: 栈固定到2048字节
+        -优点: 
             提升性能
-        -缺点：
+        -缺点: 
             会有发生 stack overflow的情况
     //go:noescape   禁止逃逸
-        -作用：
+        -作用: 
             逃逸:go语言相比c会自动将超出自身生命周期的变量,从函数的栈转移到堆中
             进制栈变量放进堆中
-        -优点：
+        -优点: 
             GC压力减小,明确告诉了编译器,函数不能逃逸,因此函数返回时,资源会被回收
-        -缺点：
+        -缺点: 
             绕过了逃逸检测,可能会造成十分严重的后果
     //go:norace  跳过竞态检测
         -跳过 编译器会检测多线程数据竞争的问题 这个机制
-        -优点：
+        -优点: 
             数据并发量更猛？
-        -缺点：
+        -缺点: 
             数据竞争导致程序不确定性增加
 
   55.gogo protobuf库
@@ -3305,7 +3305,7 @@
         -编译pb.go文件:protoc -I=./ -I=$GOPATH/src --gogoslick_out=plugins=grpc:./ api.proto grade.proto passenger.proto channel.proto
 
   56.阿里云文件上传下载
-    -库："github.com/aliyun/aliyun-oss-go-sdk/oss"
+    -库: "github.com/aliyun/aliyun-oss-go-sdk/oss"
 
   57.base64编解码
     -相关库: "encoding/base64"
@@ -3322,16 +3322,16 @@
         -1.引用计数（reference counting）
             引用计数通过在对象上增加自己被引用的次数,被其他对象引用时加1,引用自己的对象被回收时减1,引用数为0的对象即为可以被回收的对象。
             这种算法在内存比较紧张和实时性比较高的系统中使用的比较广泛,如ios cocoa框架,php,python等。
-        优点：
+        优点: 
             1、方式简单,回收速度快。
-        缺点：
+        缺点: 
             1、需要额外的空间存放计数。
             2、无法处理循环引用（如a.b=b;b.a=a这种情况）。
             3、频繁更新引用计数降低了性能。
         -2.标记-清除（mark and sweep）
             该方法分为两步,标记从根变量开始迭代得遍历所有被引用的对象,对能够通过应用遍历访问到的对象都进行标记为“被引用”；
             标记完成后进行清除操作,对没有标记过的内存进行回收（回收同时可能伴有碎片整理操作）。
-            这种方法解决了引用计数的不足,但是也有比较明显的问题：每次启动垃圾回收都会暂停当前所有的正常代码执行,回收是系统响应能力大大降低！
+            这种方法解决了引用计数的不足,但是也有比较明显的问题: 每次启动垃圾回收都会暂停当前所有的正常代码执行,回收是系统响应能力大大降低！
             当然后续也出现了很多mark&sweep算法的变种（如三色标记法）优化了这个问题。
         -3.复制收集
             复制收集的方式只需要对对象进行一次扫描。准备一个「新的空间」,从根开始,对对象进行扫,如果存在对这个对象的引用,就把它复制到「新空间中」。
@@ -3340,40 +3340,40 @@
             复制收集更快速但是需要额外开辟一块用来复制的内存,对垃圾比例较大的情况占优势。特别的,复制收集有「局部性」的优点。
             在复制收集的过程中,会按照对象被引用的顺序将对象复制到新空间中。
             于是,关系较近的对象被放在距离较近的内存空间的可能性会提高,这叫做局部性。局部性高的情况下,内存缓存会更有效地运作,程序的性能会提高。
-            对于标记清除,有一种标记-压缩算法的衍生算法：
+            对于标记清除,有一种标记-压缩算法的衍生算法: 
             对于压缩阶段,它的工作就是移动所有的可达对象到堆内存的同一个区域中,使他们紧凑的排列在一起,
             从而将所有非可达对象释放出来的空闲内存都集中在一起,通过这样的方式来达到减少内存碎片的目的。
         -4.分代收集（generation）
-            这种收集方式用了程序的一种特性：大部分对象会从产生开始在很短的时间内变成垃圾,而存在的很长时间的对象往往都有较长的生命周期。
+            这种收集方式用了程序的一种特性: 大部分对象会从产生开始在很短的时间内变成垃圾,而存在的很长时间的对象往往都有较长的生命周期。
             根据对象的存活周期不同将内存划分为新生代和老年代,存活周期短的为新生代,存活周期长的为老年代。这样就可以根据每块内存的特点采用最适当的收集算法。
             新创建的对象存放在称为 新生代（young generation）中（一般来说,新生代的大小会比 老年代小很多）。
             高频对新生成的对象进行回收,称为「小回收」,低频对所有对象回收,称为「大回收」。
             每一次「小回收」过后,就把存活下来的对象归为老年代,「小回收」的时候,遇到老年代直接跳过。
             大多数分代回收算法都采用的「复制收集」方法,因为小回收中垃圾的比例较大。
-            这种方式存在一个问题：如果在某个新生代的对象中,存在「老生代」的对象对它的引用,它就不是垃圾了,那么怎么制止「小回收」对其回收呢？这里用到了一中叫做写屏障的方式。
+            这种方式存在一个问题: 如果在某个新生代的对象中,存在「老生代」的对象对它的引用,它就不是垃圾了,那么怎么制止「小回收」对其回收呢？这里用到了一中叫做写屏障的方式。
             程序对所有涉及修改对象内容的地方进行保护,被称为「写屏障」（Write Barrier）。写屏障不仅用于分代收集,也用于其他GC算法中。
             在此算法的表现是,用一个记录集来记录从新生代到老生代的引用。
             如果有两个对象A和B,当对A的对象内容进行修改并加入B的引用时,如果①A是「老生代」②B是「新生代」。则将这个引用加入到记录集中。
             「小回收」的时候,因为记录集中有对B的引用,所以B不再是垃圾。
         -5.三色标记算法
-          三色标记算法是对标记阶段的改进,原理如下：
+          三色标记算法是对标记阶段的改进,原理如下: 
             1.起初所有对象都是白色。
             2.从根出发扫描所有可达对象,标记为灰色,放入待处理队列。
             3.从队列取出灰色对象,将其引用对象标记为灰色放入队列,自身标记为黑色。
             4.重复 3,直到灰色对象队列为空。此时白色对象即为垃圾,进行回收。
-    Go-GC回收详细信息记录：
-        -开启：
+    Go-GC回收详细信息记录: 
+        -开启: 
             1.环境变量: GODEBUG gctrace =1
             2.GODEBUG gctrace =1 ./xxxx.exe
             3.GODEBUG gctrace =1 go run main.go
 
   59.unsafe包 危险高效的内存操作
-    -特征：
+    -特征: 
         uintptr 可以数学运算不被GC当指针,无法持有对象,会被GC回收
         unsafe.Pointer 中间类型,不能数学运算,被GC当指针,不会被GC回收
-    -目的：
+    -目的: 
         获取结构体私有成员的地址,进而对其做进一步的读写操作,突破 Go 的类型安全限制
-    -三大方法：
+    -三大方法: 
         Sizeof(x) 获取变量占用字节数
         Offsetof(x) 获取结构体成员与起始位偏移量（默认第一字段偏移为0）
         Alignof(x) 返回类型的对齐值
@@ -3386,9 +3386,9 @@
         -map 8
         -string 16
         -slice 24
-    -使用：
+    -使用: 
         -指针 用unsafe.Pointer() 转换为uintptr类型 然后可以转成其他任意类型
-        -配合offsetof修改内存数据：
+        -配合offsetof修改内存数据: 
             // 一般使用
             nGender := (*bool)(unsafe.Pointer(uintptr(userNamePointer)+unsafe.Offsetof(user.Gender)))
             *nGender = false
@@ -3418,17 +3418,17 @@
               offset 都是该成员大小与有效对齐值中较小那个的整数倍,如有需要编译器会在成员之间加上填充字节。
             -2.除了结构成员需要对齐,结构本身也需要对齐,结构的长度必须是编译器默认的对齐长度和成员中最长类型中最小的数据大小的倍数对齐
             -3.空洞会被0填充
-        -注意点：
+        -注意点: 
             -1.因此结构体字段顺序不对,字节数就会不对
         -**重点注意**
             -空struct和[0]byte不占用存储空间
             -因为如果有指针指向该字段, 指针位置出现在结构体外了,因此释放结构体不会释放该内存,就会有内存泄露的问题
-        -结论：
+        -结论: 
             合理定义结构体减去内存访问次数,提升效率
             不要在结构体定义的最后添加零大小的类型
 
   60.atomic包 原子操作
-    -原子操作：
+    -原子操作: 
         不可中断的一个或一系列操作,要么完整执行,要么失败,串行
     -悲观锁
         -总线锁:
@@ -3464,9 +3464,9 @@
 
         type Worker struct {
             WorkerId        string        //员工ID
-            Workbench       chan Job      //员工加工产品的工作台，即来即走(无缓冲)。
+            Workbench       chan Job      //员工加工产品的工作台,即来即走(无缓冲)。
             GWorkbenchQueue chan chan Job //等待分配加工产品的员工工作台队列
-            Finished        chan bool     //员工结束工作通知通道，无缓冲
+            Finished        chan bool     //员工结束工作通知通道,无缓冲
         }
 
         // 新建一条工厂流水线
@@ -3474,7 +3474,7 @@
             log.Printf("新建流水线:%s \n", Id)
             return &Worker{
                 WorkerId:        Id,              //员工ID
-                Workbench:       make(chan Job),  //员工加工产品的工作台，即来即走(无缓冲)。
+                Workbench:       make(chan Job),  //员工加工产品的工作台,即来即走(无缓冲)。
                 GWorkbenchQueue: WorkbenchQueue,  //等待分配加工产品的员工工作台队列
                 Finished:        make(chan bool), //无缓冲
             }
@@ -3487,7 +3487,7 @@
                 for {
                     //将当前未分配待加工产品的工作台添加到工作台队列中
                     w.GWorkbenchQueue <- w.Workbench
-                    log.Printf("把[%s]的工作台添加到工作台队列中，当前工作台队列长度：%d\n", w.WorkerId, len(w.GWorkbenchQueue))
+                    log.Printf("把[%s]的工作台添加到工作台队列中,当前工作台队列长度: %d\n", w.WorkerId, len(w.GWorkbenchQueue))
                     select {
                     //接收到了新的WorkerJob
                     case wJob := <-w.Workbench:
@@ -3579,7 +3579,7 @@
         }
 
         func (wf *WorkFlow) StartWorkFlow(maxWorkers, maxQueue int) {
-            //初始化一个调度器(流水线)，并指定该流水线上的员工(Worker)和待加工产品(Job)的最大数量
+            //初始化一个调度器(流水线),并指定该流水线上的员工(Worker)和待加工产品(Job)的最大数量
             wf.GDispatch = NewDispatcher(maxWorkers, maxQueue)
             //启动流水线
             wf.GDispatch.Run()
@@ -3610,44 +3610,44 @@
     -每个P会执行当前GOROUTINE,并且未执行GOROUTINE会形成
     -策略:
         -复用线程
-            -目的：避免频繁的创建、销毁线程，而是对线程的复用
-            -机制：
+            -目的: 避免频繁的创建、销毁线程,而是对线程的复用
+            -机制: 
                 -work stealing
-                    -当本线程无可运行的G时，尝试从其他线程绑定的P偷取G，而不是销毁线程
+                    -当本线程无可运行的G时,尝试从其他线程绑定的P偷取G,而不是销毁线程
                 -hand off
-                    -当本线程因为G进行系统调用阻塞时，线程释放绑定的P，把P转移给其他空闲的线程执行
+                    -当本线程因为G进行系统调用阻塞时,线程释放绑定的P,把P转移给其他空闲的线程执行
         -利用并行
             -GOMAXPROCS设置P的数量的同时限制并发的程序
-            -例：
-                GOMAXPROCS = 核数/2，则最多利用了一半的CPU核进行并行
+            -例: 
+                GOMAXPROCS = 核数/2,则最多利用了一半的CPU核进行并行
         -抢占
             -为防止其他G饿死,一个G最多占用CPU10ms
         -
-    -调度：
-        -正常：
+    -调度: 
+        -正常: 
             1M拿取1P,运行P的1G,其余的G存放在P的runqueue等待
             当前G运行完自己的时间片后让出P回到runqueue
-        -阻塞：
+        -阻塞: 
             当G执行syscall时会M阻塞,如果当前P有G需要执行,runtime会把M从P种detach,然后创建新M服务P
-        -拿取：
-            当M获取到P没有G时，M会从全局队列中拿一批G到P中执行,拿不到会进行"偷取"操作
-        -偷取：
-            当P没有可执行G时，会从其他P偷上下文来执行
-        -寄存：
+        -拿取: 
+            当M获取到P没有G时,M会从全局队列中拿一批G到P中执行,拿不到会进行"偷取"操作
+        -偷取: 
+            当P没有可执行G时,会从其他P偷上下文来执行
+        -寄存: 
             当G时间片执行完后,没执行完成 会保存当前寄存器执行动作在G身上 以便于下次被调度后再次执行
-    -流程：
+    -流程: 
         1、我们通过 go func()来创建一个goroutine；
-        2、有两个存储G的队列，一个是局部调度器P的本地队列、一个是全局G队列。新创建的G会先保存在P的本地队列中，如果P的本地队列已经满了就会保存在全局的队列中；
-        3、G只能运行在M中，一个M必须持有一个P，M与P是1：1的关系。M会从P的本地队列弹出一个可执行状态的G来执行，如果P的本地队列为空，就会想其他的MP组合偷取一个可执行的G来执行；
+        2、有两个存储G的队列,一个是局部调度器P的本地队列、一个是全局G队列。新创建的G会先保存在P的本地队列中,如果P的本地队列已经满了就会保存在全局的队列中；
+        3、G只能运行在M中,一个M必须持有一个P,M与P是1: 1的关系。M会从P的本地队列弹出一个可执行状态的G来执行,如果P的本地队列为空,就会想其他的MP组合偷取一个可执行的G来执行；
         4、一个M调度G执行的过程是一个循环机制；
-        5、当M执行某一个G时候如果发生了syscall或则其余阻塞操作，M会阻塞，如果当前有一些G在执行，runtime会把这个线程M从P中摘除(detach)，然后再创建一个新的操作系统的线程(如果有空闲的线程可用就复用空闲线程)来服务于这个P；
-        6、当M系统调用结束时候，这个G会尝试获取一个空闲的P执行，并放入到这个P的本地队列。如果获取不到P，那么这个线程M变成休眠状态， 加入到空闲线程中，然后这个G会被放入全局队列中。
-    -特殊：
+        5、当M执行某一个G时候如果发生了syscall或则其余阻塞操作,M会阻塞,如果当前有一些G在执行,runtime会把这个线程M从P中摘除(detach),然后再创建一个新的操作系统的线程(如果有空闲的线程可用就复用空闲线程)来服务于这个P；
+        6、当M系统调用结束时候,这个G会尝试获取一个空闲的P执行,并放入到这个P的本地队列。如果获取不到P,那么这个线程M变成休眠状态, 加入到空闲线程中,然后这个G会被放入全局队列中。
+    -特殊: 
         M0
-            M0是启动程序后的编号为0的主线程，这个M对应的实例会在全局变量runtime.m0中，
-            不需要在heap上分配，M0负责执行初始化操作和启动第一个G， 在之后M0就和其他的M一样了。
+            M0是启动程序后的编号为0的主线程,这个M对应的实例会在全局变量runtime.m0中,
+            不需要在heap上分配,M0负责执行初始化操作和启动第一个G, 在之后M0就和其他的M一样了。
         G0
-            G0是每次启动一个M都会第一个创建的gourtine，G0仅用于负责调度的G，G0不指向任何可执行的函数,
+            G0是每次启动一个M都会第一个创建的gourtine,G0仅用于负责调度的G,G0不指向任何可执行的函数,
             每个M都会有一个自己的G0。在调度或系统调用时会使用G0的栈空间, 全局变量的G0是M0的G0
     -生命周期:
         package main
@@ -3656,26 +3656,26 @@
             fmt.Println("Hello world")
         }
         1.接下来我们来针对上面的代码对调度器里面的结构做一个分析。
-        2.也会经历如上图所示的过程：
-        3.runtime创建最初的线程m0和goroutine g0，并把2者关联。
-        4.调度器初始化：初始化m0、栈、垃圾回收，以及创建和初始化由GOMAXPROCS个P构成的P列表。
-        5.示例代码中的main函数是main.main，runtime中也有1个main函数——runtime.main，代码经过编译后，runtime.main会调用main.main，程序启动时会为runtime.main创建goroutine，称它为main goroutine吧，然后把main goroutine加入到P的本地队列。
-        6.启动m0，m0已经绑定了P，会从P的本地队列获取G，获取到main goroutine。
-        7.G拥有栈，M根据G中的栈信息和调度信息设置运行环境
+        2.也会经历如上图所示的过程: 
+        3.runtime创建最初的线程m0和goroutine g0,并把2者关联。
+        4.调度器初始化: 初始化m0、栈、垃圾回收,以及创建和初始化由GOMAXPROCS个P构成的P列表。
+        5.示例代码中的main函数是main.main,runtime中也有1个main函数——runtime.main,代码经过编译后,runtime.main会调用main.main,程序启动时会为runtime.main创建goroutine,称它为main goroutine吧,然后把main goroutine加入到P的本地队列。
+        6.启动m0,m0已经绑定了P,会从P的本地队列获取G,获取到main goroutine。
+        7.G拥有栈,M根据G中的栈信息和调度信息设置运行环境
         8.M运行G
-        9.G退出，再次回到M获取可运行的G，这样重复下去，直到main.main退出，runtime.main执行Defer和Panic处理，或调用runtime.exit退出程序。
-        10.调度器的生命周期几乎占满了一个Go程序的一生，runtime.main的goroutine执行之前都是为调度器做准备工作，runtime.main的goroutine运行，才是调度器的真正开始，直到runtime.main结束而结束
+        9.G退出,再次回到M获取可运行的G,这样重复下去,直到main.main退出,runtime.main执行Defer和Panic处理,或调用runtime.exit退出程序。
+        10.调度器的生命周期几乎占满了一个Go程序的一生,runtime.main的goroutine执行之前都是为调度器做准备工作,runtime.main的goroutine运行,才是调度器的真正开始,直到runtime.main结束而结束
 
   63.Channel 通道 | 原理 | 通信
-    -链接：https://segmentfault.com/a/1190000023961580
-    -底层类型：
+    -链接: https://segmentfault.com/a/1190000023961580
+    -底层类型: 
         type hchan struct {
            qcount   uint            // 当前队列中剩余元素个数
-           dataqsiz uint            // 环形队列长度，即缓冲区的大小
+           dataqsiz uint            // 环形队列长度,即缓冲区的大小
            buf      unsafe.Pointer  // 环形队列指针
            elemsize uint16          // 每个元素的大小
            closed   uint32          // 表示当前通道是否处于关闭状态 0开1关
-           elemtype *_type          // 元素类型，用于数据传递过程中的赋值
+           elemtype *_type          // 元素类型,用于数据传递过程中的赋值
            sendx    uint            // 环形缓冲区的状态字段 指示缓冲区的当前索引
            recvx    uint            // 环形缓冲区的状态字段 指示缓冲区的当前索引
            recvq    waitq           // 等待读消息的goroutine队列
@@ -3683,7 +3683,7 @@
            lock mutex               // 互斥锁
         }
     -以数据示例:
-        -底层数据：
+        -底层数据: 
             hchan struct {
                 qcount uint : 0
                 dataqsiz uint : 3
@@ -3714,36 +3714,41 @@
             }
     -写入流程
         1、锁定整个通道结构。
-        2、确定写入。尝试recvq从等待队列中等待goroutine，然后将元素直接写入goroutine。
-        3、如果recvq为Empty，则确定缓冲区是否可用。如果可用，从当前goroutine复制数据到缓冲区。
-        4、如果缓冲区已满，则要写入的元素将保存在当前正在执行的goroutine的结构中，并且当前goroutine将在sendq中排队并从运行时挂起。
+        2、确定写入。尝试recvq从等待队列中等待goroutine,然后将元素直接写入goroutine。
+        3、如果recvq为Empty,则确定缓冲区是否可用。如果可用,从当前goroutine复制数据到缓冲区。
+        4、如果缓冲区已满,则要写入的元素将保存在当前正在执行的goroutine的结构中,并且当前goroutine将在sendq中排队并从运行时挂起。
         5、写入完成释放锁。
     -读取流程
         1、先获取channel全局锁
-        2、尝试sendq从等待队列中获取等待的goroutine，
-        3、 如有等待的goroutine，没有缓冲区，取出goroutine并读取数据，然后唤醒这个goroutine，结束读取释放锁。
-        4、如有等待的goroutine，且有缓冲区（此时缓冲区已满），从缓冲区队首取出数据，再从sendq取出一个goroutine，将goroutine中的数据存入buf队尾，结束读取释放锁。
-        5、如没有等待的goroutine，且缓冲区有数据，直接读取缓冲区数据，结束读取释放锁。
-        6、如没有等待的goroutine，且没有缓冲区或缓冲区为空，将当前的goroutine加入recvq排队，进入睡眠，等待被写goroutine唤醒。结束读取释放锁。
+        2、尝试sendq从等待队列中获取等待的goroutine,
+        3、 如有等待的goroutine,没有缓冲区,取出goroutine并读取数据,然后唤醒这个goroutine,结束读取释放锁。
+        4、如有等待的goroutine,且有缓冲区（此时缓冲区已满）,从缓冲区队首取出数据,再从sendq取出一个goroutine,将goroutine中的数据存入buf队尾,结束读取释放锁。
+        5、如没有等待的goroutine,且缓冲区有数据,直接读取缓冲区数据,结束读取释放锁。
+        6、如没有等待的goroutine,且没有缓冲区或缓冲区为空,将当前的goroutine加入recvq排队,进入睡眠,等待被写goroutine唤醒。结束读取释放锁。
     -select
-        -原理：监听和channel有关的IO操作，当 IO 操作发生时，触发相应的动作
+        -原理: 监听和channel有关的IO操作,当 IO 操作发生时,触发相应的动作
         -select从channel中读出数据的顺序是随机的
     -range
-        -可以持续从channel读取数据，一直到channel被关闭，当channel中没有数据时会阻塞当前goroutine，与读channel时阻塞处理机制一样
+        -可以持续从channel读取数据,一直到channel被关闭,当channel中没有数据时会阻塞当前goroutine,与读channel时阻塞处理机制一样
     -deadlock
-        指两个或两个以上的协程的执行过程中，由于竞争资源或由于彼此通信而造成的一种阻塞的现象。
-        在非缓冲信道若发生只流入不流出，或只流出不流入，就会发生死锁
+        指两个或两个以上的协程的执行过程中,由于竞争资源或由于彼此通信而造成的一种阻塞的现象。
+        在非缓冲信道若发生只流入不流出,或只流出不流入,就会发生死锁
         -避免: 写的时候注意即可
+    -goroutine抢占P
+        -链接: https://segmentfault.com/a/1190000040232354
+        1.如果存在系统调用超时: 存在超过 1 个 sysmon tick 周期（至少 20us）的任务,则会从系统调用中抢占 P。
+        2.如果没有空闲的 P: 所有的 P 都已经与 M 绑定。需要抢占当前正处于系统调用之,而实际上系统调用并不需要的这个 P 的情况,会将其分配给其它 M 去调度其它 G。
+        3.如果 P 的运行队列里面有等待运行的 G,为了保证 P 的本地队列中的 G 得到及时调度。而自己本身的 P 又忙于系统调用,无暇管理。此时会寻找另外一个 M 来接管 P,从而实现继续调度 G 的目的。
 
   64.sync.Pool
-    -概念：
+    -概念: 
         sync.Pool 可以将暂时不用的对象缓存起来,待下次需要的时候直接使用
-    -作用：
+    -作用: 
         解决需要频繁、回收内存的地方。
         不用再次经过内存分配,复用对象的内存,减轻 GC 的压力,提升系统的性能
-    -场景：
+    -场景: 
         多goroutine的情况下创建同一个对象 数量过大 导致GC压力增大,形成 "并发⼤－占⽤内存⼤－GC 缓慢－处理并发能⼒降低－并发更⼤" 的恶性循环
-    -总结：
+    -总结: 
         1.复用
         2.协程安全
         3.存入的对象不会清空数据(但也不要利用这个来获取之前的数据),需要手动清理
@@ -3753,8 +3758,8 @@
         7.加入 victim 机制前,sync.Pool 里对象的最⼤缓存时间是一个 GC 周期,当GC开始时,没有被引⽤的对象都会被清理掉
         8.加入 victim 机制后,最大缓存时间为两个 GC 周期
         9.Victim Cache 本来是计算机架构里面的一个概念,是 CPU 硬件处理缓存的一种技术,sync.Pool 引入的意图在于降低 GC 压力的同时提高命中率
-        10.sync.Pool 的最底层使用切片加链表来实现双端队列，并将缓存的对象存储在切片中
-    -例子：
+        10.sync.Pool 的最底层使用切片加链表来实现双端队列,并将缓存的对象存储在切片中
+    -例子: 
         pool = &sync.Pool {
                 New: func()interface{} {
                     return new(Person)
@@ -3764,42 +3769,42 @@
         p.Reset()
         pool.Put(p)
     -源码分析:
-        -Pool结构体：
+        -Pool结构体: 
             type Pool struct {
                 noCopy noCopy  // Pool 不希望被复制
-                // 每个 P 的本地队列，实际类型为 [P]poolLocal
+                // 每个 P 的本地队列,实际类型为 [P]poolLocal
                 local     unsafe.Pointer    // local fixed-size per-P pool, actual type is [P]poolLocal
                 // [P]poolLocal的大小
                 localSize uintptr           // size of the local array
                 victim     unsafe.Pointer   // local from previous cycle
                 victimSize uintptr          // size of victims array
-                // 自定义的对象创建回调函数，当 pool 中无可用对象时会调用此函数
+                // 自定义的对象创建回调函数,当 pool 中无可用对象时会调用此函数
                 New func() interface{}
             }
             type poolLocal struct {
                 poolLocalInternal
 
-                // 将 poolLocal 补齐至两个缓存行的倍数，防止 false sharing,
-                // 每个缓存行具有 64 bytes，即 512 bit
+                // 将 poolLocal 补齐至两个缓存行的倍数,防止 false sharing,
+                // 每个缓存行具有 64 bytes,即 512 bit
                 // 目前我们的处理器一般拥有 32 * 1024 / 64 = 512 条缓存行
-                // 伪共享，仅占位用，防止在 cache line 上分配多个 poolLocalInternal
+                // 伪共享,仅占位用,防止在 cache line 上分配多个 poolLocalInternal
                 pad [128 - unsafe.Sizeof(poolLocalInternal{})%128]byte
             }
             // Local per-P Pool appendix.
             type poolLocalInternal struct {
-                // P 的私有缓存区，使用时无需要加锁
+                // P 的私有缓存区,使用时无需要加锁
                 private interface{}
                 // 公共缓存区。本地 P 可以 pushHead/popHead；其他 P 则只能 popTail
                 shared  poolChain
             }
             -pad:
-                目的：防止 false sharing
-                场景：因为cpu以cache line为单位,当要修改一个字节时会加载1个单位的所有字节,导致其他线程读取发生cache miss的情况,还需要重新加载进cache对性能有影响
-                解决：增加一个 pad，补齐缓存行，让相关的字段能独立地加载到缓存行就不会出现 false sharding 了
-            -poolChain 双向链表：
-                -结构体：
+                目的: 防止 false sharing
+                场景: 因为cpu以cache line为单位,当要修改一个字节时会加载1个单位的所有字节,导致其他线程读取发生cache miss的情况,还需要重新加载进cache对性能有影响
+                解决: 增加一个 pad,补齐缓存行,让相关的字段能独立地加载到缓存行就不会出现 false sharding 了
+            -poolChain 双向链表: 
+                -结构体: 
                     type poolChain struct {
-                        // 只有生产者会 push to，不用加锁
+                        // 只有生产者会 push to,不用加锁
                         head *poolChainElt
 
                         // 读写需要原子控制。 pop from
@@ -3808,44 +3813,44 @@
                     type poolChainElt struct {
                         poolDequeue
 
-                        // next 被 producer 写，consumer 读。所以只会从 nil 变成 non-nil
-                        // prev 被 consumer 写，producer 读。所以只会从 non-nil 变成 nil
+                        // next 被 producer 写,consumer 读。所以只会从 nil 变成 non-nil
+                        // prev 被 consumer 写,producer 读。所以只会从 non-nil 变成 nil
                         next, prev *poolChainElt
                     }
                     type poolDequeue struct {
                         // headTail 包含一个 32 位的 head 和一个 32 位的 tail 指针。这两个值都和 len(vals)-1 取模过。
-                        // tail 是队列中最老的数据，head 指向下一个将要填充的 slot
-                        // slots 的有效范围是 [tail, head)，由 consumers 持有。
+                        // tail 是队列中最老的数据,head 指向下一个将要填充的 slot
+                        // slots 的有效范围是 [tail, head),由 consumers 持有。
                         headTail uint64
 
-                        // vals 是一个存储 interface{} 的环形队列，它的 size 必须是 2 的幂
-                        // 如果 slot 为空，则 vals[i].typ 为空；否则，非空。
-                        // 一个 slot 在这时宣告无效：tail 不指向它了，vals[i].typ 为 nil
-                        // 由 consumer 设置成 nil，由 producer 读
+                        // vals 是一个存储 interface{} 的环形队列,它的 size 必须是 2 的幂
+                        // 如果 slot 为空,则 vals[i].typ 为空；否则,非空。
+                        // 一个 slot 在这时宣告无效: tail 不指向它了,vals[i].typ 为 nil
+                        // 由 consumer 设置成 nil,由 producer 读
                         vals []eface
                     }
                     -poolDequeue
-                        被实现为单生产者、多消费者的固定大小的无锁（atomic 实现） Ring 式队列（底层存储使用数组，使用两个指针标记 head、tail）。
-                        生产者可以从 head 插入、head 删除，而消费者仅可从 tail 删除。
+                        被实现为单生产者、多消费者的固定大小的无锁（atomic 实现） Ring 式队列（底层存储使用数组,使用两个指针标记 head、tail）。
+                        生产者可以从 head 插入、head 删除,而消费者仅可从 tail 删除。
                     -headTail
-                        指向队列的头和尾，通过位运算将 head 和 tail 存入 headTail 变量中。
+                        指向队列的头和尾,通过位运算将 head 和 tail 存入 headTail 变量中。
         -Get 流程
-            1.首先，调用 p.pin() 函数将当前的 goroutine 和 P 绑定，禁止被抢占，返回当前 P 对应的 poolLocal，以及 pid。
-            2.然后直接取 l.private，赋值给 x，并置 l.private 为 nil。
-            3.判断 x 是否为空，若为空，则尝试从 l.shared 的头部 pop 一个对象出来，同时赋值给 x。
-            4.如果 x 仍然为空，则调用 getSlow 尝试从其他 P 的 shared 双端队列尾部“偷”一个对象出来。
-            5.Pool 的相关操作做完了，调用 runtime_procUnpin() 解除非抢占。
-            6.最后如果还是没有取到缓存的对象，那就直接调用预先设置好的 New 函数，创建一个出来。
+            1.首先,调用 p.pin() 函数将当前的 goroutine 和 P 绑定,禁止被抢占,返回当前 P 对应的 poolLocal,以及 pid。
+            2.然后直接取 l.private,赋值给 x,并置 l.private 为 nil。
+            3.判断 x 是否为空,若为空,则尝试从 l.shared 的头部 pop 一个对象出来,同时赋值给 x。
+            4.如果 x 仍然为空,则调用 getSlow 尝试从其他 P 的 shared 双端队列尾部“偷”一个对象出来。
+            5.Pool 的相关操作做完了,调用 runtime_procUnpin() 解除非抢占。
+            6.最后如果还是没有取到缓存的对象,那就直接调用预先设置好的 New 函数,创建一个出来。
         -Put 流程
-            1.先绑定 g 和 P，然后尝试将 x 赋值给 private 字段。
-            2.如果失败，就调用 pushHead 方法尝试将其放入 shared 字段所维护的双端队列中。
+            1.先绑定 g 和 P,然后尝试将 x 赋值给 private 字段。
+            2.如果失败,就调用 pushHead 方法尝试将其放入 shared 字段所维护的双端队列中。
 
   65.noCopy 静态检查机制 | 不复制
-    -链接：https://golang.org/issues/8005#issuecomment-190753527
-    -目的：保证结构体实例在第一次使用后不被复制
-    -实现：
+    -链接: https://golang.org/issues/8005#issuecomment-190753527
+    -目的: 保证结构体实例在第一次使用后不被复制
+    -实现: 
         type noCopy struct{}
         func (*noCopy) Lock()   {}
         func (*noCopy) Unlock() {}
-    -检测：使用 go vet 工具可以检测
+    -检测: 使用 go vet 工具可以检测
 
