@@ -1,22 +1,24 @@
  
   1.GRPC简介
-	-gRPC  是一个高性能、开源和通用的 RPC（远程过程调用） 框架
+	-gRPC  是一个高性能、开源和通用的 RPC（远程过程调用）框架 基于http/2设计
 	-优点：
-		不同语言的客户端和服务器，不同环境都可以使用.proto来进行通信，
-		并且还可以帮助序列化，方便组件化开发，各组件之间使用grpc来进行数据传输。
-  
+		不同语言的客户端和服务器,不同环境都可以使用.proto来进行通信,
+		并且还可以帮助序列化,方便组件化开发,各组件之间使用grpc来进行数据传输。
+    -特性：
+        双向流、流控、头部压缩、单TCP多路复用
+
   2.protobuf
 	-enum 枚举
-		-意思是：举例，创建一个有默认值得字段。
+		-意思是：举例,创建一个有默认值得字段。
 		-第一个必须默认值为0。
-		-要想值能重复，需要加入选项：option allow_alias = true;
+		-要想值能重复,需要加入选项：option allow_alias = true;
 		例1：
 			enum Corpus {
 				UNIVERSAL = 0;
 				WEB = 1;
 			}
 	-repeated 重复的
-		计算器，计算这个字段有多少个
+		计算器,计算这个字段有多少个
 		例1：
 			message{
 				repeated string name = 1
@@ -33,7 +35,7 @@
 			-ptypes.UnmarshalAny(*any.Any,&proto.Message)	将Any解析成proto.Message类型
   
 	-Oneofs 只能一个字段
-		-如果你有一些字段同时最多只有一个能被设置，任何一个字段被设置，其它字段会自动被清空（被设为默认值）
+		-如果你有一些字段同时最多只有一个能被设置,任何一个字段被设置,其它字段会自动被清空（被设为默认值）
 		-例1：
 			message SampleMessage {
 			  oneof test_oneof {
@@ -43,7 +45,7 @@
 			}
 		-注意：oneof块中的字段不支持repeated
 	-Map	map类型
-		-就是golang的map类型，其他的object类型
+		-就是golang的map类型,其他的object类型
 		-例1：
 			message Lala{
 				map<string, int64> field = 1;
@@ -122,12 +124,146 @@
 
   5.原理
     -链接: https://segmentfault.com/a/1190000019608421
-    -
-		
-		
-		
-		
-		
+    -基本调用过程：
+        1.client调用 X 方法,发起RPC调用
+        2.对请求的数据进行proto序列化压缩
+        3.server接收请求,解码,处理逻辑
+        4.对返回进行proto序列化
+        5.client接收到server响应,解码。回调,唤醒正在等待响应的server调用并返回结果
+    -client/server初始化操作：
+        -server
+            创建 gRPC Server 对象,你可以理解为它是 Server 端的抽象对象。
+            将 SearchService（其包含需要被调用的服务端接口）注册到 gRPC Server。 的内部注册中心。
+            这样可以在接受到请求时,通过内部的 “服务发现”,发现该服务端接口并转接进行逻辑处理。
+            创建 Listen,监听 TCP 端口。
+            gRPC Server 开始 lis.Accept,直到 Stop 或 GracefulStop。
+        -client
+            创建与给定目标（服务端）的连接句柄。
+            创建 SearchService 的客户端对象。
+            发送 RPC 请求,等待同步响应,得到回调后返回响应结果。
+    -调用方式：
+        -Unary RPC 普通调用/一元RPC
+        -Server-side streaming RPC 服务端流式 RPC
+        -Client-side streaming RPC 客户端流式 RPC
+        -Bidirectional streaming RPC 双向流 RPC
+    -网络交互:
+        -总结:
+            在建立连接之前,客户端/服务端都会发送连接前言（Magic+SETTINGS）,确立协议和配置项。
+            在传输数据时,是会涉及滑动窗口（WINDOW_UPDATE）等流控策略的。
+            传播 gRPC 附加信息时,是基于 HEADERS 帧进行传播和设置；而具体的请求/响应数据是存储的 DATA 帧中的。
+            请求/响应结果会分为 HTTP 和 gRPC 状态响应两种类型。
+            客户端发起 PING,服务端就会回应 PONG,反之亦可。
+        -MAGIC
+            -建立http2的前言
+            -http2规定,交互的两端建立连接前需要先发前言来确认使用的协议,并确定http2的初始设置
+        -SETTINGS
+            -用于设置整个连接的参数
+            -建立之初有两帧SETTINGS：
+                1.客户端连接的前言帧（Magic 和 SETTINGS 帧分别组成连接前言）
+                2.服务器返回的ACK帧
+        -HEADERS
+            -请求头信息
+            -例:
+                method：POST
+                scheme：http
+                path：/proto.SearchService/Search
+                authority：:10001
+                content-type：application/grpc
+                user-agent：grpc-go/1.20.0-dev
+            -还包含GRPC设置的属性,设置多少带多少数据
+        -DATA
+            -数据本体
+        -WINDOW_UPDATE
+            -管理/流的窗口控制
+            -通常情况下打开一个连接后,服务器和客户端会立即交换 SETTINGS 帧来确定流控制窗口的大小。
+             默认情况下,该大小设置为约 65 KB,但可通过发出一个 WINDOW_UPDATE 帧为流控制设置不同的大小。
+        -PING/PONG
+		    -心跳 不需多言
+    -代码理解
+        -服务器:
+            -初始化
+                -初始化设置参数
+                -部分参数：
+                    lis：监听地址列表。
+                    opts：服务选项,这块包含 Credentials、Interceptor 以及一些基础配置。
+                    conns：客户端连接句柄列表。
+                    m：服务信息映射。
+                    quit：退出信号。
+                    done：完成信号。
+                    czData：用于存储 ClientConn,addrConn 和 Server 的channelz 相关数据。
+                    cv：当优雅退出时,会等待这个信号量,直到所有 RPC 请求都处理并断开才会继续处理。
+            -注册
+                -预先整体/注册方法
+                步骤一  Service API interface
+                    proto生成的pb.go文件生成的 接口 约束代码的实现并方便实现
+                步骤二  Service API IDL
+                    &_SearchService_serviceDesc描述代码:
+                        ServiceName     服务名称
+                        HandlerType     服务接口,用于检查用户提供的实现是否满足接口要求
+                        Methods         一元方法集,注意结构内的 Handler 方法,其对应最终的 RPC 处理方法,在执行 RPC 方法的阶段会使用。
+                        Streams         流式方法集
+                        Metadata        元数据,是一个描述数据属性的东西。在这里主要是描述 SearchServiceServer 服务
+                步骤三  Register Service
+                    会将先前的服务接口信息、服务描述信息给注册到内部 service 去
+                    设计如下:
+                    server  服务的接口信息
+                    md      一元服务的 RPC 方法集
+                    sd      流式服务的 RPC 方法集
+                    mdata   metadata,元数据
+            -监听
+                Serve 会根据外部传入的 Listener 不同而调用不同的监听模式,这也是 net.Listener 的魅力,灵活性和扩展性会比较高。
+                而在 gRPC Server 中最常用的就是 TCPConn,基于 TCP Listener 去做。
+                -逻辑：
+                    1.循环处理连接,通过 lis.Accept 取出连接,如果队列中没有需处理的连接时,会形成阻塞等待。
+                    2.若 lis.Accept 失败,则触发休眠机制,若为第一次失败那么休眠 5ms,否则翻倍,(backoff算法)
+                      再次失败则不断翻倍直至上限休眠时间 1s,而休眠完毕后就会尝试去取下一个 “它”。
+                    3.若 lis.Accept 成功,则重置休眠的时间计数和启动一个新的 goroutine 调用 handleRawConn 
+                      方法去执行/处理新的请求,也就是大家很喜欢说的 “每一个请求都是不同的 goroutine 在处理”。
+                    4.在循环过程中,包含了 “退出” 服务的场景,主要是硬关闭和优雅重启服务两种情况。
+        -客户端
+            -创建连接grpc.Dial():
+                -DialContext() + context.TODO()
+                -Dial作用
+                    初始化 ClientConn
+                    初始化（基于进程 LB）负载均衡配置
+                    初始化 channelz
+                    初始化重试规则和客户端一元/流式拦截器
+                    初始化协议栈上的基础信息
+                    相关 context 的超时控制
+                    初始化并解析地址信息
+                    创建与服务端之间的连接
+                -异步连接,且根据backoff算法不断
+                -opt 加 WithBlock() 阻塞直到连接ready
+            -实例化 Service API:
+                -实现 交互方法的 API
+            -调用:
+                -API实现后 实际调用的方法grpc.invoke
+                    newClientStream
+                        获取传输层 Trasport 并组合封装到 ClientStream 中返回，在这块会涉及负载均衡、超时控制、 Encoding、 Stream 的动作，与服务端基本一致的行为。
+                        getTransport 获取一个连接给后续 RPC 调用传输使用
+                    cs.SendMsg
+                        发送 RPC 请求出去，但其并不承担等待响应的功能。
+                    cs.RecvMsg
+                        阻塞等待接受到的 RPC 方法响应结果。
+            -关闭连接:
+                -Close()
+                Context Cancel
+                清空并关闭客户端连接
+                清空并关闭解析器连接
+                清空并关闭负载均衡连接
+                添加跟踪引用
+                移除当前通道信息
+    -注意点:
+        1.metadata通过HEADERS传输
+        2.grpc.Dial() 默认异步连接
+		3.调用clientConn()不Close会导致常驻进程泄露
+		4.不控制超时调用的话,会导致请求大量堆积最终服务器崩溃
+		5.多个拦截只有第一个生效
+		6.用到多个拦截器 使用可以使用 go-grpc-middleware 提供的 grpc.UnaryInterceptor 和 grpc.StreamInterceptor 链式方法
+		7.频繁调用clientConn()会导致句柄过多,建议使用连接池：grpc-go-pool
+		8.客户端请求失败会重试、back算法或者context超时
+		9.http2传输协议方便代理的负载均衡、访问控制
+		10.因为使用http2所有会复用连接,这会让k8s的负载均衡只在连接建立之初有用
 		
 		
 		
