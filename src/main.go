@@ -60,39 +60,32 @@ func curTime(unix int64) int64 {
 
 func httpReq() {
 
-	req := map[string]interface{}{
-		"app_key":    "36db954333b14bf9ad14f7f5bfa24fde",
-		"company_id": 1,
-		"channel":    1,
-		"timestamp":  1618983874,
-	}
-
-	param, _ := json.Marshal(req)
-
-	request, err := http.NewRequest("PUT", "https://api.xiaokacloud.com/api/v1/small/read_advertise", strings.NewReader(string(param)))
+	request, err := http.NewRequest("GET", "https://rvakva.xiaokayun.cn/v1/allChannels", nil)
 	if err != nil {
-		fmt.Println("绑定隐私号 http newRequest has err:", err)
+		fmt.Println(" http newRequest has err:", err)
 		return
 	}
+	request.URL.RawQuery = "companyId=417&companyName=%E5%9B%9B%E5%B7%9D%E5%B0%8F%E5%92%96%E7%A7%91%E6%8A%80%E6%9C%89%E9%99%90%E5%85%AC%E5%8F%B8&userId=1682&userName=shine&timestamp=1625628791"
 
 	request.Header.Set("Content-Type", "application/json;charset=utf-8")
+	request.Header.Set("token", "eyJhbGciOiJIUzI1NiIsInJvbGVJZCI6IiIsInR5cCI6IkpXVCJ9.eyJhcHBLZXkiOiI0ODg0NDE5OTg5NTI0MzVkYTg5NTI4NjYzMmU4MmY0MCIsImV4cCI6MTYyNTg4Nzk4MywiaWF0IjoxNjI1NjI4NzgzLCJ1c2VySWQiOjE2ODJ9.Ay6cVhOtb0RMPQgT2ZPxZgSFaFlPMqQT3XUgPEKLv7w")
 
 	client := &http.Client{Timeout: time.Second * 3}
 	resp, err := client.Do(request)
 	if err != nil || resp.StatusCode != http.StatusOK {
-		fmt.Println("绑定隐私号 http 请求失败 err:", err, resp)
+		fmt.Println(" http 请求失败 err:", err, resp)
 		return
 	}
 	body, err := ioutil.ReadAll(resp.Body)
 	if err != nil {
-		fmt.Println("绑定隐私号 io real 失败", err)
+		fmt.Println(" io real 失败", err)
 		return
 	}
 	defer resp.Body.Close()
 	fmt.Println(resp)
 	res := make(map[string]interface{})
 	if err = json.Unmarshal(body, &res); err != nil {
-		fmt.Println("绑定隐私号 解析body 失败", err)
+		fmt.Println(" 解析body 失败", err)
 		return
 	}
 	fmt.Println(res)
@@ -230,22 +223,28 @@ func mapSpace() {
 }
 
 func csRedis() {
-	//client := redis.NewClient(&redis.Options{
-	//	Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
-	//	Password: "YtYnpW9dbF1Y0i3j", // no password set
-	//	DB:       0,                  // use default DB
-	//})
-	//
-	//result := client.HSet("privacy1_server", "7e55fa97e5ea48ebb2fb8c4b17eab867", 1)
-	//fmt.Print(result.String())
-
-	r := redis.NewClient(&redis.Options{
-		Addr: "localhost:6379",
-		DB:   0, // use default DB
+	client := redis.NewClient(&redis.Options{
+		Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
+		Password: "YtYnpW9dbF1Y0i3j", // no password set
+		DB:       0,                  // use default DB
 	})
 
-	t, _ := r.PTTL("123").Result()
-	fmt.Println(t == time.Millisecond*-2)
+	result, err := client.HMGet("58ad60944a3745b6aea63212b531f0b3_info", "123", "81935_915").Result()
+	if err != nil {
+		fmt.Println("err", err)
+		return
+	}
+	for _, v := range result {
+		fmt.Println(v)
+	}
+
+	//r := redis.NewClient(&redis.Options{
+	//	Addr: "localhost:6379",
+	//	DB:   0, // use default DB
+	//})
+	//
+	//t, _ := r.PTTL("123").Result()
+	//fmt.Println(t == time.Millisecond*-2)
 }
 
 func csMongo() {
