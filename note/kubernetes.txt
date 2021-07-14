@@ -277,6 +277,10 @@
         Man:    删除指定资源
         -删除名称空间
             kubectl delete namespace app
+        -删除服务
+            kubectl delete deploy ${projectname} -n ${ENV}
+    -重置某服务的某容器镜像地址：
+        kubectl set image deployment/${projectname} ${projectname}=${image} -n ${ENV}
     -配置
         kubectl config SUBCOMMAND
         选项

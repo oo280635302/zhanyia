@@ -38,7 +38,9 @@ func main() {
 	fmt.Println("run start")
 
 	program.Ingress()
+	csRedis()
 
+	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -229,7 +231,7 @@ func csRedis() {
 		DB:       0,                  // use default DB
 	})
 
-	result, err := client.HMGet("58ad60944a3745b6aea63212b531f0b3_info", "123", "81935_915").Result()
+	result, err := client.HMGet("58ad60944a3745b6aea63212b531f0b3_info").Result()
 	if err != nil {
 		fmt.Println("err", err)
 		return
