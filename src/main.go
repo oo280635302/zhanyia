@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -26,7 +27,6 @@ import (
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	"zhanyia/src/program"
-	pb "zhanyia/src/proto"
 )
 
 func main() {
@@ -38,7 +38,6 @@ func main() {
 	fmt.Println("run start")
 
 	program.Ingress()
-	csRedis()
 
 	return
 	// 持久化
@@ -126,30 +125,22 @@ func csGorm() {
 }
 
 func csMysql() {
+	const (
+		default_employ_fields = "`id`,`user_name`,`password`,`name`,`real_name`,`sex`,`id_card`,`phone`,`portrait_path`,`idcard_path`,`home_address`,`emergency`,`emergency_phone`," +
+			"`licensing_time`,`drive_license_path`,`drive_license_type`,`introducer`,`remark`,`is_freezed`,`status`,`order_status`,`company_id`,`app_version`,`balance`,`pre_money`,`driver_type`," +
+			"`job_time`,`device_no`,`device_type`,`full_body_path`,`grade`,`bank_name`,`bank_card_no`,`cash_person_name`,`idcard_back_path`,`created`,`updated`,`is_deleted`,`app_key`,`version`," +
+			"`audit_type`,`score`,`device_info`,`device_version`,`device_net`,`device_net_type`,`reject`,`privilege_start_date`,`privilege_end_date`,`switch_privilege`," +
+			"`start_freezed_time`,`end_freezed_time`,`qr_code`,`freeze_remark`,`privilege_nums`,`privilege_type`"
+	)
 
-	db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
+	db, err := sql.Open("mysql", "xiaoka:Xiaoka520@tcp(rm-2ze0624x75gk25025fo.mysql.rds.aliyuncs.com:3306)/?charset=utf8&parseTime=true&loc=Local")
+	//db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
 		panic(err)
 	}
 	db.SetConnMaxLifetime(600 * time.Second)
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
-
-	//arr := []string{"xxx", "yyy"}
-
-	stm, err := db.Prepare("insert into `cs`.`cs` (`key`,`value`) values (?,?);")
-	if err != nil {
-		fmt.Println("err1", err)
-		return
-	}
-	for i := 19; i < 29; i++ {
-		r, err := stm.Exec(i, i)
-		if err != nil {
-			fmt.Println("err2", err)
-			return
-		}
-		fmt.Println(r.LastInsertId())
-	}
 }
 
 func csHttp() {
@@ -190,38 +181,6 @@ func csHttp() {
 func mustComponent() {
 	// 日志组件
 	common.Log = common.AllGlobal["Log"].(*must.Log)
-}
-
-// 地图相关
-func mapSpace() {
-	// 制作新的空白地图
-	writeMap := common.MakeMap(5, 3)
-	// 日志输出二维图
-	common.PrintDoubleMap(writeMap)
-
-	// 填充新的二维图
-	common.FullMap(writeMap)
-	// 日志输出二维图
-	common.PrintDoubleMap(writeMap)
-
-	// 降沉
-	common.IconFall(writeMap)
-	// 日志输出二维图
-	common.PrintDoubleMap(writeMap)
-
-	// 填充新的二维图
-	common.FullMap(writeMap)
-	// 日志输出二维图
-	common.PrintDoubleMap(writeMap)
-
-	// 将图谱转成二维数组
-	a := &pb.ClearJoyImage{
-		Width:  2,
-		Height: 2,
-		Body:   []int64{1, 3, 5, 1},
-	}
-	n := common.ImageToSqArray(a)
-	common.PrintDoubleMap(n)
 }
 
 func csRedis() {
