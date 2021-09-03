@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/gin-gonic/gin"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
@@ -39,7 +38,8 @@ func main() {
 
 	program.Ingress()
 
-	return
+	csRedis()
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -125,14 +125,6 @@ func csGorm() {
 }
 
 func csMysql() {
-	const (
-		default_employ_fields = "`id`,`user_name`,`password`,`name`,`real_name`,`sex`,`id_card`,`phone`,`portrait_path`,`idcard_path`,`home_address`,`emergency`,`emergency_phone`," +
-			"`licensing_time`,`drive_license_path`,`drive_license_type`,`introducer`,`remark`,`is_freezed`,`status`,`order_status`,`company_id`,`app_version`,`balance`,`pre_money`,`driver_type`," +
-			"`job_time`,`device_no`,`device_type`,`full_body_path`,`grade`,`bank_name`,`bank_card_no`,`cash_person_name`,`idcard_back_path`,`created`,`updated`,`is_deleted`,`app_key`,`version`," +
-			"`audit_type`,`score`,`device_info`,`device_version`,`device_net`,`device_net_type`,`reject`,`privilege_start_date`,`privilege_end_date`,`switch_privilege`," +
-			"`start_freezed_time`,`end_freezed_time`,`qr_code`,`freeze_remark`,`privilege_nums`,`privilege_type`"
-	)
-
 	db, err := sql.Open("mysql", "xiaoka:Xiaoka520@tcp(rm-2ze0624x75gk25025fo.mysql.rds.aliyuncs.com:3306)/?charset=utf8&parseTime=true&loc=Local")
 	//db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
@@ -141,6 +133,18 @@ func csMysql() {
 	db.SetConnMaxLifetime(600 * time.Second)
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
+
+	rows, err := db.Query("select  `id` from `employ_center`.`employ_infos` where `id`= 0")
+	if err != nil {
+		fmt.Println("1", err)
+	}
+	defer rows.Close()
+	for rows.Next() {
+		id := 0
+		rows.Scan(&id)
+		fmt.Println("对咯~")
+	}
+	fmt.Println("对咯22222~")
 }
 
 func csHttp() {
@@ -185,27 +189,18 @@ func mustComponent() {
 
 func csRedis() {
 	client := redis.NewClient(&redis.Options{
-		Addr:     "r-2zeded68f61b3b04pd.redis.rds.aliyuncs.com:6379",
-		Password: "YtYnpW9dbF1Y0i3j", // no password set
-		DB:       0,                  // use default DB
+		Addr:     "r-2zejris02j6f2gcje6pd.redis.rds.aliyuncs.com:6379",
+		Password: "G9_I3pT_g2nGb87_v59sd", // no password set
+		DB:       0,                       // use default DB
 	})
 
-	result, err := client.HMGet("58ad60944a3745b6aea63212b531f0b3_info").Result()
+	str, err := client.Keys("employ_*").Result()
 	if err != nil {
-		fmt.Println("err", err)
-		return
+		fmt.Println("err:", err)
 	}
-	for _, v := range result {
+	for _, v := range str {
 		fmt.Println(v)
 	}
-
-	//r := redis.NewClient(&redis.Options{
-	//	Addr: "localhost:6379",
-	//	DB:   0, // use default DB
-	//})
-	//
-	//t, _ := r.PTTL("123").Result()
-	//fmt.Println(t == time.Millisecond*-2)
 }
 
 func csMongo() {
