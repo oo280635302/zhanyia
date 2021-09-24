@@ -38,8 +38,13 @@ func main() {
 
 	program.Ingress()
 
-	csRedis()
-
+	a := "🥬"
+	b := "你"
+	c := "n"
+	fmt.Println(len(a), len(b), len(c))
+	for _, v := range a {
+		fmt.Println(v)
+	}
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -53,6 +58,82 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func maxDepth(n int) int {
+	var depth int
+	for i := n; i > 0; i >>= 1 {
+		depth++
+	}
+	return depth * 2
+}
+
+func RealEmployEXP() (realCost int32, lastExp int32) {
+	lastEXPDay := int64(1630997853)
+	lastEXP := int32(20)
+
+	employEXP := int32(-1000)
+	cost := int32(0)
+
+	DayMaxLimit, DayMinLimit := int32(100), int32(-100)
+	MaxLimit, MinLimit := int32(1000), int32(-50)
+
+	realCost = cost
+	isSameDay := equalUnixAsSameDay(time.Now().Unix(), lastEXPDay)
+
+	// 每日积分上限
+	dayEXP := int32(0)
+	if isSameDay {
+		dayEXP = lastEXP + cost
+	} else {
+		dayEXP = cost
+	}
+	if cost > 0 {
+		if dayEXP > DayMaxLimit {
+			realCost -= dayEXP - DayMaxLimit
+			if realCost < 0 {
+				realCost = 0
+			}
+		}
+	} else if cost < 0 {
+		if dayEXP < DayMinLimit {
+			realCost -= dayEXP - DayMinLimit
+			if realCost > 0 {
+				realCost = 0
+			}
+		}
+	}
+
+	// 积分总上限
+	employEXP = employEXP + realCost
+	if realCost > 0 {
+		if employEXP > MaxLimit {
+			realCost -= employEXP - MaxLimit
+			if realCost < 0 {
+				realCost = 0
+			}
+		}
+	} else if realCost < 0 {
+		if employEXP < MinLimit {
+			realCost -= employEXP - MinLimit
+			if realCost > 0 {
+				realCost = 0
+			}
+		}
+	}
+
+	if isSameDay {
+		lastExp = lastEXP + realCost
+	} else {
+		lastExp = realCost
+	}
+
+	fmt.Printf("应扣:%d,真实扣除%d,司机今日经验%d\n", cost, realCost, lastExp)
+	return
+}
+
+func equalUnixAsSameDay(unix1, unix2 int64) bool {
+	return time.Unix(unix1, 0).Format("20060102") == time.Unix(unix2, 0).Format("20060102")
 }
 
 func curTime(unix int64) int64 {
@@ -134,7 +215,7 @@ func csMysql() {
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
 
-	rows, err := db.Query("select  `id` from `employ_center`.`employ_infos` where `id`= 0")
+	rows, err := db.Query("select  `id` from `employ_center`.`employ_infos` where `id` in (123)")
 	if err != nil {
 		fmt.Println("1", err)
 	}
@@ -142,7 +223,7 @@ func csMysql() {
 	for rows.Next() {
 		id := 0
 		rows.Scan(&id)
-		fmt.Println("对咯~")
+		fmt.Println("对咯~", id)
 	}
 	fmt.Println("对咯22222~")
 }
@@ -194,13 +275,14 @@ func csRedis() {
 		DB:       0,                       // use default DB
 	})
 
-	str, err := client.Keys("employ_*").Result()
+	client.HDel("LttCs", "1")
+
+	m, err := client.HGetAll("LttCs").Result()
 	if err != nil {
-		fmt.Println("err:", err)
+		fmt.Println(err)
+		return
 	}
-	for _, v := range str {
-		fmt.Println(v)
-	}
+	fmt.Println(m)
 }
 
 func csMongo() {
