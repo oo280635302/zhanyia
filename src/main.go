@@ -14,6 +14,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
+	"log"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -38,13 +39,9 @@ func main() {
 
 	program.Ingress()
 
-	a := "🥬"
-	b := "你"
-	c := "n"
-	fmt.Println(len(a), len(b), len(c))
-	for _, v := range a {
-		fmt.Println(v)
-	}
+	fmt.Printf("%b\n%b\n", int(^uint(0)>>1), -int(^uint(0)>>1))
+	fmt.Println(len("111111111111111111111111111111111111111111111111111111111111111"))
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -194,8 +191,29 @@ func getPublicToken() {
 	fmt.Println(m)
 }
 
+type ClearRule struct {
+	Min  int32 `json:"min"`  // 小数 -999999~999999
+	Max  int32 `json:"max"`  // 大数 -999999~999999
+	Keep int32 `json:"keep"` // 保留 -999999~999999
+}
+
+// 单型发放规则
+type PullSingle struct {
+	Open bool `json:"open"` // 开关
+
+	Unit  int32 `json:"unit"`  // 单位
+	Type  int8  `json:"type"`  // 类型 0固定 1比例
+	Param int32 `json:"param"` // 参数
+}
+
+// 阶梯型发放规则
+type PullStep struct {
+	Open bool         `json:"open"`        // 开关
+	Step []PullSingle `json:"pull_single"` // 阶梯 特性：数量最大6，unit递增 打开的情况下第一个不为0
+}
+
 func csGorm() {
-	db, err := gorm.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
+	db, err := gorm.Open("mysql", "v5prodmcs:Gb7YJ#FP7%W866E@79R@tcp(rm-2ze75q86i46cbp80f0o.mysql.rds.aliyuncs.com:3306)/employ_center?charset=utf8mb4")
 	if err != nil {
 		fmt.Println("1", err)
 		return
@@ -203,6 +221,33 @@ func csGorm() {
 	defer db.Close()
 	db.LogMode(true)
 
+	clear := make([]ClearRule, 1)
+	b, _ := json.Marshal(clear)
+	clearRule := string(b)
+
+	singles := make([]PullSingle, 30)
+	for idx := range singles {
+		singles[idx].Unit = 1
+		singles[idx].Type = 0
+	}
+	b, _ = json.Marshal(singles)
+	single := string(b)
+
+	steps := make([]PullStep, 10)
+	for idx := range steps {
+		steps[idx].Step = make([]PullSingle, 1)
+		steps[idx].Step[0].Unit = 1
+		steps[idx].Step[0].Type = 0
+	}
+	b, _ = json.Marshal(steps)
+	step := string(b)
+
+	res := db.Exec("insert into `employ_center`.`employ_score_config`(`is_open`, `day_max_limit`, `day_min_limit`,  `max_limit`,`min_limit`,`clear_type`,  `is_keep`, `clear_rule`, `single`,  `step`, `updated`,`app_key`, `version`) values (?,?,?, ?,?,?, ?,?,?, ?,?,?,?)",
+		false, 0, 0, 0, 0, 0, false, clearRule, single, step, time.Now().Unix(), "123", 1)
+	if nil != res.Error {
+		log.Println("init employ score config error:", res.Error)
+	}
+	fmt.Println("成功")
 }
 
 func csMysql() {

@@ -397,6 +397,12 @@
          -FULLTEXT (title,body)
         -ADD FULLTEXT INDEX `ft_title_body` (`title`, `body`) WITH PARSER ngram;
 
+  29.聚集索引和非聚集索引
+    -聚集索引：
+        及mysql表中的主键，其叶子节点对应数据节点，能一次查询直接获取数据
+    -非聚集索引：
+        非主键的其他索引，其叶节点包含索引的键、主键id、指向该数据的指针
+        因此当查询结果需要非索引字段、主键id时会进行二次查询
 
   
   
