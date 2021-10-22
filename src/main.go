@@ -39,9 +39,6 @@ func main() {
 
 	program.Ingress()
 
-	fmt.Printf("%b\n%b\n", int(^uint(0)>>1), -int(^uint(0)>>1))
-	fmt.Println(len("111111111111111111111111111111111111111111111111111111111111111"))
-
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

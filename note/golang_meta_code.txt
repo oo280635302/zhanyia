@@ -3,6 +3,8 @@
 
   -1.sync包
     -1.1 mutex锁 互斥锁
+        -图文地址：
+            https://mp.weixin.qq.com/s/evT_S7tmot-URxVFdVktAQ
         -数据结构
             type Mutex struct {
                 state int32
@@ -43,7 +45,7 @@
                 -当有协程获取读锁时,readerCount计算就+1
                 -当readerCount < 0 (有写入操作时 会<0) 调用runtime_Semacquire方法进行等待
             RUnlock()   释放读锁
-                -释放时: readerCount-1  如果释放后 +1等于0 就报错因为没获取锁,如果释放后 +1等于写锁减去的值也报错以为获取的是写锁却要释放读锁
+                -释放时: readerCount-1  如果释放后 +1等于0 就报 错因为没获取锁,如果释放后 +1等于写锁减去的值也报错以为获取的是写锁却要释放读锁
                 -正好=0了 就顺带释放写锁信号 通知写锁可以进行获取了
             Lock()     获取写锁
                 -先加入互斥锁,保证写锁只能有一个操作
@@ -52,4 +54,21 @@
                 -加上之前减去的很大的数10E+,如果 正好等于10E+ 这个数  说明没有加写锁就在释放 报错
                 -然后for循环告诉暂停的读锁可以继续进行了
             RLocker()  用于返回一个实现了Lock()和Unlock()方法的Locker接口
-    -1.3
+
+  -2.math/rand
+    -rand设计到两个函数：
+        设置种子 Seed
+        获取随机 Intn
+    -seed
+        rng.vec 各个位置设置对应的值
+        每个位置值都是根据数学公式算出来
+    -intn
+        利用 rng.feed rng.tap 从 rng.vec 中取到两个值相加
+        结果重新根据 rng.feed 放入 rng.vec
+    -rng.vec
+        Map类型
+        用锁保证并发不冲突
+    -rand.New()不是并发安全
+    -默认的rand.Seed() 设置的种子是并发安全的
+
+  -3.

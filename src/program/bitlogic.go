@@ -1,6 +1,8 @@
 package program
 
-import "math/bits"
+import (
+	"math/bits"
+)
 
 /*
 	位元数知识点：
@@ -32,6 +34,55 @@ func majorityElement(nums []int) int {
 		}
 	}
 	return r
+}
+
+// 多数元素2，数组出现次数大于n/3的元素-----------------------------------------------------------------------------------
+// 思路2 : 摩尔投票法 抵消，将3个不同的数掉抵消掉获取
+func majorityElement2(nums []int) []int {
+	elem1, elem2 := 0, 0
+	num1, num2 := 0, 0
+	cnt1, cnt2 := 0, 0
+
+	// 大于n/3的元素 可知最多又2个，用摩尔投票法如果出现3个不同的就清理掉
+	for _, v := range nums {
+		if num1 > 0 && elem1 == v {
+			num1++
+
+		} else if num2 > 0 && elem2 == v {
+			num2++
+
+		} else if num1 == 0 {
+			elem1 = v
+			num1++
+		} else if num2 == 0 {
+			elem2 = v
+			num2++
+		} else {
+			num1--
+			num2--
+		}
+
+	}
+
+	// 筛选出来的两个数最有可能超过n/3 ，但存在[1,2] 这种特殊情况将筛选出来的数统计下数量
+	res := make([]int, 0)
+	for _, v := range nums {
+		if v == elem1 {
+			cnt1++
+		} else if v == elem2 {
+			cnt2++
+		}
+	}
+
+	// 超过n/3的就添加
+	if cnt1 > len(nums)/3 {
+		res = append(res, elem1)
+	}
+	if cnt2 > len(nums)/3 {
+		res = append(res, elem2)
+	}
+
+	return nums
 }
 
 // 数组中只有1个数存在1个，其余都存在2个，找出这个数----------------------------------------------------------------------

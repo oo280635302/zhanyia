@@ -1,10 +1,9 @@
 package program
 
-import (
-	"fmt"
-)
+import "fmt"
 
 func Ingress() {
-	res := fibonacci(6)
-	fmt.Println("res:", res)
+	a := []int{1, 0}
+	moveZeroes(a)
+	fmt.Println(a)
 }

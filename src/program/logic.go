@@ -390,3 +390,73 @@ func randSlice(slice interface{}) {
 	}
 	return
 }
+
+// 旋转数组 --------------------------------------------------------------------------------------------------------
+// 思路1：根据余数拆分数组然后交换数组
+// 思路2: 反转数组，根据k拆分数组再反转，合并
+func rotate(nums []int, k int) {
+	m := k % len(nums)
+	if m == 0 {
+		return
+	}
+
+	m = len(nums) - m
+
+	arr := nums[m:]
+	arr = append(arr, nums[:m]...)
+
+	copy(nums, arr)
+}
+
+// 检查数组是否存在重复元素-------------------------------------------------------------------------------------------
+// 思路hash
+func containsDuplicate(nums []int) bool {
+	m := make(map[int]int)
+	for _, v := range nums {
+		m[v]++
+		if m[v] > 1 {
+			return true
+		}
+	}
+	return false
+}
+
+// 加一 --------------------------------------------------------------------------------------------------------------
+func plusOne(digits []int) []int {
+	t := 1
+	for i := len(digits) - 1; i >= 0; i-- {
+		j := (digits[i]+t)/10 > 0
+		digits[i] = (digits[i] + t) % 10
+		if j {
+			t = 1
+		} else {
+			t = 0
+		}
+	}
+
+	if t == 1 {
+		digits = append([]int{1}, digits...)
+	}
+
+	return digits
+}
+
+// 将数组的0移动到最后 --------------------------------------------------------------------------------------
+func moveZeroes(nums []int) {
+	i, j := 0, 0
+	for _, v := range nums {
+		if v == 0 {
+			j++
+		} else {
+			if i != j {
+				nums[i] = nums[j]
+			}
+			i++
+			j++
+		}
+	}
+
+	for idx := i; idx < len(nums); idx++ {
+		nums[idx] = 0
+	}
+}
