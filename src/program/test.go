@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	a := []int{1, 0}
-	moveZeroes(a)
+
+	a := reverseInt(123456789)
 	fmt.Println(a)
 }

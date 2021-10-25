@@ -460,3 +460,60 @@ func moveZeroes(nums []int) {
 		nums[idx] = 0
 	}
 }
+
+// 九宫格数独-------------------------------------------------------------------------------------------------------
+// 思路： 只需要验证已经给出来的数独是不是在同行同列同33里面有相同的即可
+func isValidSudoku(board [][]byte) bool {
+	var row, column [9][9]int
+	var block [3][3][9]int
+
+	for i, v := range board {
+		for j, v1 := range v {
+			if v1 == '.' {
+				continue
+			}
+
+			num := v1 - '0' - 1
+
+			row[i][num]++
+			column[j][num]++
+			block[i/3][j/3][num]++
+
+			if row[i][num] > 1 {
+				return false
+			}
+			if column[j][num] > 1 {
+				return false
+			}
+			if block[i/3][j/3][num] > 1 {
+				return false
+			}
+		}
+	}
+
+	return true
+}
+
+// 顺时针旋转正方形图像------------------------------------------------------------------------------------------------------
+// 思路：不过就是4个位置的交换位置罢了
+func rotate2D(matrix [][]int) {
+	length := len(matrix)
+
+	for i := 0; i < length/2; i++ {
+		for j := i; j < length-i-1; j++ {
+			m := length - i - 1 // i的反值
+			n := length - j - 1 // j的反值
+
+			fmt.Println(matrix[i][j], matrix[m][j], matrix[m][n], matrix[i][n])
+
+			temp := matrix[i][j]
+			matrix[i][j] = matrix[n][i]
+			matrix[n][i] = matrix[m][n]
+			matrix[m][n] = matrix[j][m]
+			matrix[j][m] = temp
+
+			fmt.Println(matrix[i][j], matrix[m][j], matrix[m][n], matrix[i][n])
+
+		}
+	}
+}
