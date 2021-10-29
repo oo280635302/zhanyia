@@ -39,6 +39,10 @@ func main() {
 
 	program.Ingress()
 
+	a := 1
+	b := &a
+	fmt.Println(&a == b)
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
