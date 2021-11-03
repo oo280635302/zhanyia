@@ -290,6 +290,41 @@ func recur(root *TreeNode, arr *[]int) {
 	}
 }
 
+// 解法三：morris 创建 一个连接 将树中 所有父节点的子节点里的最右节点指向父节点
+//     然后从最左节点开始进组，左进组了父进组，父进组了右进组，右进组了他指向父节点，然后父进组，又右进组,依次循环
+func inOrderTraversal(root *TreeNode) []int {
+	res := make([]int, 0)
+	for root != nil {
+		if root.Left != nil {
+
+			// 找最右点
+			pre := root.Left
+			for pre.Right != nil && pre.Right != root {
+				pre = pre.Right
+			}
+
+			// 只有pre已经组成循环的时候才会=nil，将他的指针指向root
+			if pre.Right == nil {
+				pre.Right = root
+				root = root.Left
+
+				// 当他!=nil,说明是其之前的右节点都已经被处理了指向，同时到达了最左点
+			} else {
+				res = append(res, root.Val)
+				pre.Right = nil
+				root = root.Right
+			}
+
+		} else {
+			// 左边已经被处理完了，处理右边
+			res = append(res, root.Val)
+			// 所有左都进组了，进右组，或者从右跳到其父节点
+			root = root.Right
+		}
+	}
+	return res
+}
+
 // 二叉树的前序遍历 中->左->右 -------------------------------------------------------------------------------------
 // 在二叉树的中序遍历基础上修改 -- 栈放每次支点的右子节点 支点val每次都放入结果中,同时每次都往左追下一格 0ms/2mb\
 // 方法一:迭代
@@ -322,7 +357,7 @@ func preorderTraversal(root *TreeNode) []int {
 	return res
 }
 
-// 方法二:递归 - 中左右 完成 0ms/2mb
+// 解法二:递归 - 中左右 完成 0ms/2mb
 func PreorderTraversal(root *TreeNode) []int {
 	var arr = make([]int, 0)
 	preorderRecur(root, &arr)
@@ -371,7 +406,7 @@ func PostorderTraversal(root *TreeNode) []int {
 	return res
 }
 
-// 方法二:递归 0ms/2mb
+// 解法二:递归 0ms/2mb
 func postorderTraversal(root *TreeNode) []int {
 	var arr = make([]int, 0)
 	postorderRecur(root, &arr)
@@ -384,4 +419,53 @@ func postorderRecur(root *TreeNode, arr *[]int) {
 		postorderRecur(root.Right, arr)
 		*arr = append(*arr, root.Val)
 	}
+}
+
+// 验证二叉搜索树-------------------------------------------------------------------------------------------------------
+// 思路：中序遍历，判断是否返回结果是递增的
+func isValidBST(root *TreeNode) bool {
+	reply := make([]int, 0)
+
+	stack := make([]*TreeNode, 0)
+
+	// 当stack存在 或者 root有值时(第一次||只有右支点的情况)
+	for root != nil || 0 < len(stack) {
+
+		// 追到当前root最左边的子结点(如果左边没支点了,插入他本身)，同时将路过的所有node存入stack中
+		for root != nil {
+			stack = append(stack, root) //入栈
+			root = root.Left            //移至最左
+		}
+
+		// 将栈顶的数据给即 目前的最左数给arr（即左为nil 右为未知的子节点）
+		index := len(stack) - 1
+		if len(reply) > 0 && reply[len(reply)-1] >= stack[index].Val {
+			return false
+		}
+		reply = append(reply, stack[index].Val)
+		root = stack[index].Right //右节点会进入下次循环，如果 =nil，继续出栈
+		stack = stack[:index]     //出栈
+	}
+
+	return true
+}
+
+// 判断二叉树是否对称----------------------------------------------------------------------------------------------------
+// 思路：递归，
+func isSymmetric(root *TreeNode) bool {
+	if root == nil {
+		return true
+	}
+
+	return isSymmetricRecur(root.Left, root.Right)
+}
+
+func isSymmetricRecur(left, right *TreeNode) bool {
+	if left == nil || right == nil {
+		return left == right
+	}
+	if left.Val != right.Val {
+		return false
+	}
+	return isSymmetricRecur(left.Left, right.Right) && isSymmetricRecur(left.Right, right.Left)
 }

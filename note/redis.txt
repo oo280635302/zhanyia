@@ -117,7 +117,7 @@
 				-srandmember key [count]
 			-集合key中随机选count个元素,同时这些元素从key中删除
 				-spop key [count]
-		-运算
+		-运算d
 			-sinter key [key]	交集运算
 			-sinterstore destination key [key] 交集运算结果放入destionation中
 			-sunion key [key]	并集运算

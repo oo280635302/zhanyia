@@ -39,10 +39,6 @@ func main() {
 
 	program.Ingress()
 
-	a := 1
-	b := &a
-	fmt.Println(&a == b)
-
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -56,14 +52,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func maxDepth(n int) int {
-	var depth int
-	for i := n; i > 0; i >>= 1 {
-		depth++
-	}
-	return depth * 2
 }
 
 func RealEmployEXP() (realCost int32, lastExp int32) {
