@@ -15,6 +15,22 @@ func sortedArrayToBST(nums []int) *TreeNode {
 	}
 }
 
+func sortedArrayToBSTBy2(nums []int) *TreeNode {
+	return array2treeRecur(nums, 0, len(nums)-1)
+}
+
+func array2treeRecur(nums []int, left, right int) *TreeNode {
+	if left > right {
+		return nil
+	}
+	mid := (left + right) / 2
+	tree := &TreeNode{Val: nums[mid]}
+	tree.Left = array2treeRecur(nums, left, mid-1)
+	tree.Right = array2treeRecur(nums, mid+1, right)
+
+	return tree
+}
+
 // 路径总和-----------------------------------------------------------------------------------------------------------
 // 思路1: 递归 操作找到每个数的子节点上判断是否相等   8ms/4.8mb
 func hasPathSum(root *TreeNode, sum int) bool {
@@ -181,7 +197,7 @@ func maxDepthByDepth(root *TreeNode) int {
 }
 
 // 二叉树的层序遍历------------------------------------------------------------------------------------------------------
-// 思路：广度优先
+// 思路：广度优先 一层一层遍历出来
 func levelOrder(root *TreeNode) [][]int {
 	if root == nil {
 		return nil
