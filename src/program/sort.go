@@ -127,9 +127,3 @@ func isPerfectSquare(num int) bool {
 
 	return false
 }
-
-// 找两个有序数组的中位数
-func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
-	m, n := len(nums1), len(nums2)
-
-}

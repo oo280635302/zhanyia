@@ -39,6 +39,10 @@ func main() {
 
 	program.Ingress()
 
+	RetryDo(func() int32 {
+		return 1
+	}, 12)
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -52,6 +56,23 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func RetryDo(f func() int32, n int) int32 {
+	code := f()
+	if code == 1 {
+		return code
+	}
+
+	for i := 0; i < n-1; i++ {
+		time.Sleep(time.Microsecond * 1000)
+		code = f()
+		if code == 1 {
+			return code
+		}
+	}
+
+	return code
 }
 
 func RealEmployEXP() (realCost int32, lastExp int32) {

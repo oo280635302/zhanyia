@@ -4,7 +4,6 @@ import "fmt"
 
 func Ingress() {
 
-	fmt.Println(isPerfectSquare(36))
-}
+	fmt.Println(findPoisonedDuration([]int{1, 3}, 3))
 
-// 中序遍历 morris
+}

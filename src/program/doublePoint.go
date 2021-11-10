@@ -1,5 +1,10 @@
 package program
 
+import (
+	"math"
+	"sort"
+)
+
 // 双指针有关的算法问题 -- LeetCode
 
 // 长度最小的子数组------------------------------------------------------------------------------------------------------
@@ -134,4 +139,135 @@ func minArrayBetterSlv(numbers []int) int {
 		}
 	}
 	return numbers[l]
+}
+
+// 盛最多水的容器--------------------------------------------------------------------------------------------------------
+// 思路：双指针 边界最高为基准即可找到最多的水容器
+func maxArea(height []int) int {
+	l, r := 0, len(height)-1
+	res := 0
+
+	for l < r {
+		res = max(res, min(height[l], height[r])*(r-l))
+		if height[l] < height[r] {
+			l++
+		} else {
+			r--
+		}
+	}
+
+	return res
+}
+
+// 三数之和
+// 思路：排序，然后定最左位的点，用双指针找其右边的两个与其组合为0的
+func threeSum(nums []int) [][]int {
+	// 排序
+	sort.Ints(nums)
+	res := make([][]int, 0)
+	n := len(nums)
+
+	for idx, v := range nums {
+		// 第一个点>=0 或 后面没有2个数了 就等于找到头了
+		if v > 0 || idx > n-3 {
+			break
+		}
+
+		// 相同的数跳过
+		if idx-1 >= 0 && nums[idx] == nums[idx-1] {
+			continue
+		}
+
+		// 建立双指针
+		l, r := idx+1, n-1
+		for l < r {
+
+			// 跳过相同左数据
+			if nums[l] == nums[l-1] && l-1 != idx {
+				l++
+				continue
+			}
+
+			// 跳过相同右数据
+			if r+1 < n && nums[r] == nums[r+1] {
+				r--
+				continue
+			}
+
+			// 合并项大于0移动右指针让其缩小
+			if nums[l]+nums[r]+v > 0 {
+				r--
+				// 合并项小于0移动左指针让其变大
+			} else if nums[l]+nums[r]+v < 0 {
+				l++
+			} else {
+				// 找到结果了，可以随便移动指针
+				res = append(res, []int{v, nums[l], nums[r]})
+				l++
+			}
+		}
+	}
+
+	return res
+}
+
+// 最接近的三数和
+// 思路：核心思路与三数之和相同，利用双指针特性 在固定第一个数的情况下减少2、3数的匹配次数，每次提炼出来3个数合并 看是否最接近目标
+func threeSumClosest(nums []int, target int) int {
+	// 排序
+	sort.Ints(nums)
+	res := -9999999
+	n := len(nums)
+
+	for idx, v := range nums {
+		// 后面没有2个数了 就等于找到头了
+		if idx > n-3 {
+			break
+		}
+
+		// 相同的数跳过
+		if idx-1 >= 0 && nums[idx] == nums[idx-1] {
+			continue
+		}
+
+		// 建立双指针
+		l, r := idx+1, n-1
+		for l < r {
+
+			// 跳过相同左数据
+			if nums[l] == nums[l-1] && l-1 != idx {
+				l++
+				continue
+			}
+
+			// 跳过相同右数据
+			if r+1 < n && nums[r] == nums[r+1] {
+				r--
+				continue
+			}
+
+			x := nums[l] + nums[r] + v
+
+			// 合并项大于target移动右指针让其缩小
+			if x > target {
+				r--
+				// 合并项小于target移动左指针让其变大
+			} else if x < target {
+				l++
+			} else {
+				return target
+			}
+			res = closeNum(target, res, x)
+		}
+	}
+
+	return res
+}
+
+func closeNum(target, x, y int) int {
+	a, b := int(math.Abs(float64(x-target))), int(math.Abs(float64(y-target)))
+	if a >= b {
+		return y
+	}
+	return x
 }
