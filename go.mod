@@ -9,16 +9,16 @@ require (
 	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.0.0-beta.5
 	github.com/go-sql-driver/mysql v1.5.0
-	github.com/gogo/protobuf v1.3.1
-	github.com/golang/protobuf v1.4.0
-	github.com/google/uuid v1.1.0
+	github.com/gogo/protobuf v1.3.2
+	github.com/golang/protobuf v1.4.3
+	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.12
-	github.com/robfig/cron v1.2.0
+	github.com/opentrx/seata-golang/v2 v2.0.6
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tealeg/xlsx v1.0.5
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	github.com/willf/bitset v1.1.10 // indirect
 	go.mongodb.org/mongo-driver v1.4.1
-	google.golang.org/grpc v1.29.1
+	google.golang.org/grpc v1.38.0
 )

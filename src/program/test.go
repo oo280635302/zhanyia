@@ -4,6 +4,6 @@ import "fmt"
 
 func Ingress() {
 
-	fmt.Println(findPoisonedDuration([]int{1, 3}, 3))
+	fmt.Println(divide(-2147483648, 1))
 
 }
