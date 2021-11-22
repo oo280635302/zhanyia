@@ -337,7 +337,7 @@ func csMongo() {
 
 }
 
-func csXlsx() {
+func csXlsxAA() {
 	file, err := xlsx.OpenFile("E://downfile/EmployTemplate_1612401111603.xlsx")
 	if err != nil {
 		fmt.Println("err", err)
