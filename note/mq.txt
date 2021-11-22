@@ -161,8 +161,10 @@
     -------------------------------mqtt----------------------------------------
     -mqtt (Message Queuing Telemetry Transport) 应用层传输协议
     -mqtt(消息队列遥测传输)
+
     1.目的：为硬件性能低下的远程设备以及网络状况糟糕的情况下而设计的发布/订阅型消息协议
       需要：一个消息中间件 kafka,rabbitMq...
+
     2.特性:
         -使用发布/订阅消息模式，提供一对多的消息发布，解除应用程序耦合
         -对负载内容屏蔽的消息传输
@@ -175,10 +177,28 @@
                 这一级别可用于如下情况，在计费系统中，消息重复或丢失会导致不正确的结果
         -小型传输,开销很小（固定长度的头部是 2 字节),协议交换最小化,以降低网络流量
         -使用 Last Will 和 Testament 特性通知有关各方客户端异常中断的机制
+
     3.golang库: https://github.com/eclipse/paho.mqtt.golang
         -库的使用 简书：https://www.jianshu.com/p/05914c15b9a8
 
+    4.关于mqtt使用的注意点：
+        4.1 连接数是均衡的，原因是使用的slb负载均衡，每台服务器上的tcp长连接均匀分布。
+        4.2 topic分布在不同服务器上，每台服务器的topic是均匀分布的。
+        4.3 mqtt的消息流入，取决于slb，slb将tcp连接在那台服务器上消息就流入到那台服务器上。
+        4.4 mqtt的消息流出，取决于topic，topic分布在那台服务器上消息就从那台服务器流出。
+        4.5 topic在那台服务器取决于订阅他的客户端连接所在的服务器，会出现同时存在多个相同的topic的情况。
+            eg:   client1客户端订阅topic1，client2客户端订阅topic1，其中client1被slb分配到服务器1，client2被slb分配到服务器2，
+            那topic1就在服务器 1上，topic2就在服务器2上。
 
+    5.解决mqtt负载不均衡问题：
+            一般来说前后端用mqtt通信都是，后端监听同一个topic然后造成大量的消息堆积到一台服务器上。
+        解决方案：
+            不同服务器分别连接不同的mqtt，共享订阅（$queue）同一个topic然后配置轮询消费。
+        配置：
+            # 均衡策略
+            broker.shared_subscription_strategy = round_robin
+            # 适用于 QoS1 QoS2 消息，启用时在其中一个组离线时，将派发给另一个组
+            broker.shared_dispatch_ack_enabled = true
 
 
 
