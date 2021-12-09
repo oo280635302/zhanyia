@@ -90,3 +90,8 @@
         -删除文档
             DELETE 'localhost:9200/index_test/test_type/1'
         -GET 'localhost:9200/index_test/test_type/1?pretty'
+
+
+-------------------------------------------------hbase----------------------------------------------------------------
+
+    1.文档地址：https://www.w3cschool.cn/hbase_doc/hbase_doc-oge42vrm.html

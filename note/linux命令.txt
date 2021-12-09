@@ -494,8 +494,16 @@
     -引用sh文件
         . 文件地址
 
-
-
-
-		
-			
+  13.基础常识
+    -/bin   存放所有用户皆可用的系统程序  - 系统
+     /sbin  存放超级用户才能使用的系统程序
+     /usr/bin   存放所有用户都可用的应用程序  -用户
+     /usr/sbin  存放超级用户才能使用的应用程序
+     /user/local/bin    放所有用户都可用的与本地机器无关的程序  -脚本
+     /user/local/sbin   放超级用户才能使用的与本地机器无关的程序
+    -/usr/lib/systemd/system/   存放用于systemctl的服务，添加后可以用systemctl启动服务 -系统级
+     /etc/lib/systemd/user/     同上 - 用户级
+        -涉及命令：
+            systemctl daemon-reload 刷新
+            systemctl start etcd    启动
+            systemctl enable etcd   开始

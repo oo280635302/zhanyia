@@ -9,7 +9,6 @@ import (
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jinzhu/gorm"
-	"github.com/tealeg/xlsx"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -40,9 +39,6 @@ func main() {
 
 	program.Ingress()
 
-	//Mqtt()
-	//MqttSub()
-
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -59,7 +55,7 @@ func main() {
 }
 
 func Mqtt() {
-	opt := mqtt.NewClientOptions().AddBroker("tcp://v6prev-wss.rvaka.cn:1883").SetClientID("ltt_send")
+	opt := mqtt.NewClientOptions().AddBroker("tcp://v6prev-wss.rvaka.cn:1883").SetClientID("ltt_send").SetUsername("ltt")
 	c := mqtt.NewClient(opt)
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
 		fmt.Println("connect err: ", token.Error())
@@ -82,11 +78,11 @@ func MqttSub() {
 	opt := mqtt.NewClientOptions().AddBroker("tcp://v6prev-wss.rvaka.cn:1883").SetClientID("ltt_receive")
 	c := mqtt.NewClient(opt)
 	if token := c.Connect(); token.Wait() && token.Error() != nil {
-		fmt.Println("connect err: ", token.Error())
+		fmt.Println("connect err: ", token.Wait(), token.Error())
 		return
 	}
 
-	topic := fmt.Sprintf("$queue/ltt_go")
+	topic := fmt.Sprintf("ltt_go")
 	token := c.Subscribe(topic, 0, func(client mqtt.Client, message mqtt.Message) {
 		fmt.Println(time.Now().Format("2006-01-02 15:04:05.999"), string(message.Payload()))
 		message.Ack()
@@ -334,16 +330,4 @@ func csMongo() {
 		err = cur.Decode(&a)
 		fmt.Println(err, a)
 	}
-
-}
-
-func csXlsxAA() {
-	file, err := xlsx.OpenFile("E://downfile/EmployTemplate_1612401111603.xlsx")
-	if err != nil {
-		fmt.Println("err", err)
-		return
-	}
-	s := file.Sheet["sheet1"]
-	//fmt.Println(len(s.Rows))
-	fmt.Println(s)
 }

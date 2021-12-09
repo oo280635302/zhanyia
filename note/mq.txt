@@ -189,6 +189,7 @@
         4.5 topic在那台服务器取决于订阅他的客户端连接所在的服务器，会出现同时存在多个相同的topic的情况。
             eg:   client1客户端订阅topic1，client2客户端订阅topic1，其中client1被slb分配到服务器1，client2被slb分配到服务器2，
             那topic1就在服务器 1上，topic2就在服务器2上。
+        4.6 clientId需要唯一，不然会导致连接失效
 
     5.解决mqtt负载不均衡问题：
             一般来说前后端用mqtt通信都是，后端监听同一个topic然后造成大量的消息堆积到一台服务器上。
