@@ -17,6 +17,79 @@
         -4.服务注册与服务发现
         -5. 消息订阅和发布
 
+    3.etcd的集群部署：
+        不会，网上教程卡在X509证书问题上，让运维粑粑去部署
+
     3.raft算法
         -分布式一致性算法
-        -
+        -自行百度，阐述过于麻烦
+
+    4.命令：
+        etcd在键上采用层次化设计(即目录结构):
+            如果键是 test, 则其真正意义是放在目录里面： /test
+            如果键是 /v1/test 说明他在/v1/test
+
+        set 指定某个键的值，不存在报错
+            --ttl '0' 该键值的超时时间(单位为秒)，不配置(默认为0)则永不超时
+            --swap-with-value value 若该键现在的值是value，则进行设置操作
+            --swap-with-index '0'   若该键现在的索引值是指定索引，则进行设置操作
+            eg: etcdctl set /t1/v1 "Hello world"
+
+        get 获取指定键的值
+            --sort 对结果进行排序
+            --consistent 将请求发给主节点，保证获取内容的一致性。
+            eg：get /t1/v1
+
+        update 修改键，如果键不存在就报错
+            --ttl '0' 超时时间(单位为秒)，不配置(默认为 0)则永不超时。
+            eg: update /t1/v1 "See You World"
+
+        rm 删除键，不存在报错
+            --dir 如果键是个空目录或者键值对则删除
+            --recursive 删除目录和所有子键
+            --with-value  检查现有的值是否匹配
+            --with-index '0'检查现有的index是否匹配
+            eg: rm /t1/v1
+
+        mk 键不存在就创建，存在就报错
+            --ttl '0'  超时时间(单位为秒），不配置(默认为 0)。则永不超时
+            eg： mk /t1/v1 "Re See You"
+
+        mkdir 键目录不存在就创建，存在就报错
+            --ttl '0' 超时时间(单位为秒)，不配置(默认为0)则永不超时。
+            eg： mk /t1/v1
+
+        updatedir 更新一个已经存在的目录
+            --ttl '0' 超时时间(单位为秒)，不配置(默认为0)则永不超时。
+            eg：updatedir /t1/v1 /t1/v2
+
+        rmdir 删除一个空目录，或者键值对，若目录不空，会报错
+            eg： rmdir /t1/v1
+
+        ls  列出目录(默认为根目录)下的键或者子目录，默认不显示子目录中内容
+            --sort 将输出结果排序
+            --recursive 如果目录下有子目录，则递归输出其中的内容
+            -p 对于输出为目录，在最后添加/进行区分
+            eg： ls
+
+        backup 备份etcd的数据
+            --data-dir  etcd的数据目录
+            --backup-dir 备份到指定路径
+            eg:backup --data-dir /var/lib/etcd  --backup-dir /home/etcd.bak
+
+        watch 监测一个键值的变化，一旦键值发生更新，就会输出最新的值并退出(用于选举机制)
+            --forever  一直监测直到用户按CTRL+C退出
+            --after-index '0' 在指定index之前一直监测
+            --recursive 返回所有的键值和子键值
+            eg: watch /t1/v1
+
+        exec-watch  监测一个键值的变化，一旦键值发生更新，就执行给定命令
+            --after-index '0' 在指定 index 之前一直监测
+            --recursive 返回所有的键值和子键值
+            eg：exec-watch /t1/v1 -- sh -c 'ls'
+
+        member list 查看集群中存在的节点
+
+        member add 集群新增节点
+
+        member remove 集群删除节点
