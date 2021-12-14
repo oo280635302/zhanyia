@@ -22,7 +22,63 @@
 
     3.raft算法
         -分布式一致性算法
-        -自行百度，阐述过于麻烦
+        -1. leader选举原理:
+            • Leader（领导者） ：负责日志的同步管理，处理来自客户端的请求，与Follower保持heartBeat的联系；
+            • Follower（追随者） ：响应 Leader 的日志同步请求，响应Candidate的邀票请求，以及把客户端请求到Follower的事务转发（重定向）给Leader；
+            • Candidate（候选者） ：负责选举投票，集群刚启动或者Leader宕机时，状态为Follower的节点将转为Candidate并发起选举，选举胜出（获得超过半数节点的投票）后，从Candidate转为Leader状态。
+            启动：
+                raft服务器启动的时候，会默认follow，然后给leader发消息，如果没有leader会让 自己成为candidate然后让其他follower投自己。
+            投票：
+                节点收到投票请求后会根据以下情况决定是否接受投票请求（每个 follower 刚成为 Candidate 的时候会将票投给自己）：
+                请求节点的 Term 大于自己的 Term，且自己尚未投票给其它节点，则接受请求，把票投给它；
+                请求节点的 Term 小于自己的 Term，且自己尚未投票，则拒绝请求，将票投给自己。
+            当选:
+                一轮选举过后，正常情况下，会有一个 Candidate 收到超过半数节点（N/2 + 1）的投票，它将胜出并升级为 Leader，其他节点变为 Follower
+                如果没有超过半数进行下一轮投票直到选出
+
+        -2. log-replication日志复制原理：
+                在一个 Raft 集群中，只有 Leader 节点能够处理客户端的请求，如果其余节点收到消息会转发给Leader节点。
+
+            一阶段：客户端请求提交到 Leader
+                Leader 在收到请求后，会将它作为日志条目（Entry）写入本地日志中。
+                需要注意的是，此时该 Entry 的状态是未提交（Uncommitted），Leader 并不会更新本地数据，因此它是不可读的
+
+            二阶段：Leader 将 Entry 发送到其它 Follower
+                Leader 与 Followers 之间保持着心跳联系，随心跳 Leader 将追加的 Entry（AppendEntries）并行地发送给其它的 Follower，并让它们复制这条日志条目，这一过程称为复制（Replicate）
+                注意点：
+                    1. 为什么 Leader 向 Follower 发送的 Entry 是 AppendEntries 呢？
+                        答：因为 Leader 与 Follower 的心跳是周期性的，而一个周期间 Leader 可能接收到多条客户端的请求，
+                        因此，随心跳向 Followers 发送的大概率是多个 Entry，即 AppendEntries。当然，在本例中，我们假设只有一条请求，自然也就是一个Entry了。
+                    2. Leader 向 Followers 发送的不仅仅是追加的 Entry（AppendEntries）。
+                        答：在发送追加日志条目的时候，Leader 会把新的日志条目紧接着之前条目的索引位置（prevLogIndex），
+                        Leader 任期号（Term）也包含在其中。如果 Follower 在它的日志中找不到包含相同索引位置和任期号的条目，
+                        那么它就会拒绝接收新的日志条目，因为出现这种情况说明 Follower 和 Leader 不一致。
+                    3. 如何解决 Leader 与 Follower 不一致的问题？
+                        答：在正常情况下，Leader 和 Follower 的日志保持一致，所以追加日志的一致性检查从来不会失败。
+                        然而，Leader 和 Follower 一系列崩溃的情况会使它们的日志处于不一致状态。Follower可能会丢失
+                        一些在新的 Leader 中有的日志条目，它也可能拥有一些 Leader 没有的日志条目，或者两者都发生。
+                        丢失或者多出日志条目可能会持续多个任期。要使 Follower 的日志与 Leader 恢复一致，Leader 必须找到最后两者达成一致的地方（说白了就是回溯，
+                        找到两者最近的一致点），然后删除从那个点之后的所有日志条目，发送自己的日志给 Follower。
+                        所有的这些操作都在进行附加日志的一致性检查时完成。Leader 为每一个 Follower 维护一个 nextIndex，
+                        它表示下一个需要发送给 Follower 的日志条目的索引地址。当一个 Leader 刚获得权力的时候，
+                        它初始化所有的 nextIndex 值，为自己的最后一条日志的 index 加 1。如果一个 Follower 的日志和 Leader 不一致，
+                        那么在下一次附加日志时一致性检查就会失败。在被 Follower 拒绝之后，Leader 就会减小该 Follower 对应的 nextIndex 值并进行重试。
+                        最终 nextIndex 会在某个位置使得 Leader 和 Follower 的日志达成一致。当这种情况发生，附加日志就会成功，
+                        这时就会把 Follower 冲突的日志条目全部删除并且加上 Leader 的日志。一旦附加日志成功，那么 Follower 的日志就会和 Leader 保持一致，
+                        并且在接下来的任期继续保持一致。
+
+            三阶段：Leader 等待 Followers 回应
+                follower将leader发送的数据进行写入日志，成功true，失败false，当 Leader 收到大多数 Followers 的回应后，
+                会将第一阶段写入的 Entry 标记为提交状态（Committed），并把这条日志条目应用到它的状态机中
+
+            四阶段：Leader 回应客户端
+                完成前三个阶段后，Leader会向客户端回应 OK，表示写操作成功
+
+            五阶段：Leader 通知 Followers Entry 已提交
+                Leader 回应客户端后，将随着下一个心跳通知 Followers，Followers 收到通知后也会将 Entry 标记为提交状态。
+                至此，Raft 集群超过半数节点已经达到一致状态，可以确保强一致性。
+
+        -3. 安全性：
 
     4.命令：
         etcd在键上采用层次化设计(即目录结构):
