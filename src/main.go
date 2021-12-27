@@ -8,8 +8,10 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
-	"github.com/spf13/cobra"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/storage"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -37,9 +39,9 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
 	program.Ingress()
 
+	csRedis()
 	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
@@ -54,6 +56,40 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func WeekByDate(t time.Time) string {
+
+	yearDay := t.YearDay()
+
+	yearFirstDay := t.AddDate(0, 0, -yearDay+1)
+
+	firstDayInWeek := int(yearFirstDay.Weekday())
+
+	//今年第一周有几天
+
+	firstWeekDays := 1
+
+	if firstDayInWeek != 0 {
+
+		firstWeekDays = 7 - firstDayInWeek + 1
+
+	}
+
+	var week int
+
+	if yearDay <= firstWeekDays {
+
+		week = 1
+
+	} else {
+
+		week = (yearDay-firstWeekDays)/7 + 2
+
+	}
+
+	return fmt.Sprintf("%d第%d周", t.Year(), week)
+
 }
 
 func Mqtt() {
@@ -273,21 +309,48 @@ func mustComponent() {
 	common.Log = common.AllGlobal["Log"].(*must.Log)
 }
 
-func csRedis() {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "r-2zejris02j6f2gcje6pd.redis.rds.aliyuncs.com:6379",
-		Password: "G9_I3pT_g2nGb87_v59sd", // no password set
-		DB:       0,                       // use default DB
-	})
+func csQiniu() {
+	key := uuid.New().String()
 
-	client.HDel("LttCs", "1")
+	putPolicy := storage.PutPolicy{
+		Scope:   "images",
+		Expires: 3600 * 24 * 365 * 2,
+	}
 
-	m, err := client.HGetAll("LttCs").Result()
+	mac := qbox.NewMac("5bJMhEn4DSLNAJT-JiIw9rhmk8coOxMpVwGZoCRc", "mSDqSTWRySYhEatdMuGlNGKFQLhYD4Ue97XYiSD3")
+	upToken := putPolicy.UploadToken(mac)
+
+	fmt.Println(upToken)
+
+	cfg := storage.Config{}
+	resumeUploader := storage.NewResumeUploaderV2(&cfg)
+	ret := storage.PutRet{}
+	recorder, err := storage.NewFileRecorder(os.TempDir())
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(m)
+	putExtra := storage.RputV2Extra{
+		Recorder: recorder,
+	}
+	err = resumeUploader.PutFile(context.Background(), &ret, upToken, key+".docx", "E:\\zhanyia\\src\\server.docx", &putExtra)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(ret.Key, ret.Hash)
+}
+
+func csRedis() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "10.10.4.9:30111",
+		Password: "xiaoka520", // no password set
+		DB:       0,           // use default DB
+	})
+
+	//fmt.Println(s,err)
+	s, _ := client.ZRevRangeWithScores("employ_rank_cnt_month_202112_3437", 0, -1).Result()
+	fmt.Println(s)
 }
 
 func csMongo() {
