@@ -5,10 +5,13 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
-	"github.com/tealeg/xlsx"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/storage"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -36,12 +39,10 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
 	program.Ingress()
 
-	fmt.Printf("%b\n%b\n", int(^uint(0)>>1), -int(^uint(0)>>1))
-	fmt.Println(len("111111111111111111111111111111111111111111111111111111111111111"))
-
+	csRedis()
+	return
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -57,84 +58,79 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func maxDepth(n int) int {
-	var depth int
-	for i := n; i > 0; i >>= 1 {
-		depth++
+func WeekByDate(t time.Time) string {
+
+	yearDay := t.YearDay()
+
+	yearFirstDay := t.AddDate(0, 0, -yearDay+1)
+
+	firstDayInWeek := int(yearFirstDay.Weekday())
+
+	//今年第一周有几天
+
+	firstWeekDays := 1
+
+	if firstDayInWeek != 0 {
+
+		firstWeekDays = 7 - firstDayInWeek + 1
+
 	}
-	return depth * 2
-}
 
-func RealEmployEXP() (realCost int32, lastExp int32) {
-	lastEXPDay := int64(1630997853)
-	lastEXP := int32(20)
+	var week int
 
-	employEXP := int32(-1000)
-	cost := int32(0)
+	if yearDay <= firstWeekDays {
 
-	DayMaxLimit, DayMinLimit := int32(100), int32(-100)
-	MaxLimit, MinLimit := int32(1000), int32(-50)
+		week = 1
 
-	realCost = cost
-	isSameDay := equalUnixAsSameDay(time.Now().Unix(), lastEXPDay)
-
-	// 每日积分上限
-	dayEXP := int32(0)
-	if isSameDay {
-		dayEXP = lastEXP + cost
 	} else {
-		dayEXP = cost
-	}
-	if cost > 0 {
-		if dayEXP > DayMaxLimit {
-			realCost -= dayEXP - DayMaxLimit
-			if realCost < 0 {
-				realCost = 0
-			}
-		}
-	} else if cost < 0 {
-		if dayEXP < DayMinLimit {
-			realCost -= dayEXP - DayMinLimit
-			if realCost > 0 {
-				realCost = 0
-			}
-		}
+
+		week = (yearDay-firstWeekDays)/7 + 2
+
 	}
 
-	// 积分总上限
-	employEXP = employEXP + realCost
-	if realCost > 0 {
-		if employEXP > MaxLimit {
-			realCost -= employEXP - MaxLimit
-			if realCost < 0 {
-				realCost = 0
-			}
-		}
-	} else if realCost < 0 {
-		if employEXP < MinLimit {
-			realCost -= employEXP - MinLimit
-			if realCost > 0 {
-				realCost = 0
-			}
-		}
-	}
+	return fmt.Sprintf("%d第%d周", t.Year(), week)
 
-	if isSameDay {
-		lastExp = lastEXP + realCost
-	} else {
-		lastExp = realCost
-	}
-
-	fmt.Printf("应扣:%d,真实扣除%d,司机今日经验%d\n", cost, realCost, lastExp)
-	return
 }
 
-func equalUnixAsSameDay(unix1, unix2 int64) bool {
-	return time.Unix(unix1, 0).Format("20060102") == time.Unix(unix2, 0).Format("20060102")
+func Mqtt() {
+	opt := mqtt.NewClientOptions().AddBroker("tcp://v6prev-wss.rvaka.cn:1883").SetClientID("ltt_send").SetUsername("ltt")
+	c := mqtt.NewClient(opt)
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
+		fmt.Println("connect err: ", token.Error())
+		return
+	}
+
+	for {
+		topic := fmt.Sprintf("ltt_go")
+		err := c.Publish(topic, 0, false, []byte("{\"msg\":\"罗天文测试\"}")).Error()
+		if err != nil {
+			fmt.Println("pub err:", err)
+			return
+		}
+		fmt.Println(time.Now(), "send success!", topic)
+		time.Sleep(time.Second)
+	}
 }
 
-func curTime(unix int64) int64 {
-	return ((unix-16*3600)/86400 + 1) * 86400
+func MqttSub() {
+	opt := mqtt.NewClientOptions().AddBroker("tcp://v6prev-wss.rvaka.cn:1883").SetClientID("ltt_receive")
+	c := mqtt.NewClient(opt)
+	if token := c.Connect(); token.Wait() && token.Error() != nil {
+		fmt.Println("connect err: ", token.Wait(), token.Error())
+		return
+	}
+
+	topic := fmt.Sprintf("ltt_go")
+	token := c.Subscribe(topic, 0, func(client mqtt.Client, message mqtt.Message) {
+		fmt.Println(time.Now().Format("2006-01-02 15:04:05.999"), string(message.Payload()))
+		message.Ack()
+	})
+	token.Wait()
+	err := token.Error()
+	if err != nil {
+		fmt.Println("sub err:", err)
+		return
+	}
 }
 
 func httpReq() {
@@ -313,21 +309,48 @@ func mustComponent() {
 	common.Log = common.AllGlobal["Log"].(*must.Log)
 }
 
-func csRedis() {
-	client := redis.NewClient(&redis.Options{
-		Addr:     "r-2zejris02j6f2gcje6pd.redis.rds.aliyuncs.com:6379",
-		Password: "G9_I3pT_g2nGb87_v59sd", // no password set
-		DB:       0,                       // use default DB
-	})
+func csQiniu() {
+	key := uuid.New().String()
 
-	client.HDel("LttCs", "1")
+	putPolicy := storage.PutPolicy{
+		Scope:   "images",
+		Expires: 3600 * 24 * 365 * 2,
+	}
 
-	m, err := client.HGetAll("LttCs").Result()
+	mac := qbox.NewMac("5bJMhEn4DSLNAJT-JiIw9rhmk8coOxMpVwGZoCRc", "mSDqSTWRySYhEatdMuGlNGKFQLhYD4Ue97XYiSD3")
+	upToken := putPolicy.UploadToken(mac)
+
+	fmt.Println(upToken)
+
+	cfg := storage.Config{}
+	resumeUploader := storage.NewResumeUploaderV2(&cfg)
+	ret := storage.PutRet{}
+	recorder, err := storage.NewFileRecorder(os.TempDir())
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(m)
+	putExtra := storage.RputV2Extra{
+		Recorder: recorder,
+	}
+	err = resumeUploader.PutFile(context.Background(), &ret, upToken, key+".docx", "E:\\zhanyia\\src\\server.docx", &putExtra)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(ret.Key, ret.Hash)
+}
+
+func csRedis() {
+	client := redis.NewClient(&redis.Options{
+		Addr:     "10.10.4.9:30111",
+		Password: "xiaoka520", // no password set
+		DB:       0,           // use default DB
+	})
+
+	//fmt.Println(s,err)
+	s, _ := client.ZRevRangeWithScores("employ_rank_cnt_month_202112_3437", 0, -1).Result()
+	fmt.Println(s)
 }
 
 func csMongo() {
@@ -372,16 +395,4 @@ func csMongo() {
 		err = cur.Decode(&a)
 		fmt.Println(err, a)
 	}
-
-}
-
-func csXlsx() {
-	file, err := xlsx.OpenFile("E://downfile/EmployTemplate_1612401111603.xlsx")
-	if err != nil {
-		fmt.Println("err", err)
-		return
-	}
-	s := file.Sheet["sheet1"]
-	//fmt.Println(len(s.Rows))
-	fmt.Println(s)
 }

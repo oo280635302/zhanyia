@@ -633,3 +633,19 @@ func longestIncreasingPath(matrix [][]int) int {
 	}
 	return ans
 }
+
+// 爬楼梯
+func climbStairs(n int) int {
+	if n <= 2 {
+		return n
+	}
+
+	clim := make([]int, n+1)
+	clim[1] = 1
+	clim[2] = 2
+	for i := 3; i <= n; i++ {
+		clim[i] = clim[i-1] + clim[i-2]
+	}
+
+	return clim[n]
+}

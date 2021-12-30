@@ -39,7 +39,7 @@ func intersection(nums1 []int, nums2 []int) []int {
 	return res
 }
 
-// 数组中只有1个数存在1个，其余都存在多个，找出这个数
+// 数组中只有1个数存在1个，其余都存在多个，找出这个数----------------------------------------------------------------------
 // 思路：排序 判断拐角时数组是否之前数的个数，是1就=找到了，   其余优秀思路：参考 singleNumberByBit
 func singleNumberBySort(nums []int) int {
 	sort.Slice(nums, func(i, j int) bool { return nums[i] < nums[j] })
@@ -58,4 +58,72 @@ func singleNumberBySort(nums []int) int {
 	}
 
 	return r
+}
+
+// 合并两个有序数组，思路要求时间复杂度m+n，空间复杂度1 -------------------------------------------------------------------
+// 思路：双指针  其实双指针已经给出来了，同时
+func mergeNum(nums1 []int, m int, nums2 []int, n int) {
+	idx := len(nums1) - 1
+
+	for idx >= 0 {
+		if m-1 < 0 {
+			nums1[idx] = nums2[n-1]
+			n--
+		} else if n-1 < 0 {
+			nums1[idx] = nums1[m-1]
+			m--
+		} else {
+
+			if nums1[m-1] > nums2[n-1] {
+				nums1[idx] = nums1[m-1]
+				m--
+			} else {
+				nums1[idx] = nums2[n-1]
+				n--
+			}
+
+		}
+		idx--
+	}
+
+}
+
+// 第一个错误行为-------------------------------------------------------------------------------------------------------
+// 思路：两分
+func firstBadVersion(n int) int {
+	s, e := 1, n
+
+	for s < e {
+		mid := (s + e) / 2
+		if true {
+			s = mid + 1
+		} else {
+			e = mid
+		}
+	}
+
+	return s
+}
+
+// 有效的平方和 -------------------------------------------------------------------------------------------------------
+// 思路：两分，1-num直接一定存在1个数等于
+func isPerfectSquare(num int) bool {
+	if num == 1 {
+		return true
+	}
+	s, e := 1, num
+
+	for s < e {
+		mid := (s + e) / 2
+
+		if mid*mid < num {
+			s = mid + 1
+		} else if mid*mid > num {
+			e = mid
+		} else {
+			return true
+		}
+	}
+
+	return false
 }

@@ -3854,3 +3854,7 @@
         func (*noCopy) Unlock() {}
     -检测: 使用 go vet 工具可以检测
 
+  66.分布式事务seata-golang
+    -启动seata服务
+        -go run main.go start -config xxx
+    -

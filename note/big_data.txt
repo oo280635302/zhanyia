@@ -1,0 +1,97 @@
+------------------------------------------------elastic_search----------------------------------------------------------
+
+    相关资料：
+        入门：https://www.cnblogs.com/sunsky303/p/9438737.html
+        官网：https://www.elastic.co
+
+    1.概念
+        es：有优于平时关系型数据库的查询性能，放弃一些新增/更新的性能
+        -NRT
+            接近实时的搜索
+        -集群
+            es从以开始就有集群的概念
+        -节点
+            es集群中的某服务器
+        -索引
+            类似与mysql的数据库
+        -类型
+            类似于mysql的表
+        -文档
+            类似于mysql的每条数据
+        -分片
+            将索引分成多份并能保存再不同的服务器上
+            -可以水平分割/扩展内容容量
+            -可以发布时并发的再分片上操作
+        -复制
+            熔灾备份
+        -每个文档中的字段都可设置为索引，es中不建立索引就不能搜索
+            -字段索引分类：
+                -analyzed
+                    -将分析字段，析分成多个关键词的搜索
+                -not_analyzed
+                    -不分析，整个字段为一个关键词
+                -no
+                    -非索引
+    2.安装
+        -先需要安装java
+        -地址：https://www.elastic.co/cn/downloads/elasticsearch
+        -修改配置的地址：&es/config/elasticsearch.yml
+
+    3.原理
+        -es使用倒排索引，为每个参数都会建立索引
+        -倒排索引：
+            将关键词提炼出来
+            关键字与文档的对应关系保存
+            再对关键字做索引排序
+        -posting list 文档id
+            posting-list需要增序保存
+            -由FST压缩技术放在缓存
+        -term dictionary 词典
+            -关键字与posting-list的对应表
+        -term index 词典索引
+            -将词典的前缀提炼出来建立，将term-dictionary析分成块 前缀与词典的对应表
+        -FST:
+            每个id只保存他对应的长度的字节，并且保存的id是他离上个id的增量，如1，3保存1，2
+            -bitmap:
+                用0/1表示这个数存在不存在根据需要表示的数的增长长度线性增长，如:1,3,4保存为1011
+            -roaring bitmaps:
+                以65535为界限保存一个块的保存，用商/余数表示一组id
+        -联合索引：
+            -将查询出来的结果做 与 运算
+        -原理总结:
+            -es是尽力将磁盘的数据保存再内存上，先是term dictionary做出词典与文档id的对应关系表(即倒排索引)，考虑到冗余的int的保存方式，采用FST压缩了posting-list的空间
+            最后将term-dictionary的前缀提出来做term-index与term-dictionary做对应表。
+        -注意点：
+            -1.针对不需要的用于查询的字段，要标注不需要索引，因为他会默认创建索引，索引过多的情况下，会减少插入/更新性能
+            -2.对于string类型不需要用关键词索引的就不用analysis，不要随意浪费性能
+            -3.id最好选择由规律的短id，随机性过高的id会影响查询性能
+                原因：
+                    -1.FST，保存数据是增量保存
+                    -2.用文档id去磁盘找数据时，es磁盘是按segment分布
+
+    4.API
+        -整体交互都是rest风格的http请求
+        -查看集群健康：
+            GET "localhost:9200/_cat/heath?v"
+        -查看集群节点信息
+            GET "localhost:9200/_cat/nodes?v"
+        -查看集群中的索引信息
+            GET "localhost:9200/_cat/indices?v"
+        -创建一个索引
+            PUT "localhost:9200/index_test" -d '{"settings":{}}'
+        -删除一个索引
+            DELETE "localhost:9200/index_test"
+        -创建一个索引的mapping
+            PUT 'localhost:9200/index_test/_mapping/test_type' -d '{"test_type":{}}'
+        -新增文档
+            PUT 'localhost:9200/index_test/test_type/1' -d '{}'
+        -更新文档
+            POST 'localhost:9200/index_test/test_type/1' -d '{}'
+        -删除文档
+            DELETE 'localhost:9200/index_test/test_type/1'
+        -GET 'localhost:9200/index_test/test_type/1?pretty'
+
+
+-------------------------------------------------hbase----------------------------------------------------------------
+
+    1.文档地址：https://www.w3cschool.cn/hbase_doc/hbase_doc-oge42vrm.html
