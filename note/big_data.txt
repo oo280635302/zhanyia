@@ -96,8 +96,15 @@
 
     1.文档地址：https://www.w3cschool.cn/hbase_doc/hbase_doc-oge42vrm.html
     2.原理
-
+        -客户端连接zk的地址就行，所有数据都先走zookeeper
+        -HMaser管理所有的HRegionServer
+        -1个HRegionServer有HLog和多个HRegion
+            -HLog存操作日志（容灾）
+            -HRegion存实际数据，分为MemoryStore和StoreFile
+            -最终都存在 HDFS 里面
+        -
     3.命令行API
+        -列族 'info1:name'
         -$/bin/hbase shell 启动交互界面
         -list
             打印所有表
@@ -107,6 +114,12 @@
             修改表
         -drop 表名
             删除表(需要把表置为不可用才可删除)
-        -
-
+        -put 表名 rowkey 列族 值
+            新增（修改）数据
+        -scan 表名 {过滤条件}
+            查询数据
+        -get 表名.rowkey {过滤条件}
+            查询数据
+        -delete 表名 rowkey 列族
+            删除数据
     4.优化
