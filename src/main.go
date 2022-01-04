@@ -12,6 +12,8 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"github.com/tsuna/gohbase"
+	"github.com/tsuna/gohbase/hrpc"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
@@ -395,4 +397,13 @@ func csMongo() {
 		err = cur.Decode(&a)
 		fmt.Println(err, a)
 	}
+}
+
+func csHBase() {
+	hClient := gohbase.NewClient("localhost:123456")
+	defer hClient.Close()
+	hrpc.NewGetStr(context.Background(), "gpsrange", "orderId", hrpc.Families(map[string][]string{
+		"info": []string{"123", "234"},
+	}))
+
 }
