@@ -43,8 +43,9 @@ func main() {
 	fmt.Println("run start")
 	program.Ingress()
 
-	csRedis()
-	return
+	a := strings.TrimLeft(".........", "A")
+	fmt.Println(a)
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
