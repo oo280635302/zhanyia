@@ -43,8 +43,7 @@ func main() {
 	fmt.Println("run start")
 	program.Ingress()
 
-	a := strings.TrimLeft(".........", "A")
-	fmt.Println(a)
+	fmt.Println("MQTT FUCK CODE")
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
