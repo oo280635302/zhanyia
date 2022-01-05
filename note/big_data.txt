@@ -167,4 +167,17 @@
             -用户或者应用可以向NameNode发送缓存指令（缓存哪个文件，缓存多久）， 缓存池的概念用于管理一组缓存的权限和资源
         4.HDFS Federation
             NameNode的集群
-
+            每个NameNode管理一个namespace volumn,所有volumn构成文件系统的元数据
+            每个NameNode同时维护一个Block Pool，保存Block的节点映射等信息
+            每个NameNode相互独立
+        5.HA 高可用
+            -用secondaryNameNode在大型项目主节点失效切换时会耗用大量时间
+            -采用HA的HDFS集群配置两个NameNode，分别处于Active和Standby状态。当Active NameNode故障之后，Standby接过责任继续提供服务
+            -实现逻辑：
+                1.主备需共享edit log存储
+                    NFS：传统的网络文件系统
+                    QJM：quorum journal manager一个多节点选举制的日志系统
+                2.DataNode需要同时往主备发送Block Report
+                    保证数据一致
+                3.客户端需要配置failover模式
+                    客户端配置有多个nameNode地址，不断尝试选择成功的地址。
