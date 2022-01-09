@@ -102,7 +102,21 @@
             -HLog存操作日志（容灾）
             -HRegion存实际数据，分为MemoryStore和StoreFile
             -最终都存在 HDFS 里面
-        -
+        -写数据：
+            1.先向zk请求获取meta表所在regionSever位置
+            2.向meta表请求获取到需要写的表的RegionSever的位置
+            3.写在Log上，在写到MemoryStore里面
+        -FLUSH：
+            将内存数据写到磁盘里面，周期性
+        -读数据：
+            1.先向zk请求获取meta表所在regionSever位置
+            2.向meta表请求获取到需要读的表的RegionSever的位置
+            3.在RegionSever上同时读取内存和磁盘的对应数据然后merge返回
+            4.将磁盘的数据放入block Cache里面，方便下次读取
+        -Compact:
+            合并 HFile，通过配置值进行触发
+            major_compact全合并，生产环境一般关闭！
+
     3.命令行API
         -列族 'info1:name'
         -$/bin/hbase shell 启动交互界面
