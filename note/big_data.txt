@@ -116,6 +116,17 @@
         -Compact:
             合并 HFile，通过配置值进行触发
             major_compact全合并，生产环境一般关闭！
+        -数据的真正删除时间：
+            flush 只删除内存中重复的数据（磁盘中还存在）
+            major_compact 会删除磁盘上被标记的数据（真正意义上的删除）
+        -Split:
+            当storeFile 大于配置值时出发
+            影响：
+                1. 因为split操作实际上并没有进行store file的物理拆分，而只是逻辑拆分，所以可以在秒级完成。
+                2. 在上述操作流程中，父region关闭而子region未开启，此时客户端请求会
+                    抛出NotServingRegionException，客户端对此场景应当采用尝试机制。
+                3. split操作之后会进行一次major compaction操作，将原region中的数据文件重写到新region的storefile中，
+                    合并重写完成会自动用新生成的storefile替换原来的引用文件，这个过程会消耗大量的磁盘IO资源。
 
     3.命令行API
         -列族 'info1:name'
