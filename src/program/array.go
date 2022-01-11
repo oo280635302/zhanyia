@@ -1,5 +1,7 @@
 package program
 
+import "fmt"
+
 // 提莫攻击的持续时长
 // 思路：每次都保存上次攻击的结束时间 如果当前攻击的时间点小于上次攻击结算时间点 持续时长只增加当前时间+持续时间-上次结算时间点即可
 func findPoisonedDuration(timeSeries []int, duration int) int {
@@ -15,4 +17,43 @@ func findPoisonedDuration(timeSeries []int, duration int) int {
 		last = v + duration
 	}
 	return res
+}
+
+// 寻找两个正序数组的中位数
+// 思路：双指针，去掉两个数组的最小直到找到中间数为止
+func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
+	i, j, k := 0, 0, 0
+	last, cur := 0, 0
+	m, n := len(nums1), len(nums2)
+	mid := (m + n) / 2 // 中间数，如果是偶数应该后一个
+
+	for k <= mid {
+		last = cur
+		// 当i,j都没到达数组的末尾时比较
+		if i < m && j < n {
+			if nums1[i] < nums2[j] {
+				cur = nums1[i]
+				i++
+			} else {
+				cur = nums2[j]
+				j++
+			}
+			// i<m说明j到达尾巴了，移动i
+		} else if i < m {
+			cur = nums1[i]
+			i++
+			// 说i到达尾巴了，移动j
+		} else {
+			cur = nums2[j]
+			j++
+		}
+		k++
+		fmt.Println(last, cur, k, mid)
+	}
+
+	if (m+n)%2 == 1 {
+		return float64(cur)
+	}
+
+	return float64(last+cur) / 2
 }

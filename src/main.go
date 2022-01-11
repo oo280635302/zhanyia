@@ -19,7 +19,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
-	"log"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -42,7 +41,6 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	program.Ingress()
-
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -56,40 +54,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func WeekByDate(t time.Time) string {
-
-	yearDay := t.YearDay()
-
-	yearFirstDay := t.AddDate(0, 0, -yearDay+1)
-
-	firstDayInWeek := int(yearFirstDay.Weekday())
-
-	//今年第一周有几天
-
-	firstWeekDays := 1
-
-	if firstDayInWeek != 0 {
-
-		firstWeekDays = 7 - firstDayInWeek + 1
-
-	}
-
-	var week int
-
-	if yearDay <= firstWeekDays {
-
-		week = 1
-
-	} else {
-
-		week = (yearDay-firstWeekDays)/7 + 2
-
-	}
-
-	return fmt.Sprintf("%d第%d周", t.Year(), week)
-
 }
 
 func Mqtt() {
@@ -209,41 +173,23 @@ type PullStep struct {
 }
 
 func csGorm() {
-	db, err := gorm.Open("mysql", "v5prodmcs:Gb7YJ#FP7%W866E@79R@tcp(rm-2ze75q86i46cbp80f0o.mysql.rds.aliyuncs.com:3306)/employ_center?charset=utf8mb4")
+	db, err := gorm.Open("mysql", "v5prodmcs:Gb7YJ#FP7%W866E@79R@tcp(rm-2ze75q86i46cbp80f0o.mysql.rds.aliyuncs.com:3306)/orders?charset=utf8mb4")
 	if err != nil {
 		fmt.Println("1", err)
 		return
 	}
 	defer db.Close()
 	db.LogMode(true)
-
-	clear := make([]ClearRule, 1)
-	b, _ := json.Marshal(clear)
-	clearRule := string(b)
-
-	singles := make([]PullSingle, 30)
-	for idx := range singles {
-		singles[idx].Unit = 1
-		singles[idx].Type = 0
+	rows, err := db.Table("orders").Select("id").Where("id in (?)", []int64{1920, 1921, 1922}).Rows()
+	if err != nil {
+		return
 	}
-	b, _ = json.Marshal(singles)
-	single := string(b)
-
-	steps := make([]PullStep, 10)
-	for idx := range steps {
-		steps[idx].Step = make([]PullSingle, 1)
-		steps[idx].Step[0].Unit = 1
-		steps[idx].Step[0].Type = 0
+	defer rows.Close()
+	for rows.Next() {
+		var id int64
+		rows.Scan(&id)
+		fmt.Println(id)
 	}
-	b, _ = json.Marshal(steps)
-	step := string(b)
-
-	res := db.Exec("insert into `employ_center`.`employ_score_config`(`is_open`, `day_max_limit`, `day_min_limit`,  `max_limit`,`min_limit`,`clear_type`,  `is_keep`, `clear_rule`, `single`,  `step`, `updated`,`app_key`, `version`) values (?,?,?, ?,?,?, ?,?,?, ?,?,?,?)",
-		false, 0, 0, 0, 0, 0, false, clearRule, single, step, time.Now().Unix(), "123", 1)
-	if nil != res.Error {
-		log.Println("init employ score config error:", res.Error)
-	}
-	fmt.Println("成功")
 }
 
 func csMysql() {
