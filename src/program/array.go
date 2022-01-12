@@ -1,6 +1,9 @@
 package program
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // 提莫攻击的持续时长
 // 思路：每次都保存上次攻击的结束时间 如果当前攻击的时间点小于上次攻击结算时间点 持续时长只增加当前时间+持续时间-上次结算时间点即可
@@ -56,4 +59,25 @@ func findMedianSortedArrays(nums1 []int, nums2 []int) float64 {
 	}
 
 	return float64(last+cur) / 2
+}
+
+// 递增的三元子序列
+// 思路：贪心 让1<2的同时 1,2尽可能小 然后找到3  "贪"字诀
+func increasingTriplet(nums []int) bool {
+	n := len(nums)
+	if n < 3 {
+		return false
+	}
+
+	st1, st2 := nums[0], math.MaxInt64 // 1号从头开始， 2号先设置为无限大(以方便找到比1大的数)
+	for _, v := range nums[1:] {
+		if v > st2 { // 当前值 > 2号 说明找到了
+			return true
+		} else if v > st1 { // 2号 > 当前值 > 1号 说明他是当前的最小2号
+			st2 = v
+		} else { // 当前值 < 1号 说明他是当前最小1号
+			st1 = v
+		}
+	}
+	return false
 }
