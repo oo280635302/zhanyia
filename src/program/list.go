@@ -1,5 +1,7 @@
 package program
 
+import "sort"
+
 // 删除当前节点 -------------------------------------------------------------------------------------------------------
 func deleteNode(node *ListNode) {
 	if node.Next != nil {
@@ -156,4 +158,51 @@ func hasCycle(head *ListNode) bool {
 	}
 
 	return false
+}
+
+// 合并K个升序链表
+// 思路： 排序，再组合   有更优解：分治2个链表2个链表进行合并
+func mergeKLists(lists []*ListNode) *ListNode {
+	arr := make([]int, 0)
+
+	for _, list := range lists {
+		for list != nil {
+			arr = append(arr, list.Val)
+			list = list.Next
+		}
+	}
+
+	if len(arr) == 0 {
+		return nil
+	}
+
+	sort.Ints(arr)
+
+	res := &ListNode{Val: arr[0]}
+	cur := res
+
+	for _, v := range arr[1:] {
+		cur.Next = &ListNode{Val: v}
+		cur = cur.Next
+	}
+
+	return res
+}
+
+// 两两交换链表中的节点
+// 思路：链表交换
+func swapPairs(head *ListNode) *ListNode {
+	tmp := &ListNode{Val: 0, Next: head} // 来个辅助头
+
+	cur := tmp
+	for cur.Next != nil && cur.Next.Next != nil { // 只有两个数的时候才交换
+		n1 := cur.Next
+		n2 := cur.Next.Next
+		cur.Next = n2     // 先让2前移
+		n1.Next = n2.Next // 再让1来接管2的小弟
+		n2.Next = n1      // 再让1成为2的小弟
+		cur = n1.Next     // 当前点往后移动2个身位
+	}
+
+	return tmp.Next
 }
