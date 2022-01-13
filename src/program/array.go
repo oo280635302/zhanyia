@@ -81,3 +81,30 @@ func increasingTriplet(nums []int) bool {
 	}
 	return false
 }
+
+// 至少是其他数字两倍的最大数  至少1个数并且大于0
+// 思路：贪心，找到最大数和第二大的数，如果最大数是第二大数的2倍+就说明比数组所有其他数都大2倍+
+func dominantIndex(nums []int) int {
+	firstMaxNum := nums[0]
+	secondMaxNum := 0
+	firstIdx := 0
+
+	for idx, val := range nums[1:] {
+
+		if val > firstMaxNum { // 如果值比当前最大还大就成为最大，并把原最大值给老二
+			secondMaxNum = firstMaxNum
+			firstMaxNum = val
+			firstIdx = idx + 1
+		} else if val > secondMaxNum { // 第二大 < val < 最大，那他就是第二大
+			secondMaxNum = val
+		}
+
+		fmt.Println(firstMaxNum, secondMaxNum)
+	}
+
+	if firstMaxNum >= secondMaxNum*2 {
+		return firstIdx
+	}
+
+	return -1
+}
