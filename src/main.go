@@ -41,6 +41,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	program.Ingress()
+
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

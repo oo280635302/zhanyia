@@ -1,6 +1,7 @@
 package program
 
 import (
+	"container/heap"
 	"fmt"
 	"math"
 )
@@ -108,3 +109,37 @@ func dominantIndex(nums []int) int {
 
 	return -1
 }
+
+// 查找和最小的 K 对数字
+// 逻辑：堆 每次推出最小的同时，推入比他大的组合进行堆排序，只要找够k对位置
+func kSmallestPairs(nums1, nums2 []int, k int) (ans [][]int) {
+	m, n := len(nums1), len(nums2)
+	h := hp{nil, nums1, nums2}
+	for i := 0; i < k && i < m; i++ { // 先将 第一个数组的 推进去排序
+		h.data = append(h.data, pair{i, 0})
+	}
+	for h.Len() > 0 && len(ans) < k {
+		p := heap.Pop(&h).(pair) // 堆在推的时候排序在推出
+		i, j := p.i, p.j         // 当前最大ij
+		ans = append(ans, []int{nums1[i], nums2[j]})
+		if j+1 < n {
+			heap.Push(&h, pair{i, j + 1}) // 因为当前i+1都有，所有只需要j+1的数据即可  其他数据要么都是i，j+1的 要么已经被推出去了
+		}
+	}
+	return
+}
+
+type pair struct{ i, j int }
+type hp struct {
+	data         []pair
+	nums1, nums2 []int
+}
+
+func (h hp) Len() int { return len(h.data) }
+func (h hp) Less(i, j int) bool {
+	a, b := h.data[i], h.data[j]
+	return h.nums1[a.i]+h.nums2[a.j] < h.nums1[b.i]+h.nums2[b.j]
+}                                // 对比 和
+func (h hp) Swap(i, j int)       { h.data[i], h.data[j] = h.data[j], h.data[i] }
+func (h *hp) Push(v interface{}) { h.data = append(h.data, v.(pair)) }
+func (h *hp) Pop() interface{}   { a := h.data; v := a[len(a)-1]; h.data = a[:len(a)-1]; return v } // 逆序，最大的是最后一个 小顶堆
