@@ -112,6 +112,7 @@ func dominantIndex(nums []int) int {
 
 // 查找和最小的 K 对数字
 // 逻辑：堆 每次推出最小的同时，推入比他大的组合进行堆排序，只要找够k对位置
+// 因为正序排序，对于已经被推出去的组合比他大的数要么i+1，要么j+1
 func kSmallestPairs(nums1, nums2 []int, k int) (ans [][]int) {
 	m, n := len(nums1), len(nums2)
 	h := hp{nil, nums1, nums2}
