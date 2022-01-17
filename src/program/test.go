@@ -3,6 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	a := totalMoney(9)
+	a := countVowelPermutation(10000)
 	fmt.Println(a)
 }

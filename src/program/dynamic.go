@@ -649,3 +649,33 @@ func climbStairs(n int) int {
 
 	return clim[n]
 }
+
+// 统计元音字母序列的数目
+// 思路：动态规划，规划出每个序列的次数，再跟据上个尾元音判断当前序列每个原因出现的次数
+func countVowelPermutation(n int) int {
+	//tab := map[byte][]byte{
+	//	'a':{'e'},
+	//	'e':{'a','i'},
+	//	'i':{'a','e','o','u'},
+	//	'o':{'i','u'},
+	//	'u':{'a'},
+	//}
+
+	m := make([][]int, 0)
+	m = append(m, []int{1, 1, 1, 1, 1})
+	res := 5
+
+	for i := 0; i < n-1; i++ {
+		tmp := m[i]
+		cur := make([]int, 5)
+		cur[0] = (tmp[1] + tmp[2] + tmp[4]) % 1000000007
+		cur[1] = (tmp[0] + tmp[2]) % 1000000007
+		cur[2] = (tmp[1] + tmp[3]) % 1000000007
+		cur[3] = (tmp[2]) % 1000000007
+		cur[4] = (tmp[2] + tmp[3]) % 1000000007
+		m = append(m, cur)
+		res = (tmp[0] + 2*tmp[1] + 4*tmp[2] + 2*tmp[3] + tmp[4]) % 1000000007
+	}
+
+	return res
+}

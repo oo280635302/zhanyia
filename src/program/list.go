@@ -1,6 +1,9 @@
 package program
 
-import "sort"
+import (
+	"math/rand"
+	"sort"
+)
 
 // 删除当前节点 -------------------------------------------------------------------------------------------------------
 func deleteNode(node *ListNode) {
@@ -205,4 +208,26 @@ func swapPairs(head *ListNode) *ListNode {
 	}
 
 	return tmp.Next
+}
+
+// 链表随机节点
+// 思路：抽样水塘， 时间换空间，每次弹出都是o(n)
+type solution struct {
+	List *ListNode
+}
+
+func constructor(head *ListNode) solution {
+	return solution{head}
+}
+
+func (this *solution) getRandom() int {
+	i := 1
+	ans := 0
+	for tmp := this.List; tmp != nil; tmp = tmp.Next {
+		if rand.Intn(1) == 0 {
+			ans = tmp.Val
+		}
+		i++
+	}
+	return ans
 }

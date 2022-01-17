@@ -40,7 +40,10 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
+
+	s := time.Now().UnixNano()
 	program.Ingress()
+	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
