@@ -4,6 +4,8 @@ import (
 	"container/heap"
 	"fmt"
 	"math"
+	"sort"
+	"strconv"
 )
 
 // 提莫攻击的持续时长
@@ -144,3 +146,44 @@ func (h hp) Less(i, j int) bool {
 func (h hp) Swap(i, j int)       { h.data[i], h.data[j] = h.data[j], h.data[i] }
 func (h *hp) Push(v interface{}) { h.data = append(h.data, v.(pair)) }
 func (h *hp) Pop() interface{}   { a := h.data; v := a[len(a)-1]; h.data = a[:len(a)-1]; return v } // 逆序，最大的是最后一个 小顶堆
+
+// 最小绝对差
+// 思路：排序后遍历，绝对差最小的一定是相邻的，差值相等就追加/小于就重置返回
+func minimumAbsDifference(arr []int) [][]int {
+	sort.Ints(arr)
+
+	res := make([][]int, 0)
+
+	min := arr[1] - arr[0]
+
+	for idx, v := range arr[1:] {
+		cur := v - arr[idx]
+		if cur == min {
+			res = append(res, []int{arr[idx], v})
+		} else if cur < min {
+			res = append([][]int{}, []int{arr[idx], v})
+		}
+	}
+
+	return res
+}
+
+// 最小时间差
+// 思路:转为数字，再用最小绝对差的方式找最小，需要注意的是跨天的哪一点
+func findMinDifference(timePoints []string) int {
+	times := make([]int, 0)
+	for _, v := range timePoints {
+		h, _ := strconv.Atoi(v[0:2])
+		m, _ := strconv.Atoi(v[3:5])
+		times = append(times, h*60+m)
+	}
+	sort.Ints(times)
+	times = append(times, times[0]+1440) // 跨天那一天
+	ans := times[1] - times[0]
+	for idx, v := range times[1:] {
+		if v-times[idx] < ans {
+			ans = v - times[idx]
+		}
+	}
+	return ans
+}

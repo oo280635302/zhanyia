@@ -342,3 +342,41 @@ func divide(dividend int, divisor int) int {
 
 	return dividend / divisor
 }
+
+// 宝石与石头
+func numJewelsInStones(jewels string, stones string) int {
+	isJewel := make(map[int32]bool)
+	for _, v := range jewels {
+		isJewel[v] = true
+	}
+	ans := 0
+	for _, v := range stones {
+		if isJewel[v] {
+			ans++
+		}
+	}
+	return ans
+}
+
+// 最长回文子序列  - 子序列定义为：不改变剩余字符顺序的情况下，删除某些字符或者不删除任何字符形成的一个序列
+func longestPalindromeSubSeq(s string) int {
+	// 由i,j来表示左边界与右边界，如果i > j 就为0
+	n := len(s)
+	dp := make([][]int, n)
+	for i := range dp {
+		dp[i] = make([]int, n)
+	}
+
+	// 边界是逐渐扩大的 固定右边界 移动左边界
+	for j := 0; j < n; j++ {
+		dp[j][j] = 1                  // i=j，就一个字符说明是1的回文符号
+		for i := j - 1; i >= 0; i-- { // 固定右边界 移动左边界
+			if s[i] == s[j] { // 如果相同 = 缩小范围2后的字符的最大回文数+2
+				dp[i][j] = dp[i+1][j-1] + 2 // 如果i+1>j-1时=2，i+1=j-1时=3
+			} else { // 如果不相同 = 减少左边界的字符串 或者 减少右边界字符串 里面最大回文数
+				dp[i][j] = max(dp[i+1][j], dp[i][j-1])
+			}
+		}
+	}
+	return dp[0][n-1]
+}

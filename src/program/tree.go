@@ -485,3 +485,99 @@ func isSymmetricRecur(left, right *TreeNode) bool {
 	}
 	return isSymmetricRecur(left.Left, right.Right) && isSymmetricRecur(left.Right, right.Left)
 }
+
+// 单词接龙 II  从wordList里面找到beginWord到endWord最短的变化路线
+func findLadders(beginWord string, endWord string, wordList []string) [][]string {
+	graph := map[string]map[string]bool{}
+	wordMap := map[string]bool{}
+	for _, v := range wordList {
+		wordMap[v] = true
+	}
+
+	// 字典里面没有endWord 直接GG
+	if !wordMap[endWord] {
+		return [][]string{}
+	}
+
+	//1.广度优先遍历创图
+	queue := []string{beginWord}
+	layer := 0
+	wordMap[beginWord] = false
+	isFound := false
+	for len(queue) > 0 {
+		layer++
+		newQueue := []string{}
+
+		// 层序遍历
+		for _, qv := range queue {
+			s := []byte(qv)
+			canGo := map[string]bool{}
+
+			// 依次变化单个字符
+			for i, v := range s {
+				// 只存在小写字母
+				for c := 'a'; c <= 'z'; c++ {
+
+					s[i] = byte(c)
+					newWord := string(s)
+					// 如果正好找到endWord那就可以结束层次遍历了
+					if newWord == endWord {
+						isFound = true
+					}
+					// 找到了可以变化的单词
+					if wordMap[newWord] {
+						canGo[newWord] = true
+						newQueue = append(newQueue, newWord)
+					}
+				}
+				// 将变化了的字符变回去
+				s[i] = v
+			}
+
+			// 该层能变化到的单词都加入该单词的图下
+			graph[qv] = canGo
+		}
+
+		// 如果找到endWord 直接结束
+		if isFound {
+			break
+		}
+
+		// 去掉已遍历的单词
+		for _, vi := range newQueue {
+			wordMap[vi] = false
+		}
+		queue = newQueue
+	}
+
+	//2.深度优先遍历寻找路径
+	res := make([][]string, 0)
+	var dfs = func(beg string, num int) {}
+	path := []string{beginWord}
+
+	dfs = func(beg string, num int) {
+		if num == layer {
+			// 找到了
+			if beg == endWord {
+				// 拷贝 不能直接把Path加入结果中 因为回溯时Path会变化
+				dst := make([]string, len(path))
+				copy(dst, path)
+				res = append(res, dst)
+			}
+			return
+		}
+		for k, _ := range graph[beg] {
+
+			// 将当前路径插入
+			path = append(path, k)
+			// 递归找
+			dfs(k, num+1)
+			// 找到了就把之前的路径清理掉
+			path = path[:len(path)-1]
+		}
+	}
+
+	dfs(beginWord, 0)
+
+	return res
+}

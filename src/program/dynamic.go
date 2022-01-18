@@ -679,3 +679,32 @@ func countVowelPermutation(n int) int {
 
 	return res
 }
+
+// 第 k 个数  3，5，7 组成的的k个数
+func getKthMagicNumber(k int) int {
+	dp := make([]int, k)
+	dp[0] = 1
+
+	// 标记3、5、7 三个数当前最小值的索引位置
+	cur3, cur5, cur7 := 0, 0, 0
+	for i := 1; i < k; i++ {
+		v1 := dp[cur3] * 3
+		v2 := dp[cur5] * 5
+		v3 := dp[cur7] * 7
+		min := min(v1, min(v2, v3)) // 每次都获取当前所有3、5、7 *对应值最小的数 （动规）
+
+		if min == v1 { // eg: 当前cur3 = 1, 下一个*3正好大于当前的就是cur3 = 2
+			cur3++
+		}
+		if min == v2 {
+			cur5++
+		}
+		if min == v3 {
+			cur7++
+		}
+
+		dp[i] = min
+	}
+
+	return dp[k-1]
+}

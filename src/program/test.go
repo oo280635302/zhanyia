@@ -3,6 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	a := countVowelPermutation(10000)
+	a := getKthMagicNumber(6)
 	fmt.Println(a)
 }
