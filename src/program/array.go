@@ -187,3 +187,19 @@ func findMinDifference(timePoints []string) int {
 	}
 	return ans
 }
+
+// 存在重复元素 II
+// 思路：哈希+滑动窗口 用一个map来 保存当前值的前k步所走过的值
+func containsNearbyDuplicate(nums []int, k int) bool {
+	m := make(map[int]bool)
+	for idx, val := range nums {
+		if idx > k { // 如果idx>k，就删除m中第k+1个前的那个值 已确保m保存的是前k个数
+			delete(m, nums[idx-k-1])
+		}
+		if m[val] == true { // 找到了
+			return true
+		}
+		m[val] = true // 没找到把当前值存进去，让下个数来找
+	}
+	return false
+}

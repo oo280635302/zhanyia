@@ -380,3 +380,8 @@ func longestPalindromeSubSeq(s string) int {
 	}
 	return dp[0][n-1]
 }
+
+// 邻位交换的最小次数
+func getMinSwaps(num string, k int) int {
+	return k
+}

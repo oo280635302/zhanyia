@@ -3,6 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	a := getKthMagicNumber(6)
+	a := containsNearbyDuplicate([]int{11, 12, 13, 14, 15}, 2)
 	fmt.Println(a)
 }
