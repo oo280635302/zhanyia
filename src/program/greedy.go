@@ -48,3 +48,50 @@ func canPlaceFlowers(flowerbed []int, n int) bool {
 	}
 	return can >= n
 }
+
+// 石子游戏 IX
+// 思路：把012的关系找清楚
+func stoneGameIX(stones []int) bool {
+	cnt0, cnt1, cnt2 := 0, 0, 0
+	for _, v := range stones {
+		if v%3 == 1 {
+			cnt1++
+		} else if v%3 == 2 {
+			cnt2++
+		} else {
+			cnt0++
+		}
+	}
+
+	/*
+		特殊：0为奇数可以反转胜负，除了石子下完blob赢的情况。
+		1和2组成的两种情况：
+			1 12121212121...
+			2 21212121212...
+
+		Alice作为先手可以任意选择1、2开始。
+		当0偶数：
+			情况1:
+				有1并且1<=2 alice赢
+			情况2：
+				有2并且2<=1 alice赢
+			综上：
+				只要既有1又有2，alice就可以跟据选择不同的路线获胜
+				1 > 0 && 2 > 0
+		当0奇数：
+			0奇数可以反转胜负
+			情况1：
+				1比2多3个及以上  剩余为1101的情况 alice赢
+			情况2：
+				2比1多3个及以上  剩余为2202的情况 alice赢
+			综上：
+				alice就可以跟据选择不同的路线获胜
+				存在情况1和情况2任意一种alice都可以赢
+	*/
+
+	if cnt0%2 == 0 {
+		return cnt1 >= 1 && cnt2 >= 1
+	}
+
+	return cnt1-cnt2 > 2 || cnt2-cnt1 > 2
+}

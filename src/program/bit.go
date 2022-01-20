@@ -126,3 +126,11 @@ func hammingDistance(x int, y int) int {
 	z := x ^ y
 	return bits.OnesCount(uint(z))
 }
+
+// 交换数字   不能使用临时变量
+func swapNumbers(numbers []int) []int {
+	numbers[0] ^= numbers[1] // 当前的0 = number0 ^ number1
+	numbers[1] ^= numbers[0] // number1 ^ [number0 ^ number1] = number0
+	numbers[0] ^= numbers[1] // [number0 ^ number1] ^ number0 = number1
+	return numbers
+}

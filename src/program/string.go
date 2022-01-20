@@ -383,5 +383,34 @@ func longestPalindromeSubSeq(s string) int {
 
 // 邻位交换的最小次数
 func getMinSwaps(num string, k int) int {
-	return k
+	n := len(num)
+
+	// 获取第k个最小秒数
+	lastNumByte := []int32(num)
+	kNumByte := []int32(num)
+	for i := 0; i < k; i++ {
+		nextPermutation(kNumByte)
+	}
+
+	ans := 0
+
+	// 贪心：找到最小交换次数
+	// 每次遇到不相同的数都从右边找最近的相同的数然后整体移动过来，
+	for i := 0; i <= n-1; i++ {
+
+		if lastNumByte[i] != kNumByte[i] { // 从左到右找到不同的数 i
+			for j := i + 1; j <= n-1; j++ {
+				if lastNumByte[i] == kNumByte[j] { // 从右边找到 i相同的j的位置
+
+					for k := j; k > i; k-- { // 将j逐渐移动i位置，并记录步数
+						kNumByte[k], kNumByte[k-1] = kNumByte[k-1], kNumByte[k]
+						ans++
+					}
+					break
+				}
+			}
+		}
+	}
+
+	return ans
 }

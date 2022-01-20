@@ -203,3 +203,39 @@ func containsNearbyDuplicate(nums []int, k int) bool {
 	}
 	return false
 }
+
+// 下一个排列   找到比当前排列正好大一点的新排列
+func nextPermutation(nums []int32) {
+	// 逆序找到 左<右的位置
+	n := len(nums)
+	cur := -1
+	for i := n - 2; i >= 0; i-- {
+		if nums[i] < nums[i+1] {
+			cur = i //cur的右边是降序的
+			break
+		}
+	}
+	// 如果没有说明没有比当前排列更大的排列了
+	if cur == -1 {
+		reserveInt32(nums)
+		return
+	}
+
+	// 找到右边比cur大的位数最低的数
+	for i := n - 1; i > cur; i-- {
+		if nums[i] > nums[cur] {
+			nums[i], nums[cur] = nums[cur], nums[i] // 先交换，因为 nums[i-1] < nums[cur] < nums[i]交换后 cur 右边也可以保证降序
+			reserveInt32(nums[cur+1:])              // 交换后为了保证是正好大一些的排列，将右边降序排列的大数组 翻转 升序排列的小数组 就是正好大一些
+			break
+		}
+	}
+
+}
+func reserveInt32(nums []int32) {
+	l, r := 0, len(nums)-1
+	for l < r {
+		nums[l], nums[r] = nums[r], nums[l]
+		l++
+		r--
+	}
+}
