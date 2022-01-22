@@ -239,3 +239,67 @@ func reserveInt32(nums []int32) {
 		r--
 	}
 }
+
+// 跳跃游戏 IV
+func minJumps(arr []int) int {
+	if len(arr) == 1 {
+		return 0
+	}
+	type jumpStruct struct {
+		i    int // 在arr里面的索引
+		step int // 第几步
+	}
+	n := len(arr)
+	graph := make(map[int][]int) // 用来保存相同数的索引
+	isDead := make(map[int]bool) // 标记1个索引是否被访问过了
+	isDead[0] = true
+	for idx, v := range arr {
+		graph[v] = append(graph[v], idx)
+	}
+
+	path := []jumpStruct{{0, 0}}
+
+	for {
+		// 取出数组的第一个
+		cur := path[0]
+		path = path[1:]
+
+		// 如果它就是最后一个数就结束了
+		if cur.i == n-1 {
+			return cur.step
+		}
+
+		// 不是，找到他能达到的所有位置
+
+		// 纯优化,可以去掉的代码：如果i+1=n-1 说明下一步一定到
+		if cur.i+1 == n-1 {
+			return cur.step + 1
+		}
+
+		// 前一位
+		if cur.i+1 < n && !isDead[cur.i+1] {
+			path = append(path, jumpStruct{i: cur.i + 1, step: cur.step + 1})
+			isDead[cur.i+1] = true
+		}
+
+		// 后一位
+		if cur.i-1 > 0 && !isDead[cur.i-1] {
+			path = append(path, jumpStruct{i: cur.i - 1, step: cur.step + 1})
+			isDead[cur.i-1] = true
+		}
+
+		// 相同数
+		for _, v := range graph[arr[cur.i]] {
+			// 纯优化,可以去掉的代码：如果v=n-1说明下一步一定到
+			if v == n-1 {
+				return cur.step + 1
+			}
+			if !isDead[v] {
+				path = append(path, jumpStruct{i: v, step: cur.step + 1})
+				isDead[v] = true
+			}
+		}
+
+		delete(graph, arr[cur.i]) // 把已经走过的相同数清理掉，减少下次遇到了遍历相同数
+	}
+}
