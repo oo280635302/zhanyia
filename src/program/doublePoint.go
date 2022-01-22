@@ -271,3 +271,15 @@ func closeNum(target, x, y int) int {
 	}
 	return x
 }
+
+// 删除回文子序列
+// 思路：只有a,b 删除 是回文的子序列，如果本身就是回文只需要1次，如果本身不是回文先删除a再删除b只需要2次
+func removePalindromeSub(s string) int {
+	n := len(s)
+	for i := 0; i < n/2; i++ {
+		if s[i] != s[n-i-1] {
+			return 2
+		}
+	}
+	return 1
+}
