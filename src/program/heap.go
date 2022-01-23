@@ -99,3 +99,52 @@ func lastStoneWeight(stones []int) int {
 	}
 	return r
 }
+
+// 股票价格波动
+// 思路：最大金额/最小金额 用两个堆来保存（都是小顶堆，用金额的负数来获取最大金额）
+type StockPrice struct {
+	maxPrice, minPrice heapPair
+	timePriceMap       map[int]int
+	maxTimestamp       int
+}
+
+func ConstructorStockPrice() StockPrice {
+	return StockPrice{timePriceMap: map[int]int{}}
+}
+func (sp *StockPrice) Update(timestamp, price int) {
+	heap.Push(&sp.maxPrice, timePrice{-price, timestamp})
+	heap.Push(&sp.minPrice, timePrice{price, timestamp})
+	sp.timePriceMap[timestamp] = price
+	if timestamp > sp.maxTimestamp {
+		sp.maxTimestamp = timestamp
+	}
+}
+
+func (sp *StockPrice) Current() int {
+	return sp.timePriceMap[sp.maxTimestamp]
+}
+func (sp *StockPrice) Maximum() int {
+	for {
+		if p := sp.maxPrice[0]; -p.price == sp.timePriceMap[p.timestamp] {
+			return -p.price
+		}
+		heap.Pop(&sp.maxPrice)
+	}
+}
+func (sp *StockPrice) Minimum() int {
+	for {
+		if p := sp.minPrice[0]; p.price == sp.timePriceMap[p.timestamp] {
+			return p.price
+		}
+		heap.Pop(&sp.minPrice)
+	}
+}
+
+type timePrice struct{ price, timestamp int }
+type heapPair []timePrice
+
+func (h heapPair) Len() int            { return len(h) }
+func (h heapPair) Less(i, j int) bool  { return h[i].price < h[j].price }
+func (h heapPair) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *heapPair) Push(v interface{}) { *h = append(*h, v.(timePrice)) }
+func (h *heapPair) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
