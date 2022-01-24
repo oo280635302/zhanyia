@@ -1,6 +1,9 @@
 package program
 
-import "fmt"
+import (
+	"fmt"
+	"math"
+)
 
 // 将有序数组转换为二叉搜索树-------------------------------------------------------------------------------------------
 // 思路：递归 每次都从正中间切开	4ms/4.4mb
@@ -578,6 +581,73 @@ func findLadders(beginWord string, endWord string, wordList []string) [][]string
 	}
 
 	dfs(beginWord, 0)
+
+	return res
+}
+
+// 到达目的地的第二短时间
+// 思路：广度优先，找到每个节点能走的路线，从1开始走记下被走到的最短/次短路径，最后求出总的时间
+func secondMinimum(n int, edges [][]int, time, change int) int {
+
+	// 1.获取每个节点可以到达的节点位置
+	graph := make([][]int, n+1)
+	for _, v := range edges {
+		graph[v[0]] = append(graph[v[0]], v[1])
+		graph[v[1]] = append(graph[v[1]], v[0])
+	}
+
+	dp := make([][2]int, n+1)
+	for idx, _ := range dp {
+		dp[idx][0] = math.MaxInt16
+		dp[idx][1] = math.MaxInt16
+	}
+	dp[1][0] = 0
+
+	type pair struct {
+		val  int
+		step int
+	}
+
+	// 2.广度优先遍历，直到走到所有的步数的最短次短为止
+	arr := []pair{{1, 0}}
+	for len(arr) != 0 {
+		p := arr[0]
+		arr = arr[1:]
+
+		for _, v := range graph[p.val] {
+			curStep := p.step + 1
+
+			// 最短
+			if curStep < dp[v][0] {
+
+				dp[v][0] = curStep
+				arr = append(arr, pair{v, curStep})
+
+				// 次短
+			} else if curStep > dp[v][0] && curStep < dp[v][1] {
+
+				dp[v][1] = curStep
+				arr = append(arr, pair{v, curStep})
+
+			}
+			// 已经走过了并且时间不再范围之间的排除
+		}
+	}
+
+	secondStep := dp[n][1]
+	fmt.Println(secondStep)
+
+	// 3.计算时间
+	res := 0
+	for i := 1; i <= secondStep; i++ {
+		// 如果
+		use := res%(change*2) - change
+		if use >= 0 {
+			res += change - use
+		}
+
+		res += time
+	}
 
 	return res
 }

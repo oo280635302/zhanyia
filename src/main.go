@@ -19,12 +19,14 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
+	"math"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
 	"net/url"
 	"os"
 	"os/signal"
+	"strconv"
 	"strings"
 	"syscall"
 	"time"
@@ -58,6 +60,22 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+func RandAB() string {
+	n := rand.Intn(10)
+	if n < 1 {
+		return "B"
+	}
+	return "A"
+}
+
+func RoundFormatFloat(f float64, scale int) float64 {
+	result, _ := strconv.ParseFloat(strconv.FormatFloat(f, 'f', scale+1, 64), 64)
+
+	pow := math.Pow(10, float64(scale))
+
+	return math.Round(result*pow) / pow
 }
 
 func Mqtt() {
