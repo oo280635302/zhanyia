@@ -17,3 +17,9 @@ func totalMoney(n int) int {
 	res := x*21 + (1+x)*x/2*7 + (y * x) + ((1 + y) * y / 2)
 	return res
 }
+
+// 比赛中的配对次数
+// 思路：每两队晋级1对，奇数自动晋级一对，比赛场数n-1
+func numberOfMatches(n int) int {
+	return n - 1
+}
