@@ -517,3 +517,42 @@ func rotate2D(matrix [][]int) {
 		}
 	}
 }
+
+// 排列序列    找由n个数字组成排序的第k个数
+func getPermutation(n int, k int) string {
+	// 获取各个位数的递归值 n!
+	factorial := make([]int, n)
+	factorial[0] = 1
+	for i := 1; i < n; i++ {
+		factorial[i] = factorial[i-1] * i
+	}
+
+	ans := ""
+
+	// 已用数字标记
+	valid := make([]int, n+1)
+	for i := 0; i < len(valid); i++ {
+		valid[i] = 1
+	}
+
+	// 因为 k <= (n-1)! 为了方便计算排序除所以k-1
+	k--
+	for i := 1; i <= n; i++ {
+		// 获取当前位数的排序该有的
+		order := k/factorial[n-i] + 1
+
+		// 根据排序找到当前没被使用的当前位数的数字
+		for j := 1; j <= n; j++ {
+			order -= valid[j]
+			if order == 0 {
+				ans += strconv.Itoa(j)
+				valid[j] = 0
+				break
+			}
+		}
+
+		// 摸掉已经被使用的位数阶乘
+		k %= factorial[n-i]
+	}
+	return ans
+}

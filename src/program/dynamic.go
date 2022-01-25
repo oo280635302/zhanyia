@@ -579,12 +579,11 @@ func SplitArray(nums []int, m int) int {
 
 // 矩阵中的最长递增路径--------------------------------------------------------------------------------------------------
 // 思路： 拓扑排序 52 ms,6.8 MB
-var (
-	dirs          = [][]int{[]int{-1, 0}, []int{1, 0}, []int{0, -1}, []int{0, 1}}
-	rows, columns int
-)
-
 func longestIncreasingPath(matrix [][]int) int {
+	var (
+		dirs          = [][]int{[]int{-1, 0}, []int{1, 0}, []int{0, -1}, []int{0, 1}}
+		rows, columns int
+	)
 	if len(matrix) == 0 || len(matrix[0]) == 0 {
 		return 0
 	}
