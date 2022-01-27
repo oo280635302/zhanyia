@@ -5,6 +5,7 @@ import (
 	"math"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // 字符串反转------------------------------------------------------------------------------------------------------------
@@ -413,4 +414,40 @@ func getMinSwaps(num string, k int) int {
 	}
 
 	return ans
+}
+
+// 句子中的有效单词数
+func countValidWords(sentence string) int {
+	words := strings.Fields(sentence)
+	ans := 0
+	for _, word := range words {
+		if validWord(word) {
+			ans++
+		}
+	}
+
+	return ans
+}
+func validWord(s string) bool {
+	n := len(s)
+	cnt := 0
+	for idx, v := range s {
+		if !(v == '-' || v == '!' || v == ',' || v == '.' || (v >= 'a' && v <= 'z')) {
+			return false
+		}
+		if v == '-' {
+			if cnt != 0 {
+				return false
+			}
+			if idx <= 0 || idx >= n-1 || s[idx-1] < 'a' || s[idx-1] > 'z' || s[idx+1] < 'a' || s[idx+1] > 'z' {
+				return false
+			}
+			cnt++
+		}
+
+		if (v == '!' || v == '.' || v == ',') && idx != n-1 {
+			return false
+		}
+	}
+	return true
 }

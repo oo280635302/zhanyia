@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := ConstructorDetectSquares()
+	c := validWord("a-b-a!")
 
 	fmt.Println(c)
 }
