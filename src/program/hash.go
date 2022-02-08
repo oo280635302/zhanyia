@@ -32,3 +32,46 @@ func (d DetectSquares) Count(point []int) int {
 	}
 	return ans
 }
+
+// 网格照明
+func gridIllumination(n int, lamps, queries [][]int) []int {
+	type pair struct{ x, y int }
+	points := map[pair]bool{}	// 某点上是否有灯
+	row := map[int]int{}	// 行
+	col := map[int]int{}	// 列
+	diagonal := map[int]int{}	// 正对角线	- 最重点的点* 斜率
+	antiDiagonal := map[int]int{}	// 反对角线
+	for _, lamp := range lamps {
+		r, c := lamp[0], lamp[1]
+		p := pair{r, c}
+		if points[p] {	// 重复灯只占一个数据
+			continue
+		}
+		points[p] = true
+		row[r]++
+		col[c]++
+		diagonal[r-c]++
+		antiDiagonal[r+c]++
+	}
+
+	ans := make([]int, len(queries))
+	for i, query := range queries {
+		r, c := query[0], query[1]
+		if row[r] > 0 || col[c] > 0 || diagonal[r-c] > 0 || antiDiagonal[r+c] > 0 {	// 只要在一个列上就说明被照亮了
+			ans[i] = 1
+		}
+		for x := r - 1; x <= r+1; x++ {	// 将附近9个格子的灯都灭掉
+			for y := c - 1; y <= c+1; y++ {
+				if x < 0 || y < 0 || x >= n || y >= n || !points[pair{x, y}] {
+					continue
+				}
+				delete(points, pair{x, y})
+				row[x]--
+				col[y]--
+				diagonal[x-y]--
+				antiDiagonal[x+y]--
+			}
+		}
+	}
+	return ans
+}
