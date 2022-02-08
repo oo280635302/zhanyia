@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := numberOfWeakCharacters([][]int{{2, 2}, {1, 3}, {2, 3}, {2, 1}, {3, 2}})
+	c := getFolderNames([]string{"kaido", "kaido(1)", "kaido", "kaido(1)(1)", "kaido(1)"})
 
 	fmt.Println(c)
 }
