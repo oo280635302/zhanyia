@@ -1,6 +1,7 @@
 package program
 
 import (
+	"fmt"
 	"strconv"
 )
 
@@ -40,15 +41,15 @@ func (d DetectSquares) Count(point []int) int {
 // 网格照明
 func gridIllumination(n int, lamps, queries [][]int) []int {
 	type pair struct{ x, y int }
-	points := map[pair]bool{}	// 某点上是否有灯
-	row := map[int]int{}	// 行
-	col := map[int]int{}	// 列
-	diagonal := map[int]int{}	// 正对角线	- 最重点的点* 斜率
-	antiDiagonal := map[int]int{}	// 反对角线
+	points := map[pair]bool{}     // 某点上是否有灯
+	row := map[int]int{}          // 行
+	col := map[int]int{}          // 列
+	diagonal := map[int]int{}     // 正对角线	- 最重点的点* 斜率
+	antiDiagonal := map[int]int{} // 反对角线
 	for _, lamp := range lamps {
 		r, c := lamp[0], lamp[1]
 		p := pair{r, c}
-		if points[p] {	// 重复灯只占一个数据
+		if points[p] { // 重复灯只占一个数据
 			continue
 		}
 		points[p] = true
@@ -61,10 +62,10 @@ func gridIllumination(n int, lamps, queries [][]int) []int {
 	ans := make([]int, len(queries))
 	for i, query := range queries {
 		r, c := query[0], query[1]
-		if row[r] > 0 || col[c] > 0 || diagonal[r-c] > 0 || antiDiagonal[r+c] > 0 {	// 只要在一个列上就说明被照亮了
+		if row[r] > 0 || col[c] > 0 || diagonal[r-c] > 0 || antiDiagonal[r+c] > 0 { // 只要在一个列上就说明被照亮了
 			ans[i] = 1
 		}
-		for x := r - 1; x <= r+1; x++ {	// 将附近9个格子的灯都灭掉
+		for x := r - 1; x <= r+1; x++ { // 将附近9个格子的灯都灭掉
 			for y := c - 1; y <= c+1; y++ {
 				if x < 0 || y < 0 || x >= n || y >= n || !points[pair{x, y}] {
 					continue
@@ -81,6 +82,7 @@ func gridIllumination(n int, lamps, queries [][]int) []int {
 }
 
 // 保证文件名唯一
+// 思路：用哈希来保存文件名使用次数， 循环直到找到没有文件名的
 func getFolderNames(names []string) []string {
 	d := make(map[string]int)
 	res := make([]string, 0)
@@ -94,4 +96,39 @@ func getFolderNames(names []string) []string {
 		res = append(res, s)
 	}
 	return res
+}
+
+// 最简分数
+// 思路： 主要是跳过有公约数的分子分母，用哈希表保存分子/分母，如果有相同的说明是由公约数的分子分母组合
+func simplifiedFractions(n int) []string {
+	m := make(map[float64]bool)
+
+	res := make([]string, 0)
+
+	for i := 1; i <= n; i++ {
+		for j := 1; j < i; j++ {
+			//fmt.Println(i,j)
+			if !m[float64(j)/float64(i)] {
+				res = append(res, fmt.Sprintf("%d/%d", j, i))
+				m[float64(j)/float64(i)] = true
+			}
+		}
+	}
+
+	return res
+}
+
+// 差的绝对值为 K 的数对数目
+func countKDifference(nums []int, k int) int {
+	m := make(map[int]int)
+
+	for _, v := range nums { // 计算每个数目出现的次数，并用哈希保存
+		m[v]++
+	}
+	ans := 0
+	for key, _ := range m { // 跟据每个数据出现的次数 * （数据+k）出现的次数
+		ans += m[key] * m[key+k]
+	}
+
+	return ans
 }

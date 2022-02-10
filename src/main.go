@@ -8,6 +8,7 @@ import (
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/golang/protobuf/proto"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
@@ -33,6 +34,7 @@ import (
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	"zhanyia/src/program"
+	pb "zhanyia/src/proto"
 )
 
 func main() {
@@ -46,6 +48,14 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+
+	c := &pb.ClearJoyImage{Width: 1, Height: 2}
+	b, err := proto.Marshal(c)
+
+	ans := &pb.ClearJoyImage{}
+	err = proto.Unmarshal(b, ans)
+
+	fmt.Println(ans, err)
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)

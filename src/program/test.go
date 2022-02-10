@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := getFolderNames([]string{"kaido", "kaido(1)", "kaido", "kaido(1)(1)", "kaido(1)"})
+	c := countKDifference([]int{1, 2, 2, 1}, 1)
 
 	fmt.Println(c)
 }
