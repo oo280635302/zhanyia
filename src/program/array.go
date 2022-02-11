@@ -303,3 +303,16 @@ func minJumps(arr []int) int {
 		delete(graph, arr[cur.i]) // 把已经走过的相同数清理掉，减少下次遇到了遍历相同数
 	}
 }
+
+// 学生分数的最小差值
+// 思路： 排序后，每k个连续的学生的最大最小值的差值
+func minimumDifference(nums []int, k int) int {
+	sort.Ints(nums)
+	res := 1000000
+
+	for idx, val := range nums[:len(nums)+1-k] { // 左指针只需要滑动到 1.右往左数第k-1个 len-k+1 2.索引-1  len-k 3.左开右闭 len-k+1
+		res = min(res, nums[idx+k-1]-val)
+	}
+
+	return res
+}

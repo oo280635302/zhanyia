@@ -451,3 +451,36 @@ func validWord(s string) bool {
 	}
 	return true
 }
+
+// 比较版本号
+// 思路：双指针，跟据获取到的当前版本号阶段数字进行对比
+func compareVersion(version1 string, version2 string) int {
+	m, n := len(version1), len(version2)
+	i, j := 0, 0
+
+	for i < m || j < n {
+		cur1 := 0
+		cur2 := 0
+		for i < m && version1[i] != '.' { // version1当前阶段的数字
+			cur1 = cur1*10 + int(version1[i]-'0')
+			i++
+		}
+		i++ // 跳过逗号
+
+		for j < n && version2[j] != '.' { // version2当前阶段的数字
+			cur2 = cur2*10 + int(version2[j]-'0')
+			j++
+		}
+		j++ // 跳过逗号
+
+		if cur1 > cur2 {
+			return 1
+		}
+
+		if cur1 < cur2 {
+			return -1
+		}
+	}
+
+	return 0
+}

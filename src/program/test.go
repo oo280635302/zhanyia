@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := countKDifference([]int{1, 2, 2, 1}, 1)
+	c := minimumDifference([]int{1, 2, 3, 4}, 1)
 
 	fmt.Println(c)
 }
