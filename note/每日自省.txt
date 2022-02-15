@@ -158,10 +158,28 @@
             答: 双数据结构 Map + 双向链表
 
 20220210 乌圆：
-    1.一面
+    技术面
         1.自我介绍
         2.kafka怎么保证只消费一次
             答: 幂等
                 生产方每一个生产者一个唯一的 ID，并且为生产的每一条消息赋予一个唯一 ID
 
         3.mongoDB各种问题
+
+20220212 星合互娱：
+    技术面：
+        1.mysql的锁有哪些?区别
+        2.mysql的innodb和myisam的区别
+        3.kafka的消费组 各名次概念
+        4.mysql的binlog
+        5.golang的CSP
+        6.golang的锁有那些
+        7.golang的syncMap底层实现
+        8.redis的内存回收
+        9.redis的skiplist的插入
+            如果正常的skiplist，插入后他后面的数据都要重排
+            redis的skiplist做了个随机层数，直接找到对应位置插入，logn
+        10.为什么选用redis做缓存
+    算法题：
+        一堆重复数字里面找出不同的数字，不能用map
+        答：排序+比较

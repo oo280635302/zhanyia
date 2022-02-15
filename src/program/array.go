@@ -316,3 +316,51 @@ func minimumDifference(nums []int, k int) int {
 
 	return res
 }
+
+// 有序数组中的单一元素
+// 思路：二分查找 找到中位数，判断中位数补位的相邻数是否相等，相等说明前一半是偶数 就找后面的，不相等说明单一数在前一半就找前面   x^1 找到补位数 eg: 11^1=10  10^1=11
+func singleNonDuplicate(nums []int) int {
+	s, e := 0, len(nums)-1
+
+	for s < e {
+		mid := (s + e) / 2
+
+		if nums[mid] == nums[mid^1] {
+			s = mid + 1
+		} else {
+			e = mid
+		}
+	}
+
+	return nums[s]
+}
+
+// 矩阵中的幸运数
+func luckyNumbers(matrix [][]int) []int {
+	ans := []int{}
+
+	minRow := make(map[int]int)
+	maxCol := make(map[int]int)
+
+	for idx1, row := range matrix {
+		for idx2, val := range row {
+
+			if val < minRow[idx1] || minRow[idx1] == 0 {
+				minRow[idx1] = val
+			}
+			if val > maxCol[idx2] {
+				maxCol[idx2] = val
+			}
+		}
+	}
+
+	for _, v1 := range minRow {
+		for _, v2 := range maxCol {
+			if v1 == v2 {
+				ans = append(ans, v1)
+			}
+		}
+	}
+
+	return ans
+}
