@@ -35,6 +35,8 @@ import (
 	"zhanyia/src/program"
 )
 
+var ch = make(chan int, 0)
+
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -46,6 +48,12 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+
+	a := make([]int, 0)
+	a = append(a, 1)
+	fmt.Println(cap(a))
+	a = append(a, 2, 3, 4, 5, 6, 7)
+	fmt.Println(cap(a))
 
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
@@ -60,14 +68,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func RandAB() string {
-	n := rand.Intn(10)
-	if n < 1 {
-		return "B"
-	}
-	return "A"
 }
 
 func RoundFormatFloat(f float64, scale int) float64 {

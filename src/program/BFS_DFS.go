@@ -37,3 +37,55 @@ func IsBipartite(graph [][]int) bool {
 	}
 	return true
 }
+
+// 飞地的数量
+// 思路：广度优先，找到边界上的所有为1的点位然后扩散，找到所有的1 - 边界扩散的1 = 飞的数量
+func numEnclaves(grid [][]int) (ans int) {
+	type pair struct{ x, y int }
+	var dirs = []pair{{-1, 0}, {1, 0}, {0, -1}, {0, 1}} // 4个方位
+
+	m, n := len(grid), len(grid[0])
+	vis := make([][]bool, m)
+	for i := range vis {
+		vis[i] = make([]bool, n)
+	}
+	q := []pair{}
+	for i, row := range grid {
+		if row[0] == 1 { // 左边界的1
+			vis[i][0] = true
+			q = append(q, pair{i, 0})
+		}
+		if row[n-1] == 1 { // 右边界的1
+			vis[i][n-1] = true
+			q = append(q, pair{i, n - 1})
+		}
+	}
+	for j := 1; j < n-1; j++ {
+		if grid[0][j] == 1 { // 上边界的1
+			vis[0][j] = true
+			q = append(q, pair{0, j})
+		}
+		if grid[m-1][j] == 1 { // 下边界的1
+			vis[m-1][j] = true
+			q = append(q, pair{m - 1, j})
+		}
+	}
+	for len(q) > 0 { // 往外扩张，找到所有相邻的1
+		p := q[0]
+		q = q[1:]
+		for _, d := range dirs {
+			if x, y := p.x+d.x, p.y+d.y; 0 <= x && x < m && 0 <= y && y < n && grid[x][y] == 1 && !vis[x][y] { // 只往有效的扩张，已被扩张的不重复扩张
+				vis[x][y] = true
+				q = append(q, pair{x, y}) // 扩张
+			}
+		}
+	}
+	for i := 1; i < m-1; i++ { // 找到所有的1
+		for j := 1; j < n-1; j++ {
+			if grid[i][j] == 1 && !vis[i][j] { // 当前1没被扩张说明就是飞地
+				ans++
+			}
+		}
+	}
+	return
+}

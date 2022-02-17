@@ -484,3 +484,32 @@ func compareVersion(version1 string, version2 string) int {
 
 	return 0
 }
+
+// “气球” 的最大数量 balloon
+// 思路：统计每个字母的出现次数，求最小即可
+func maxNumberOfBalloons(text string) int {
+	m := make(map[int32]int)
+
+	for _, v := range text {
+		m[v]++
+	}
+
+	ans := 10000
+	if m['b'] < ans {
+		ans = m['b']
+	}
+	if m['a'] < ans {
+		ans = m['a']
+	}
+	if m['l']/2 < ans {
+		ans = m['l'] / 2
+	}
+	if m['o']/2 < ans {
+		ans = m['o'] / 2
+	}
+	if m['n'] < ans {
+		ans = m['n']
+	}
+
+	return ans
+}

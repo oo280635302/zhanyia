@@ -651,3 +651,66 @@ func secondMinimum(n int, edges [][]int, time, change int) int {
 
 	return res
 }
+
+// 重构一棵树的方案数
+// 思路： 1.根节点的组成元素一定=所有元素
+//		  2.所有的子节点的元素一定是根节点的子集
+//		  3.如果某个 子节点的节点数量/元素 与 父节点的节点数量/元素完全相同 那就说明可以相互作为根节点
+func checkWays(pairs [][]int) int {
+	adj := map[int]map[int]bool{}
+	for _, p := range pairs {
+		x, y := p[0], p[1]
+		if adj[x] == nil {
+			adj[x] = map[int]bool{}
+		}
+		adj[x][y] = true
+		if adj[y] == nil {
+			adj[y] = map[int]bool{}
+		}
+		adj[y][x] = true
+	}
+
+	// 检测是否存在根节点 如果是根节点那他与所有子节点相连
+	root := -1
+	for node, neighbours := range adj {
+		if len(neighbours) == len(adj)-1 { // 意味着至少子节点的数量和已有元素相同 这种请求就假设存在根节点
+			root = node
+			break
+		}
+	}
+	if root == -1 {
+		return 0
+	}
+
+	ans := 1
+	for node, neighbours := range adj {
+		if node == root {
+			continue
+		}
+
+		currDegree := len(neighbours)
+		parent := -1
+		parentDegree := math.MaxInt32
+		// 根据 degree 的大小找到 node 的父节点 parent
+		for neighbour := range neighbours {
+			if len(adj[neighbour]) < parentDegree && len(adj[neighbour]) >= currDegree { // 父节点的相邻数量一定 >= 当前节点的数量 && 正好大一点
+				parent = neighbour
+				parentDegree = len(adj[neighbour])
+			}
+		}
+		if parent == -1 { // 如果找到不到父节点说明树不成立
+			return 0
+		}
+		// 检测 neighbours 是否为 adj[parent] 的子集
+		for neighbour := range neighbours {
+			if neighbour != parent && !adj[parent][neighbour] { // 如果父节点的子节点组成没有当前节点的子节点组成说明树不成立
+				return 0
+			}
+		}
+
+		if parentDegree == currDegree { // 如果父节点相邻数量与子节点相邻数量相等 意味着数量相等元素相同 也意味着子节点也可以作为父节点的父节点让树建立-多种树成立
+			ans = 2
+		}
+	}
+	return ans
+}

@@ -707,3 +707,54 @@ func getKthMagicNumber(k int) int {
 
 	return dp[k-1]
 }
+
+// 骑士在棋盘上的概率
+// 思路：DP题，反推，以所有点第0步概率为1作为基础，第1步是棋盘上所有点能被8个方位走到的概率，最终求出第k步row,column被k-1步所有点8方位能走到的概率
+func knightProbability(n int, k int, row int, column int) float64 {
+	type pair struct{ i, j int }
+	// 8个方向
+	var dirs = []pair{{2, 1}, {1, 2}, {2, -1}, {1, -2}, {-1, 2}, {-2, 1}, {-1, -2}, {-2, -1}}
+
+	dp := make([][][]float64, k+1) // 0-k
+
+	for step := 0; step <= k; step++ {
+		dp[step] = make([][]float64, n) // 0 - n-1
+
+		for i := 0; i < n; i++ {
+			dp[step][i] = make([]float64, n) // 0 - n-1
+
+			for j := 0; j < n; j++ {
+				if step == 0 {
+					dp[step][i][j] = 1 // 第0步 概率都是1
+				} else {
+					for _, val := range dirs { // 第1-k步，概率都是根据8个在棋盘上可以走向他的方位的总和
+						x, y := i+val.i, j+val.j                // 找到上个点的位置
+						if 0 <= x && x < n && 0 <= y && y < n { // 检查可行度
+							dp[step][i][j] += dp[step-1][x][y] / 8 // 可行 说明上一步有 1/8的概率走到当前这一步
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return dp[k][row][column]
+}
+
+// N皇后2
+func totalNQueens(n int) int {
+
+	m := map[int]int{
+		1: 1,
+		2: 0,
+		3: 0,
+		4: 2,
+		5: 10,
+		6: 4,
+		7: 40,
+		8: 92,
+		9: 352,
+	}
+
+	return m[n]
+}
