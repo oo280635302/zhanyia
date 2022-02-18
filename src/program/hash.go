@@ -132,3 +132,21 @@ func countKDifference(nums []int, k int) int {
 
 	return ans
 }
+
+// 找出星型图的中心节点
+func findCenter(edges [][]int) int {
+	m := make(map[int]int, 0)
+
+	for _, edg := range edges[:2] {
+		m[edg[0]]++
+		if m[edg[0]] == 2 { // 只要中心节点会出现2次以上，其他都只出现1次
+			return edg[0]
+		}
+		m[edg[1]]++
+		if m[edg[1]] == 2 {
+			return edg[1]
+		}
+	}
+
+	return 0
+}

@@ -49,12 +49,6 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	a := make([]int, 0)
-	a = append(a, 1)
-	fmt.Println(cap(a))
-	a = append(a, 2, 3, 4, 5, 6, 7)
-	fmt.Println(cap(a))
-
 	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
