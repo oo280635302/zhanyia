@@ -364,3 +364,37 @@ func luckyNumbers(matrix [][]int) []int {
 
 	return ans
 }
+
+// 煎饼排序
+// 思路：从当前数组找到最大的数翻转到前面再翻转到最后去，然后把最后的数排除找最大的数重复翻转再排除
+func pancakeSort(arr []int) []int {
+	ans := make([]int, 0)
+
+	for i := len(arr); i > 1; i-- {
+
+		idx := 0 // 找到当前最大的数
+		for cur, v := range arr {
+			if v == i {
+				idx = cur
+			}
+		}
+
+		if idx == i-1 {
+			continue
+		}
+
+		reverseInts(arr[:idx+1]) // 先翻转到前面来
+		reverseInts(arr[:i])     // 再翻转到有序的地方去
+
+		ans = append(ans, idx+1, i)
+	}
+
+	return ans
+}
+
+func reverseInts(arr []int) {
+	n := len(arr)
+	for i := 0; i < n/2; i++ {
+		arr[i], arr[n-1-i] = arr[n-1-i], arr[i]
+	}
+}

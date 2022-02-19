@@ -221,9 +221,12 @@
             死锁：一边锁了1等待锁2 另一边锁了2等待锁1
 
         9.golang的syncMap底层实现
+            onlyRead 和 dirty 指向相同的数据
             优化了写法，冗余了一个onlyRead的数据提供给读，减少了加锁对性能的消耗
-            读的时候先从onlyRead读，没得再加锁读
-            写的时候也要从
+            读的时候先从onlyRead读，没得再加锁读dirty  如果miss超过一定数量就会将dirty提升到onlyRead
+            写的时候也要从看下onlyRead有数据没,有的话保存到onlyRead里面 ， 没有的话加锁执行
+            遍历，看dirty里面是否有新数据 有就提升到onlyRead 然后开读
+            使用场景：读多写少
 
         10.redis的内存管理：
             1.过期key回收
