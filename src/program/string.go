@@ -513,3 +513,22 @@ func maxNumberOfBalloons(text string) int {
 
 	return ans
 }
+
+// 1比特与2比特字符
+// 思路: 遇到1记录2步 遇到0记录1步，记录走完除最后一位数的全程的需要的步数 是否与n-1相等
+func isOneBitCharacter(bits []int) bool {
+	n := len(bits)
+	step := 0
+
+	for i := 0; i < n-1; i++ {
+		if bits[i] == 1 {
+			step += 2
+			i++
+		} else {
+			step += 1
+		}
+		// fmt.Println(bits[i],n,step,i)
+	}
+
+	return n-1 == step
+}
