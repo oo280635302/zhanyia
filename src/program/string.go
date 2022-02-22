@@ -532,3 +532,49 @@ func isOneBitCharacter(bits []int) bool {
 
 	return n-1 == step
 }
+
+// 推多米诺
+// 模拟：模拟真实情况，推导过程、还有另外的解 广度遍历
+func pushDominoes(dominoes string) string {
+	ans := []byte(dominoes)
+
+	l, n := 0, len(dominoes)
+	left := 'L'
+
+	for l < n {
+		// 找到没有被推动的一段
+		r := l
+		for r < n && dominoes[r] == '.' {
+			r++
+		}
+		//fmt.Println(l,r)
+
+		// 除了最后一段设右边R以外 其他情况都以当前L、R为右边界
+		right := 'R'
+		if r < n {
+			right = int32(dominoes[r])
+		}
+
+		// 如果相等是同向 填充跳过的.
+		if left == right {
+			for l < r {
+				ans[l] = byte(left)
+				l++
+			}
+			// 如果不相等 同时是R-L的分布 就互推
+		} else if left == 'R' {
+			r--
+			for l < r {
+				ans[l], ans[r] = 'R', 'L'
+				l++
+				r--
+			}
+		}
+
+		// 记录左边界
+		left = right
+		l = r + 1
+	}
+
+	return string(ans)
+}
