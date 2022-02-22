@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := knightProbability(4, 2, 1, 1)
+	c := numberOfGoodSubsets([]int{1, 1, 3, 5})
 
 	fmt.Println(c)
 }
