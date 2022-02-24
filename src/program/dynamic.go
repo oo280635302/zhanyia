@@ -805,3 +805,49 @@ next:
 	}
 	return
 }
+
+// 球会落何处
+// 思路：层次遍历
+func findBall(grid [][]int) []int {
+	m, n := len(grid), len(grid[0])
+	ans := make([]int, n)
+
+	type ball struct {
+		idx int // 几号球
+		x   int // x轴位置
+		y   int // y轴位置
+	}
+
+	q := []ball{}
+	for i, _ := range ans {
+		q = append(q, ball{idx: i, x: i, y: 0})
+	}
+
+	for len(q) != 0 {
+		p := q[0]
+		q = q[1:]
+
+		cur := grid[p.y][p.x] // 当前球往下的方向
+
+		if cur+p.x < 0 || cur+p.x > n-1 { // 当遇到墙了就没了
+			ans[p.idx] = -1
+			continue
+		}
+
+		if grid[p.y][p.x+cur] != cur { // 当遇到不同方向也没了
+			ans[p.idx] = -1
+			continue
+		}
+
+		if p.y == m-1 { // 到了最后一层
+			ans[p.idx] = p.x + cur
+			continue
+		}
+
+		p.x = p.x + cur
+		p.y = p.y + 1
+		q = append(q, p)
+	}
+
+	return ans
+}
