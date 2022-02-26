@@ -1,6 +1,11 @@
 package program
 
-import "math"
+import (
+	"fmt"
+	"math"
+	"strconv"
+	"strings"
+)
 
 // Pow(x, n) 计算 x 的 n 次幂函数
 // 思路：API 造什么轮子？
@@ -51,4 +56,17 @@ func numberOfBeams(bank []string) int {
 	}
 
 	return ans
+}
+
+// 复数乘法
+func complexNumberMultiply(num1 string, num2 string) string {
+	num1Arr := strings.Split(num1, "+")
+	num2Arr := strings.Split(num2, "+")
+
+	real1, _ := strconv.Atoi(num1Arr[0])
+	image1, _ := strconv.Atoi(num1Arr[1][:len(num1Arr[1])-1])
+	real2, _ := strconv.Atoi(num2Arr[0])
+	image2, _ := strconv.Atoi(num2Arr[1][:len(num2Arr[1])-1])
+
+	return fmt.Sprintf("%d+%di", real1*real2-image1*image2, real1*image2+real2*image1)
 }

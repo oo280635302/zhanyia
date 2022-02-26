@@ -391,10 +391,26 @@ func pancakeSort(arr []int) []int {
 
 	return ans
 }
-
 func reverseInts(arr []int) {
 	n := len(arr)
 	for i := 0; i < n/2; i++ {
 		arr[i], arr[n-1-i] = arr[n-1-i], arr[i]
 	}
+}
+
+// 增量元素之间的最大差值
+func maximumDifference(nums []int) int {
+	ans := -1
+
+	min := nums[0]
+
+	for _, v := range nums {
+		if v > min {
+			ans = max(ans, v-min) // 找到当前数大于最小值 就去与结果比较
+		} else {
+			min = v // 如果没找到，那当前数就是最小值
+		}
+	}
+
+	return ans
 }

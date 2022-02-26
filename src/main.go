@@ -35,8 +35,6 @@ import (
 	"zhanyia/src/program"
 )
 
-var ch = make(chan int, 0)
-
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
