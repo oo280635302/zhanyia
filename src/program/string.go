@@ -578,3 +578,28 @@ func pushDominoes(dominoes string) string {
 
 	return string(ans)
 }
+
+// 最优除法
+// 思路：所有数想除获得最大的值，因为都是正整数相除只会越来越小，所以只需要保证 左边固定idx=0 / (右边相除) ，分母因为相除越来越小，分子固定就越来越大
+func optimalDivision(nums []int) string {
+	if len(nums) == 1 {
+		return strconv.Itoa(nums[0])
+	}
+	if len(nums) == 2 {
+		return fmt.Sprintf("%d/%d", nums[0], nums[1])
+	}
+	ans := ""
+	for idx, val := range nums {
+		if idx == 0 {
+			ans += strconv.Itoa(val)
+		} else if idx == 1 {
+			ans += "/(" + strconv.Itoa(val)
+		} else if idx == len(nums)-1 {
+			ans += "/" + strconv.Itoa(val) + ")"
+		} else {
+			ans += "/" + strconv.Itoa(val)
+		}
+	}
+
+	return ans
+}
