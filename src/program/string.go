@@ -578,3 +578,26 @@ func pushDominoes(dominoes string) string {
 
 	return string(ans)
 }
+
+// 仅仅反转字母
+// 思路：双指针，遇到非字母就跳过
+func reverseOnlyLetters(s string) string {
+	ans := []byte(s)
+	l, r := 0, len(s)-1
+
+	for l < r {
+		if !((ans[l] >= 'A' && ans[l] <= 'Z') || (ans[l] >= 'a' && ans[l] <= 'z')) {
+			l++
+			continue
+		}
+		if !((ans[r] >= 'A' && ans[r] <= 'Z') || (ans[r] >= 'a' && ans[r] <= 'z')) {
+			r--
+			continue
+		}
+		ans[l], ans[r] = ans[r], ans[l]
+		l++
+		r--
+	}
+
+	return string(ans)
+}
