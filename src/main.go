@@ -35,8 +35,6 @@ import (
 	"zhanyia/src/program"
 )
 
-var ch = make(chan int, 0)
-
 func main() {
 	rand.Seed(time.Now().UnixNano())
 
@@ -49,7 +47,6 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	// 持久化
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,

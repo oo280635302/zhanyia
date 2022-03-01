@@ -758,3 +758,96 @@ func totalNQueens(n int) int {
 
 	return m[n]
 }
+
+// 好子集的数目
+var primes = []int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29}
+
+func numberOfGoodSubsets(nums []int) (ans int) {
+	const mod int = 1e9 + 7
+	freq := [31]int{}
+	for _, num := range nums {
+		freq[num]++
+	}
+
+	f := make([]int, 1<<len(primes))
+	f[0] = 1
+	for i := 0; i < freq[1]; i++ { // 1的基础拼接次数
+		f[0] = f[0] * 2 % mod
+	}
+
+next:
+	for i := 2; i < 31; i++ {
+		if freq[i] == 0 { // 不存在的数就跳过
+			continue
+		}
+
+		// 检查 i 的每个质因数是否均不超过 1 个
+		subset := 0
+		for j, prime := range primes {
+			if i%(prime*prime) == 0 { // 当前值非好值就跳过
+				continue next
+			}
+			if i%prime == 0 { // 当前值是质数组成的好值
+				subset |= 1 << j
+			}
+		}
+
+		// 动态规划
+		for mask := 1 << len(primes); mask > 0; mask-- {
+			if mask&subset == subset {
+				f[mask] = (f[mask] + f[mask^subset]*freq[i]) % mod
+			}
+		}
+	}
+
+	for _, v := range f[1:] {
+		ans = (ans + v) % mod
+	}
+	return
+}
+
+// 球会落何处
+// 思路：层次遍历
+func findBall(grid [][]int) []int {
+	m, n := len(grid), len(grid[0])
+	ans := make([]int, n)
+
+	type ball struct {
+		idx int // 几号球
+		x   int // x轴位置
+		y   int // y轴位置
+	}
+
+	q := []ball{}
+	for i, _ := range ans {
+		q = append(q, ball{idx: i, x: i, y: 0})
+	}
+
+	for len(q) != 0 {
+		p := q[0]
+		q = q[1:]
+
+		cur := grid[p.y][p.x] // 当前球往下的方向
+
+		if cur+p.x < 0 || cur+p.x > n-1 { // 当遇到墙了就没了
+			ans[p.idx] = -1
+			continue
+		}
+
+		if grid[p.y][p.x+cur] != cur { // 当遇到不同方向也没了
+			ans[p.idx] = -1
+			continue
+		}
+
+		if p.y == m-1 { // 到了最后一层
+			ans[p.idx] = p.x + cur
+			continue
+		}
+
+		p.x = p.x + cur
+		p.y = p.y + 1
+		q = append(q, p)
+	}
+
+	return ans
+}

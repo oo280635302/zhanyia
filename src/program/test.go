@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := pushDominoes(".L.R.")
+	c := numberOfGoodSubsets([]int{1, 1, 3, 5})
 
 	fmt.Println(c)
 }
