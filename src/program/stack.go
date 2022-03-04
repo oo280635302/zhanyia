@@ -1098,4 +1098,22 @@ func removeDuplicates(S string) string {
 	return string(r)
 }
 
-// todo 需要补充的知识 树状数组
+// 子数组范围和--------------------------------------------------------------------------------
+// 思路：暴力循环  固定左边界 移动右边界 每移动一步就计算一步
+func subArrayRanges(nums []int) int64 {
+	var ans int64
+	n := len(nums)
+
+	for i := 0; i < n; i++ {
+		minNum, maxNum := nums[i], nums[i]
+
+		for j := i + 1; j < n; j++ {
+			minNum = min(minNum, nums[j])
+			maxNum = max(maxNum, nums[j])
+			ans += int64(maxNum - minNum)
+		}
+
+	}
+
+	return ans
+}

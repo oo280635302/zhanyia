@@ -70,3 +70,14 @@ func complexNumberMultiply(num1 string, num2 string) string {
 
 	return fmt.Sprintf("%d+%di", real1*real2-image1*image2, real1*image2+real2*image1)
 }
+
+// 各位相加 反复将各个位上的数字相加，直到结果为一位数
+func addDigits(num int) int {
+	/*
+		求根数：除0以外其余都是 1-9的
+			9是取模 +1
+			非9取模
+	*/
+
+	return (num-1)%9 + 1
+}
