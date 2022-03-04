@@ -579,6 +579,29 @@ func pushDominoes(dominoes string) string {
 	return string(ans)
 }
 
+// 仅仅反转字母
+// 思路：双指针，遇到非字母就跳过
+func reverseOnlyLetters(s string) string {
+	ans := []byte(s)
+	l, r := 0, len(s)-1
+
+	for l < r {
+		if !((ans[l] >= 'A' && ans[l] <= 'Z') || (ans[l] >= 'a' && ans[l] <= 'z')) {
+			l++
+			continue
+		}
+		if !((ans[r] >= 'A' && ans[r] <= 'Z') || (ans[r] >= 'a' && ans[r] <= 'z')) {
+			r--
+			continue
+		}
+		ans[l], ans[r] = ans[r], ans[l]
+		l++
+		r--
+	}
+
+	return string(ans)
+}
+
 // 最优除法
 // 思路：所有数想除获得最大的值，因为都是正整数相除只会越来越小，所以只需要保证 左边固定idx=0 / (右边相除) ，分母因为相除越来越小，分子固定就越来越大
 func optimalDivision(nums []int) string {
