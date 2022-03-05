@@ -47,6 +47,8 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
+	fmt.Println(len("oh shit fucker fucccker shit fuckee fuc s shit shiit  shhit !"))
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
