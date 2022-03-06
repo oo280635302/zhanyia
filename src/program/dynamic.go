@@ -851,3 +851,28 @@ func findBall(grid [][]int) []int {
 
 	return ans
 }
+
+// 适合打劫银行的日子
+func goodDaysToRobBank(security []int, time int) (ans []int) {
+	n := len(security)
+	left := make([]int, n)
+	right := make([]int, n)
+	for i := 1; i < n; i++ {
+		// 计算出 每一步左边的是递增的数
+		if security[i] <= security[i-1] {
+			left[i] = left[i-1] + 1
+		}
+		// 每一步右边是递减的数
+		if security[n-i-1] <= security[n-i] {
+			right[n-i-1] = right[n-i] + 1
+		}
+	}
+
+	// 当左右都>=time就等于找到结果
+	for i := time; i < n-time; i++ {
+		if left[i] >= time && right[i] >= time {
+			ans = append(ans, i)
+		}
+	}
+	return
+}
