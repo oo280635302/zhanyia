@@ -81,3 +81,29 @@ func addDigits(num int) int {
 
 	return (num-1)%9 + 1
 }
+
+// 七进制数
+// 思路： 从个数开始找，取7的模得出来的就是当前位数的值
+func convertToBase7(num int) string {
+	if num == 0 {
+		return ""
+	}
+	ans := make([]byte, 0)
+	re := num < 0
+	if re {
+		num = -num
+	}
+
+	for num > 0 {
+		ans = append(ans, byte('0'+num%7))
+		num /= 7
+	}
+
+	reverseString(ans)
+
+	if re {
+		return "-" + string(ans)
+	}
+
+	return string(ans)
+}

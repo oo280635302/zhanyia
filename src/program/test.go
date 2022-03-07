@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := numberOfGoodSubsets([]int{1, 1, 3, 5})
+	c := convertToBase7(-50)
 
 	fmt.Println(c)
 }
