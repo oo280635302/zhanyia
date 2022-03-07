@@ -28,12 +28,15 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
 	"zhanyia/src/program"
 )
+
+var m sync.Map
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -43,9 +46,19 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 
+	m.Store("123", "123")
+
+	data, ok := m.Load("123")
+	fmt.Println(ok, data)
+
+	data, ok = m.Load("321")
+	fmt.Println(ok, data)
+
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+
+	fmt.Println(len("oh shit fucker fucccker shit fuckee fuc s shit shiit  shhit !"))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

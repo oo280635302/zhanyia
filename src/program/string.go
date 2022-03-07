@@ -663,3 +663,12 @@ func abs(x int) int {
 	}
 	return x
 }
+
+// 最长特殊序列 Ⅰ
+// 思路： 这TM什么阅读理解题
+func findLUSlength(a, b string) int {
+	if a != b {
+		return max(len(a), len(b))
+	}
+	return -1
+}
