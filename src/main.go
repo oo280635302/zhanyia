@@ -45,20 +45,9 @@ func main() {
 	must.Init()
 	mustComponent()
 	fmt.Println("run start")
-
-	m.Store("123", "123")
-
-	data, ok := m.Load("123")
-	fmt.Println(ok, data)
-
-	data, ok = m.Load("321")
-	fmt.Println(ok, data)
-
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
-
-	fmt.Println(len("oh shit fucker fucccker shit fuckee fuc s shit shiit  shhit !"))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

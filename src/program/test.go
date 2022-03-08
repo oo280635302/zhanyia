@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := convertToBase7(-50)
+	c := platesBetweenCandles("**|**|***|", [][]int{{2, 5}, {5, 9}})
 
 	fmt.Println(c)
 }

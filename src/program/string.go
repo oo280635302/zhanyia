@@ -672,3 +672,37 @@ func findLUSlength(a, b string) int {
 	}
 	return -1
 }
+
+// 蜡烛之间的盘子
+func platesBetweenCandles(s string, queries [][]int) []int {
+	n := len(s)
+	preSum := make([]int, n) // 当前节点累计的球数
+	left := make([]int, n)   // 当前节点最近的左蜡烛 - 包括自身
+	sum, l, r := 0, -1, -1
+	for i, ch := range s {
+		if ch == '*' {
+			sum++
+		} else {
+			l = i
+		}
+		preSum[i] = sum
+		left[i] = l
+	}
+
+	right := make([]int, n)
+	for i := n - 1; i >= 0; i-- { // 当前节点最近的右蜡烛
+		if s[i] == '|' {
+			r = i
+		}
+		right[i] = r
+	}
+
+	ans := make([]int, len(queries))
+	for i, q := range queries {
+		x, y := right[q[0]], left[q[1]]
+		if x >= 0 && y >= 0 && x < y {
+			ans[i] = preSum[y] - preSum[x] //  右节点最近的左蜡烛的球数 - 左节点的最近的右蜡烛的球数
+		}
+	}
+	return ans
+}
