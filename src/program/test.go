@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := platesBetweenCandles("**|**|***|", [][]int{{2, 5}, {5, 9}})
+	c := bestRotation([]int{2, 3, 1, 4, 0})
 
 	fmt.Println(c)
 }

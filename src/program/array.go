@@ -414,3 +414,32 @@ func maximumDifference(nums []int) int {
 
 	return ans
 }
+
+// 得分最高的最小轮调
+// 思路：需要注意针对这类问题用 前缀和 解决的切入点， 该问题是我们能根据移动规律来找出每次移动的涨掉分规律
+func bestRotation(nums []int) int {
+	n := len(nums)
+	diff := make([]int, n+1) // 用以保存每移动一步的所造成的涨/掉分
+	for i := 0; i < n; i++ {
+		if num := nums[i]; i >= num { // 针对已经处在 [i,n-1] 之间的数
+			diff[0]++       // 不移动就会得分
+			diff[i-num+1]-- // 移动到 i以下就会掉分
+			diff[i+1]++     // 移动到 i以上就上涨分
+		} else { // 针对处于[0,i]之间的数
+			diff[i+1]++       // 移动到i以上就涨分
+			diff[i-num+n+1]-- // 移动到i以下就掉分
+		}
+	}
+
+	ans := 0
+	max := 0
+
+	for idx, v := range diff {
+		if v+max > max {
+			max = v + max
+			ans = idx
+		}
+	}
+
+	return ans
+}

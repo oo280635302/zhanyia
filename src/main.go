@@ -49,6 +49,8 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
+	fmt.Println(GetPositionByIP("101.231.154.154"))
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -61,6 +63,43 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+type IPPosition struct {
+	Status   string `json:"status"`   // 返回状态
+	Info     string `json:"info"`     // 错误原因
+	InfoCode string `json:"infocode"` // 错误码
+	Province string `json:"province"` // 省
+	City     string `json:"city"`     // 城市
+	AdCode   string `json:"adcode"`   // adcode编码
+}
+
+func GetPositionByIP(ip string) *IPPosition {
+	urlPath := "https://restapi.amap.com/v5/ip?"
+	param := url.Values{}
+	param.Set("key", "323abb4090b1ac829cef26be6c768e14")
+	param.Set("ip", ip)
+	param.Set("type", "4")
+
+	req, err := http.NewRequest("GET", urlPath+param.Encode(), strings.NewReader(""))
+	if err != nil {
+		return nil
+	}
+	c := &http.Client{}
+	resp, err := c.Do(req)
+	if err != nil || resp.StatusCode != http.StatusOK {
+		return nil
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil || len(body) == 0 {
+		return nil
+	}
+
+	ans := &IPPosition{}
+	json.Unmarshal(body, ans)
+	return ans
 }
 
 func RoundFormatFloat(f float64, scale int) float64 {
