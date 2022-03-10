@@ -49,7 +49,7 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	fmt.Println(GetPositionByIP("101.231.154.154"))
+	fmt.Println(fmt.Sprintf("%0.2f%%", 1.1))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

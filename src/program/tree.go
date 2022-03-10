@@ -714,3 +714,30 @@ func checkWays(pairs [][]int) int {
 	}
 	return ans
 }
+
+//  N 叉树的前序遍历  中左右
+func preorder(root *Node) []int {
+	if root == nil {
+		return nil
+	}
+
+	ans := make([]int, 0)
+
+	stack := []*Node{root} // 栈
+	for len(stack) != 0 {
+		p := stack[len(stack)-1] // 弹出一个节点，因为是逆序进的栈，所以弹出来的是最左的
+		stack = stack[:len(stack)-1]
+
+		ans = append(ans, p.Val)                    // 即使上节点左，也是自己节点的中，所以直接加入返回
+		for i := len(p.Children) - 1; i >= 0; i-- { // 他的子放进去 逆序进栈
+			stack = append(stack, p.Children[i])
+		}
+	}
+
+	return ans
+}
+
+type Node struct {
+	Val      int
+	Children []*Node
+}

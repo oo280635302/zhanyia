@@ -443,3 +443,25 @@ func bestRotation(nums []int) int {
 
 	return ans
 }
+
+// 向数组中追加 K 个整数
+func minimalKSum(nums []int, k int) int64 {
+	// 所有 k+已出现比k小的nums数量 的和 - 已出现比k小的nums数量
+	sort.Ints(nums)
+
+	diff := 0
+	last := -1
+	for _, v := range nums {
+		if v <= k {
+			if last != v {
+				k++
+				diff += v
+				last = v
+			}
+		} else {
+			break
+		}
+	}
+
+	return int64((1+k)*k/2 - diff)
+}
