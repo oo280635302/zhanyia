@@ -741,3 +741,37 @@ type Node struct {
 	Val      int
 	Children []*Node
 }
+
+//统计最高分的节点数目
+func countHighestScoreNodes(parents []int) (ans int) {
+	n := len(parents)
+	children := make([][]int, n) // 预处理：筛选出所有节点的子节点
+	for node := 1; node < n; node++ {
+		p := parents[node]
+		children[p] = append(children[p], node)
+	}
+
+	maxScore := 0
+	var dfs func(int) int
+	dfs = func(node int) int {
+		score := 1    // 用于记录当前节点被断分数
+		size := n - 1 // 头节点的非自己子节点的子节点数量， 因为去掉自己 所以n-1
+		for _, ch := range children[node] {
+			childrenSize := dfs(ch) // 用于记录所有子节点被断的分数 同时 求出其子节点的数量
+			score *= childrenSize
+			size -= childrenSize
+		}
+		if node > 0 { // 0没有头节点  其他都有所以其他分数都要乘头节点的子节点数量
+			score *= size
+		}
+		if score == maxScore { // 记录分数 及 出现频率
+			ans++
+		} else if score > maxScore {
+			maxScore = score
+			ans = 1
+		}
+		return n - size // 自己的子节点数量
+	}
+	dfs(0) // 从头开始
+	return
+}
