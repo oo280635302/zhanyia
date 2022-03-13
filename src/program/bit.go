@@ -1,6 +1,7 @@
 package program
 
 import (
+	"fmt"
 	"math/bits"
 )
 
@@ -133,4 +134,31 @@ func swapNumbers(numbers []int) []int {
 	numbers[1] ^= numbers[0] // number1 ^ [number0 ^ number1] = number0
 	numbers[0] ^= numbers[1] // [number0 ^ number1] ^ number0 = number1
 	return numbers
+}
+
+// UTF-8 编码验证
+func validUtf8(data []int) bool {
+	const one int = 1 << 7
+	const two = one + (1 << 6)
+
+	for i := 0; i < len(data); {
+		l := 1
+		for l < 7 && (data[i]>>(8-l))&1 == 1 {
+			l++
+		}
+		if l == 2 || l > 5 || i+l-2 >= len(data) {
+			return false
+		}
+		if l > 2 {
+			l--
+		}
+		for j := i + 1; j < i+l; j++ {
+			fmt.Println(data[j], data[j]&two, one)
+			if data[j]&two != one {
+				return false
+			}
+		}
+		i += l
+	}
+	return true
 }

@@ -3,7 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := bestRotation([]int{2, 3, 1, 4, 0})
+	c := validUtf8([]int{250, 145, 145, 145, 145})
 
 	fmt.Println(c)
 }
