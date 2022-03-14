@@ -706,3 +706,29 @@ func platesBetweenCandles(s string, queries [][]int) []int {
 	}
 	return ans
 }
+
+// 两个列表的最小索引总和
+func findRestaurant(list1 []string, list2 []string) []string {
+	ans := []string{}
+
+	// 建立list1的map
+	m1 := make(map[string]int, 0)
+	for idx, val := range list1 {
+		m1[val] = idx
+	}
+
+	min := 1000000
+
+	for idx, val := range list2 {
+		if num, ok := m1[val]; ok {
+			if num+idx < min {
+				min = num + idx
+				ans = []string{val}
+			} else if num+idx == min {
+				ans = append(ans, val)
+			}
+		}
+	}
+
+	return ans
+}
