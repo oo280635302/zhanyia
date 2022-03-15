@@ -90,7 +90,7 @@ func dfsRestoreIpAddresses(s string, segId, segStart int) {
 }
 
 // 最多可达成的换楼请求数目
-// 思路：回缩+枚举
+// 思路：回溯+枚举
 func maximumRequests(n int, requests [][]int) (ans int) {
 	delta := make([]int, n)
 	cnt, zero := 0, n
