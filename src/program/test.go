@@ -3,6 +3,8 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := countMaxOrSubsets([]int{3, 1})
+	c := ConstructorAllOne()
+	c.Inc("hello")
+
 	fmt.Println(c)
 }

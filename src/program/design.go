@@ -1,5 +1,9 @@
 package program
 
+import (
+	"container/list"
+)
+
 // 考场就座
 type ExamRoom struct {
 	n int   // 座位数
@@ -47,4 +51,115 @@ func (this *ExamRoom) Leave(p int) {
 		}
 	}
 	this.s = append(this.s[:idx], this.s[idx+1:]...)
+}
+
+// 全 O(1) 的数据结构
+// 查询/增加1/扣除1 复杂度都为1的计数排序
+type AllOne struct {
+	Count map[string]*list.Element // 计数
+	List  *list.List               // 升序排序
+}
+
+type allOneNode struct {
+	count int             // 当前节点的分数
+	word  map[string]bool // 当前分数的词库
+}
+
+func ConstructorAllOne() AllOne {
+	return AllOne{
+		Count: make(map[string]*list.Element),
+		List:  list.New(),
+	}
+}
+
+func (a *AllOne) Inc(key string) {
+	curList := a.Count[key]
+	// 不存在 就插入链首
+	if curList == nil {
+		lf := a.List.Front()
+		// 空链表，头链首cnt>1 新增头节点插入
+		if lf == nil || lf.Value.(*allOneNode).count > 1 {
+			element := a.List.PushFront(&allOneNode{word: map[string]bool{key: true}, count: 1})
+			a.Count[key] = element
+			return
+		}
+
+		// 有1的情况 直接插入1的链数据里
+		lf.Value.(*allOneNode).word[key] = true
+		a.Count[key] = lf
+		return
+	}
+
+	// 存在
+	nextList := curList.Next()
+	curNode := curList.Value.(*allOneNode)
+	// 需要插入链表
+	if nextList == nil || nextList.Value.(*allOneNode).count > curNode.count+1 {
+		// 增加下一位，指向下一位，删除当前位的key
+		a.Count[key] = a.List.InsertAfter(&allOneNode{count: curNode.count + 1, word: map[string]bool{key: true}}, curList)
+		delete(curNode.word, key)
+		if len(curNode.word) == 0 {
+			a.List.Remove(curList)
+		}
+		return
+	}
+	// 不需要插入链表只需要将数据加入链表的m里面
+	nextList.Value.(*allOneNode).word[key] = true
+	a.Count[key] = nextList
+	delete(curNode.word, key)
+	if len(curNode.word) == 0 {
+		a.List.Remove(curList)
+	}
+}
+
+func (a *AllOne) Dec(key string) {
+	curList := a.Count[key]
+	curNode := curList.Value.(*allOneNode)
+	prevList := curList.Prev()
+	// 踢出链表 cnt<=0
+	if curNode.count-1 == 0 {
+		delete(curNode.word, key)
+		if len(curNode.word) == 0 {
+			a.List.Remove(curList)
+		}
+		delete(a.Count, key)
+		return
+	}
+
+	// 需要插入链表
+	if prevList == nil || prevList.Value.(*allOneNode).count < curNode.count-1 {
+		a.Count[key] = a.List.InsertBefore(&allOneNode{count: curNode.count - 1, word: map[string]bool{key: true}}, curList)
+		delete(curNode.word, key)
+		if len(curNode.word) == 0 {
+			a.List.Remove(curList)
+		}
+		return
+	}
+	// 不需要插入链表 直接加入链表的m
+	prevList.Value.(*allOneNode).word[key] = true
+	a.Count[key] = prevList
+	delete(curNode.word, key)
+	if len(curNode.word) == 0 {
+		a.List.Remove(curList)
+	}
+}
+
+func (a *AllOne) GetMaxKey() string {
+	// 最大的在最后面 back
+	if f := a.List.Back(); f != nil {
+		for key := range f.Value.(*allOneNode).word {
+			return key
+		}
+	}
+	return ""
+}
+
+func (a *AllOne) GetMinKey() string {
+	// 最小的最前面 front
+	if f := a.List.Front(); f != nil {
+		for key := range f.Value.(*allOneNode).word {
+			return key
+		}
+	}
+	return ""
 }
