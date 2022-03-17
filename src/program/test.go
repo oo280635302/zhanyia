@@ -3,8 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := ConstructorAllOne()
-	c.Inc("hello")
-
+	c := longestWord([]string{"a", "banana", "app", "appl", "ap", "apply", "apple"})
 	fmt.Println(c)
 }

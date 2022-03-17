@@ -732,3 +732,23 @@ func findRestaurant(list1 []string, list2 []string) []string {
 
 	return ans
 }
+
+// 词典中最长的单词
+func longestWord(words []string) string {
+	// 排序 长度升序，字典序逆序（目的是为了让相同长度的字符字典序最小的排最后 让最终结果的字典序最小在最后弹出去）
+	sort.Slice(words, func(i, j int) bool {
+		return len(words[i]) < len(words[j]) || (len(words[i]) == len(words[j]) && words[i] > words[j])
+	})
+
+	ans := ""
+	m := make(map[string]bool)
+	m[""] = true
+	for _, v := range words {
+		if m[v[:len(v)-1]] == true { // 因为升序，所以能匹配到的 单词长度一定>前一个 || 单词长度=前一个&&字典序<前一个
+			ans = v
+			m[v] = true
+		}
+	}
+
+	return ans
+}
