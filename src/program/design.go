@@ -163,3 +163,41 @@ func (a *AllOne) GetMinKey() string {
 	}
 	return ""
 }
+
+// 简易银行系统
+type Bank struct {
+	Len      int
+	Accounts []int64
+}
+
+func ConstructorBank(balance []int64) Bank {
+	return Bank{Accounts: balance, Len: len(balance)}
+}
+
+func (b *Bank) Transfer(account1 int, account2 int, money int64) bool {
+	if account1 > b.Len || account2 > b.Len || b.Accounts[account1-1] < money {
+		return false
+	}
+	b.Accounts[account1-1] -= money
+	b.Accounts[account2-1] += money
+	return true
+}
+
+func (b *Bank) Deposit(account int, money int64) bool {
+	if account > b.Len {
+		return false
+	}
+	b.Accounts[account-1] += money
+	return true
+}
+
+func (b *Bank) Withdraw(account int, money int64) bool {
+	if account > b.Len {
+		return false
+	}
+	if b.Accounts[account-1] < money {
+		return false
+	}
+	b.Accounts[account-1] -= money
+	return true
+}
