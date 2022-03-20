@@ -3,6 +3,7 @@ package program
 import (
 	"fmt"
 	"math"
+	"strconv"
 )
 
 // 将有序数组转换为二叉搜索树-------------------------------------------------------------------------------------------
@@ -774,4 +775,18 @@ func countHighestScoreNodes(parents []int) (ans int) {
 	}
 	dfs(0) // 从头开始
 	return
+}
+
+// 根据二叉树创建字符串
+func tree2str(root *TreeNode) string {
+	switch {
+	case root == nil:
+		return ""
+	case root.Left == nil && root.Right == nil:
+		return strconv.Itoa(root.Val)
+	case root.Right == nil:
+		return fmt.Sprintf("%d(%s)", root.Val, tree2str(root.Left))
+	default:
+		return fmt.Sprintf("%d(%s)(%s)", root.Val, tree2str(root.Left), tree2str(root.Right))
+	}
 }
