@@ -1,5 +1,7 @@
 package program
 
+import "fmt"
+
 // 广度优先搜索 + 深度优先搜索
 
 // 判断二分图---------------------------------------------------------------------------------------------------------
@@ -118,4 +120,31 @@ func networkBecomesIdle(edges [][]int, patience []int) (ans int) {
 		}
 	}
 	return
+}
+
+//  两数之和 IV - 输入 BST
+func findTarget(root *TreeNode, k int) bool {
+	m := make(map[int]bool)
+
+	d := []*TreeNode{root}
+	for len(d) != 0 {
+		p := d[0]
+		d = d[1:]
+
+		m[p.Val] = true
+		if p.Left != nil {
+			d = append(d, p.Left)
+		}
+		if p.Right != nil {
+			d = append(d, p.Right)
+		}
+	}
+	fmt.Println(m)
+	for key := range m {
+		if m[k-key] && k-key != key {
+			return true
+		}
+	}
+
+	return false
 }
