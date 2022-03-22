@@ -49,7 +49,7 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	fmt.Println("怎么回事~？")
+	fmt.Println("怎么回事~")
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
