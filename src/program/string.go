@@ -752,3 +752,21 @@ func longestWord(words []string) string {
 
 	return ans
 }
+
+// 如果相邻两个颜色均相同则删除当前颜色
+func winnerOfGame(colors string) bool {
+	ans := 0 // 只有3个相连的颜色才会抵消中间那个，且被抵消后的不会让相反的颜色组成3连，因此只需要计算能组成3连的次数就行
+	n := len(colors)
+
+	for idx, val := range colors {
+		if idx-1 >= 0 && idx+1 < n {
+			if val == 'A' && colors[idx-1] == 'A' && colors[idx+1] == 'A' {
+				ans++
+			}
+			if val == 'B' && colors[idx-1] == 'B' && colors[idx+1] == 'B' {
+				ans--
+			}
+		}
+	}
+	return ans > 0 // Alice先手所以ans必须>0
+}
