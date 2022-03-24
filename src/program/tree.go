@@ -790,3 +790,29 @@ func tree2str(root *TreeNode) string {
 		return fmt.Sprintf("%d(%s)(%s)", root.Val, tree2str(root.Left), tree2str(root.Right))
 	}
 }
+
+// 字典序的第K小数字
+func findKthNumber(n, k int) int {
+	cur := 1
+	k--
+	for k > 0 {
+		steps := getSteps(cur, n)
+		if steps <= k {
+			k -= steps
+			cur++
+		} else {
+			cur *= 10
+			k--
+		}
+	}
+	return cur
+}
+func getSteps(cur, n int) (steps int) {
+	first, last := cur, cur
+	for first <= n {
+		steps += min(last, n) - first + 1
+		first *= 10
+		last = last*10 + 9
+	}
+	return
+}
