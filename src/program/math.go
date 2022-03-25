@@ -107,3 +107,19 @@ func convertToBase7(num int) string {
 
 	return string(ans)
 }
+
+// 阶乘后的零 的个数
+func trailingZeroes(n int) (ans int) {
+	/*
+		就是计算因数为5的个数
+		eg: 130: 5、10、15...130	26个
+				 25、50...125		5 个
+				 125				1 个
+			总计32个
+	*/
+	for n > 0 {
+		n /= 5
+		ans += n
+	}
+	return
+}
