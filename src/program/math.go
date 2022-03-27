@@ -123,3 +123,31 @@ func trailingZeroes(n int) (ans int) {
 	}
 	return
 }
+
+// 找出缺失的观测数据
+func missingRolls(rolls []int, mean int, n int) []int {
+	m := len(rolls)
+	all := (m + n) * mean
+	lave := all
+	for _, v := range rolls {
+		lave -= v
+	}
+
+	// 判断合理性
+	if lave < n || lave > n*6 {
+		return nil
+	}
+
+	// 平均、余数
+	ave, l := lave/6, lave%6
+
+	ans := make([]int, n)
+	for i := range ans {
+		ans[i] = ave
+		if i < l {
+			ans[i]++
+		}
+	}
+
+	return ans
+}
