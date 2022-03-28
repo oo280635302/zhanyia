@@ -195,3 +195,9 @@ func countMaxOrSubsets(nums []int) int {
 	dfs(0, 0)
 	return ans
 }
+
+// 交替位二进制数
+func hasAlternatingBits(n int) bool {
+	a := n ^ n>>1       // 010101 ^ 001010 = 011111
+	return a&(a+1) == 0 // 011111 & 100000 == 0
+}
