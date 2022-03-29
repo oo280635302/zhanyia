@@ -486,3 +486,28 @@ func imageSmoother(img [][]int) [][]int {
 	}
 	return ans
 }
+
+// 考试的最大困扰度
+func maxConsecutiveAnswers(answerKey string, k int) int {
+	return max(maxConsecutiveAnswersByBit(answerKey, k, 'T'),
+		maxConsecutiveAnswersByBit(answerKey, k, 'F'))
+}
+func maxConsecutiveAnswersByBit(answerKey string, k int, b byte) int {
+	l, x, ans := 0, 0, 0
+
+	for r := range answerKey {
+		if answerKey[r] != b { //遇到非b将x++
+			x++
+		}
+
+		for x > k { // 当x超过限制时，移动l，来减少x的数量以匹配k的数量
+			if answerKey[l] != b {
+				x--
+			}
+			l++
+		}
+		ans = max(ans, r-l+1)
+	}
+
+	return ans
+}
