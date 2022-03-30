@@ -1,6 +1,10 @@
 package program
 
-import "container/heap"
+import (
+	"container/heap"
+	"fmt"
+	"sort"
+)
 
 // 堆有关的算法问题 -- LeetCode
 
@@ -148,3 +152,53 @@ func (h heapPair) Less(i, j int) bool  { return h[i].price < h[j].price }
 func (h heapPair) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
 func (h *heapPair) Push(v interface{}) { *h = append(*h, v.(timePrice)) }
 func (h *heapPair) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
+
+// 找到处理最多请求的服务器
+func busiestServers(k int, arrival, load []int) (ans []int) {
+	available := hi{make([]int, k)}
+	for i := 0; i < k; i++ {
+		available.IntSlice[i] = i
+	}
+	busy := busyHp{}
+	requests := make([]int, k)
+	maxRequest := 0
+	for i, t := range arrival {
+		for len(busy) > 0 && busy[0].end <= t {
+			heap.Push(&available, i+((busy[0].id-i)%k+k)%k) // 保证得到的是一个不小于 i 的且与 id 同余的数
+			fmt.Println(i + ((busy[0].id-i)%k+k)%k)
+			heap.Pop(&busy)
+		}
+		if available.Len() == 0 {
+			continue
+		}
+		id := heap.Pop(&available).(int) % k
+		requests[id]++
+		if requests[id] > maxRequest {
+			maxRequest = requests[id]
+			ans = []int{id}
+		} else if requests[id] == maxRequest {
+			ans = append(ans, id)
+		}
+		heap.Push(&busy, busypair{t + load[i], id})
+	}
+	return
+}
+
+type hi struct{ sort.IntSlice }
+
+func (h *hi) Push(v interface{}) { h.IntSlice = append(h.IntSlice, v.(int)) }
+func (h *hi) Pop() interface{} {
+	a := h.IntSlice
+	v := a[len(a)-1]
+	h.IntSlice = a[:len(a)-1]
+	return v
+}
+
+type busypair struct{ end, id int }
+type busyHp []busypair
+
+func (h busyHp) Len() int            { return len(h) }
+func (h busyHp) Less(i, j int) bool  { return h[i].end < h[j].end }
+func (h busyHp) Swap(i, j int)       { h[i], h[j] = h[j], h[i] }
+func (h *busyHp) Push(v interface{}) { *h = append(*h, v.(busypair)) }
+func (h *busyHp) Pop() interface{}   { a := *h; v := a[len(a)-1]; *h = a[:len(a)-1]; return v }
