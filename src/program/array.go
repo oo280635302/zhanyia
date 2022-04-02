@@ -511,3 +511,28 @@ func maxConsecutiveAnswersByBit(answerKey string, k int, b byte) int {
 
 	return ans
 }
+
+// 二倍数对数组
+func canReorderDoubled(arr []int) bool {
+	cnt := make(map[int]int, len(arr))
+	for _, x := range arr {
+		cnt[x]++
+	}
+	if cnt[0]%2 == 1 {
+		return false
+	}
+
+	vals := make([]int, 0, len(cnt))
+	for x := range cnt {
+		vals = append(vals, x)
+	}
+	sort.Slice(vals, func(i, j int) bool { return abs(vals[i]) < abs(vals[j]) })
+
+	for _, x := range vals {
+		if cnt[2*x] < cnt[x] { // 无法找到足够的 2x 与 x 配对
+			return false
+		}
+		cnt[2*x] -= cnt[x]
+	}
+	return true
+}
