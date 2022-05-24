@@ -817,7 +817,7 @@ func getSteps(cur, n int) (steps int) {
 	return
 }
 
-// 单值二叉树
+// 单值二叉树 -easy
 func isUnivalTree(root *TreeNode) bool {
 	val := root.Val
 
