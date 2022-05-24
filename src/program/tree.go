@@ -816,3 +816,27 @@ func getSteps(cur, n int) (steps int) {
 	}
 	return
 }
+
+// 单值二叉树
+func isUnivalTree(root *TreeNode) bool {
+	val := root.Val
+
+	stack := []*TreeNode{root}
+	for len(stack) > 0 {
+		p := stack[0]
+		stack = stack[1:]
+
+		if p.Val != val {
+			return false
+		}
+
+		if p.Left != nil {
+			stack = append(stack, p.Left)
+		}
+		if p.Right != nil {
+			stack = append(stack, p.Right)
+		}
+	}
+
+	return true
+}
