@@ -770,3 +770,31 @@ func winnerOfGame(colors string) bool {
 	}
 	return ans > 0 // Alice先手所以ans必须>0
 }
+
+// 环绕字符串中唯一的子字符串  环形字符串=abcdef...zabcdef
+func findSubstringInWraproundString(p string) int {
+	dp := [26]int{}
+
+	// 能组成环字符串的子串的 一定是连续的英文字符串 如 abc 找出每个字母最长的连续字串数量和 就是 唯一字串数量
+	// 用动规的方式找到 每个字母的最长连续字符串
+
+	k := 1
+	for idx, val := range p {
+
+		// 如果前一个字符是当前字符的连续 k++
+		if idx > 0 && (val-int32(p[idx-1])+26)%26 == 1 {
+			k++
+			// 不是就重置
+		} else {
+			k = 1
+		}
+		// 每个字母最大的连续子串
+		dp[int(val)-'a'] = max(dp[int(val)-'a'], k)
+	}
+
+	ans := 0
+	for _, v := range dp {
+		ans += v
+	}
+	return ans
+}
