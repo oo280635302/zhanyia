@@ -536,3 +536,29 @@ func canReorderDoubled(arr []int) bool {
 	}
 	return true
 }
+
+// 掉落的方块
+func fallingSquares(positions [][]int) []int {
+	ans := make([]int, len(positions))
+
+	// 计算每个方块掉落能组成的当前高度
+	for idx, p := range positions {
+		left, right := p[0], p[0]+p[1]-1 // 每个方块的左边界、右边界
+
+		cur := p[1]
+		ans[idx] = p[1] // 默认高度
+
+		for i, p2 := range positions[:idx] { // 遍历已落下的方块 看是否有相交
+			left2, right2 := p2[0], p2[0]+p2[1]-1
+			if right2 >= left && right >= left2 { // 相交
+				ans[idx] = max(ans[idx], cur+ans[i])
+			}
+		}
+	}
+
+	for i := 1; i < len(ans); i++ {
+		ans[i] = max(ans[i], ans[i-1])
+	}
+
+	return ans
+}
