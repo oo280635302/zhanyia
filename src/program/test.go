@@ -3,6 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	c := longestWord([]string{"a", "banana", "app", "appl", "ap", "apply", "apple"})
+	c := findClosest([]string{"I", "am", "a", "student", "from", "a", "university", "in", "a", "city"}, "a", "student")
 	fmt.Println(c)
 }

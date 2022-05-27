@@ -876,3 +876,52 @@ func goodDaysToRobBank(security []int, time int) (ans []int) {
 	}
 	return
 }
+
+// 最接近目标价格的甜点成本  -层次遍历
+func closestCost(baseCosts []int, toppingCosts []int, target int) int {
+	ans := math.MaxInt64
+	n := len(toppingCosts)
+
+	type cost struct {
+		val int // 当前价格
+		idx int // 当前索引
+	}
+
+	for _, baseVal := range baseCosts {
+
+		q := []cost{{val: baseVal, idx: 0}}
+
+		for len(q) > 0 {
+			// 弹出
+			p := q[0]
+			q = q[1:]
+
+			last := abs(ans - target)
+			now := abs(p.val - target)
+
+			if now < last { // 当新的差值 < 旧的差值  = 找到更接近的了
+				ans = p.val
+			} else if now == last && p.val < target { // 当新的差值 < 旧的差值  && 新的值 < 旧的值 = 找到同样接近中的更小的值
+				ans = p.val
+			} else if now == 0 { // now = 0 不用找了 能组成刚好合适的
+				return p.val
+			}
+
+			if p.val > target { // 大于只会导致差距越来越大
+				continue
+			}
+
+			if p.idx >= n { // 索引超了
+				continue
+			}
+
+			inr := toppingCosts[p.idx] // 增量
+
+			q = append(q, cost{val: p.val, idx: p.idx + 1})
+			q = append(q, cost{val: p.val + inr, idx: p.idx + 1})
+			q = append(q, cost{val: p.val + inr*2, idx: p.idx + 1})
+		}
+	}
+
+	return ans
+}

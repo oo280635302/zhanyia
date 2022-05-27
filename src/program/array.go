@@ -562,3 +562,45 @@ func fallingSquares(positions [][]int) []int {
 
 	return ans
 }
+
+// 单词距离
+func findClosest(words []string, word1 string, word2 string) int {
+	// 因为题目提示需要复用， 拿map来保存索引位置
+	m := make(map[string][]int)
+	for idx, v := range words {
+		m[v] = append(m[v], idx)
+	}
+
+	// 两个文字的索引的位置 升序的
+	arr1 := m[word1]
+	arr2 := m[word2]
+	if len(arr1) == 0 || len(arr2) == 0 {
+		return 0
+	}
+
+	ans := math.MaxInt64
+	idx1 := 0
+	idx2 := 0
+
+	for {
+		// 双指针找最小的差值
+		ans = min(abs(arr1[idx1]-arr2[idx2]), ans)
+		if idx1 == len(arr1)-1 && idx2 == len(arr2)-1 {
+			break
+		}
+
+		// 除了最大索引以外 都应该交替移动 比如 arr1[idx1]<arr2[idx2] 如果再移动idx2只会让差距变大
+		if arr1[idx1] < arr2[idx2] && idx1 < len(arr1)-1 {
+			idx1++
+		} else if idx2 < len(arr2)-1 && idx2 < len(arr2)-1 {
+			idx2++
+		} else if idx1 < len(arr1)-1 && idx2 == len(arr2)-1 {
+			idx1++
+		} else if idx2 < len(arr2)-1 && idx1 == len(arr1)-1 {
+			idx2++
+		}
+
+	}
+
+	return ans
+}
