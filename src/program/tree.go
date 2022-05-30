@@ -840,3 +840,40 @@ func isUnivalTree(root *TreeNode) bool {
 
 	return true
 }
+
+// 从根到叶的二进制数之和
+func sumRootToLeaf(root *TreeNode) int {
+	res := 0
+
+	type Tree struct {
+		cur int
+		*TreeNode
+	}
+
+	list := []*Tree{{cur: root.Val, TreeNode: root}}
+	for len(list) > 0 {
+		p := list[0]
+		list = list[1:]
+
+		if p.Left == nil && p.Right == nil {
+			res += p.cur
+			continue
+		}
+
+		if p.Left != nil {
+			list = append(list, &Tree{
+				cur:      p.cur*2 + p.Left.Val,
+				TreeNode: p.Left,
+			})
+		}
+
+		if p.Right != nil {
+			list = append(list, &Tree{
+				cur:      p.cur*2 + p.Right.Val,
+				TreeNode: p.Right,
+			})
+		}
+	}
+
+	return res
+}
