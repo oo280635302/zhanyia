@@ -106,3 +106,13 @@
         git config --global --unset https.proxy
     -查看配置代理:
         git config -l --global
+
+  12.cherry-pick
+    将某分支的一个提交记录插入到另外一个分支
+    git cherry-pick [commit-id]
+    解决冲突后
+    git cherry-pick --continue
+    跳过冲突
+    git cherry-pick --skip
+    退出合并
+    git cherry-pick --abort
