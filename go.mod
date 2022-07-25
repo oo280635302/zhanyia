@@ -3,6 +3,7 @@ module zhanyia
 go 1.15
 
 require (
+	github.com/Knetic/govaluate v3.0.0+incompatible
 	github.com/boombuler/barcode v1.0.0
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
 	github.com/eclipse/paho.mqtt.golang v1.3.5

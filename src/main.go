@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/Knetic/govaluate"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
@@ -20,6 +21,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
 	"math"
+	"math/bits"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -48,6 +50,21 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+
+	expression, err := govaluate.NewEvaluableExpression("x == 1 || x == 2")
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	v, err := expression.Evaluate(map[string]interface{}{"x": 1})
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	fmt.Println(v.(bool))
+
+	x := bits.Len(uint(4))
+	fmt.Println(x)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

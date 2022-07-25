@@ -877,3 +877,55 @@ func sumRootToLeaf(root *TreeNode) int {
 
 	return res
 }
+
+// 完全二叉树插入器
+// 完全二叉树： 是每一层（除最后一层外）都是完全填充（即，节点数达到最大）的，并且所有的节点都尽可能地集中在左侧。
+//			  新加入节点只会填充进最后一层从左到右开始空缺的位置，或者最后一层满了添加新的最后一层
+type CBTInserter struct {
+	root      *TreeNode   // 完全树本身
+	candidate []*TreeNode // 候选队列  可以用于插入新增node的node节点，其左右子节点至少一个为nil,当被插入右节点后移除
+}
+
+func ConstructorCBT(root *TreeNode) CBTInserter {
+	q := []*TreeNode{root}
+	candidate := make([]*TreeNode, 0)
+
+	// 广度优先遍历root树，把可以insert的节点筛选出来
+	for len(q) > 0 {
+		p := q[0]
+		q = q[1:]
+
+		if p.Left != nil {
+			q = append(q, p.Left)
+		}
+
+		if p.Right != nil {
+			q = append(q, p.Right)
+		}
+
+		if p.Left == nil || p.Right == nil {
+			candidate = append(candidate, p)
+		}
+	}
+
+	return CBTInserter{root: root, candidate: candidate}
+}
+
+func (c *CBTInserter) Insert(val int) int {
+	p := c.candidate[0]
+
+	if p.Left == nil {
+		p.Left = &TreeNode{Val: val}
+		c.candidate = append(c.candidate, p.Left)
+	} else {
+		p.Right = &TreeNode{Val: val}
+		c.candidate = append(c.candidate, p.Right)
+		c.candidate = c.candidate[1:]
+	}
+
+	return p.Val
+}
+
+func (c *CBTInserter) Get_root() *TreeNode {
+	return c.root
+}
