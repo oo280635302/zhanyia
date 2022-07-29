@@ -166,3 +166,32 @@ func selfDividingNumbers(left int, right int) (ans []int) {
 	}
 	return
 }
+
+// 有效的正方形
+func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
+	points := [][]int{p1, p2, p3, p4}
+	counter := map[int]int{}
+	distance := func(a []int, b []int) int {
+		return (a[0]-b[0])*(a[0]-b[0]) + (a[1]-b[1])*(a[1]-b[1])
+	}
+	for i, n := 0, len(points); i < n-1; i++ {
+		for j := i + 1; j < n; j++ {
+			counter[distance(points[i], points[j])] += 1
+		}
+	}
+	if len(counter) != 2 {
+		return false
+	}
+	x, y := int(1e9), 0
+	for k, _ := range counter {
+		if x == 1e9 {
+			x = k
+		} else {
+			y = k
+		}
+	}
+	if x > y {
+		x, y = y, x
+	}
+	return y == 2*x && counter[x] == 4 && counter[y] == 2
+}

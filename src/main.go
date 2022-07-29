@@ -21,7 +21,6 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io/ioutil"
 	"math"
-	"math/bits"
 	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
@@ -51,20 +50,17 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	expression, err := govaluate.NewEvaluableExpression("x == 1 || x == 2")
+	expression, err := govaluate.NewEvaluableExpression("x-1")
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	v, err := expression.Evaluate(map[string]interface{}{"x": 1})
+	v, err := expression.Evaluate(map[string]interface{}{"x": 0})
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
-	fmt.Println(v.(bool))
-
-	x := bits.Len(uint(4))
-	fmt.Println(x)
+	fmt.Println(v.(float64))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
