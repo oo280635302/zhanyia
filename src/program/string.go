@@ -798,3 +798,14 @@ func findSubstringInWraproundString(p string) int {
 	}
 	return ans
 }
+
+// 生成每种字符都是奇数个的字符串
+func generateTheString(n int) string {
+	// 如果本身n 就是奇数之间返回
+	if n%2 == 1 {
+		return strings.Repeat("a", n)
+		// 如果是偶数 就是n-1奇数 + 1奇数
+	} else {
+		return strings.Repeat("a", n-1) + strings.Repeat("b", 1)
+	}
+}
