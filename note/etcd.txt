@@ -1,4 +1,10 @@
 
+    特殊: golang内嵌etcd:
+        地址：https://pkg.go.dev/go.etcd.io/etcd/server/v3/embed
+        1.etcd的embed将etcd的server内嵌进项目代码
+        2.使用embed能实现多服务数据一致性，并且免去用etcd client连接etcd的网络io
+        3.目的更多的是etcd的二次开发
+
     中文文档：https://doczhcn.gitbook.io/etcd/index
     1.etcd的特性：
         -强一致性：用raft协议实现 (重点)
