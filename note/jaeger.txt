@@ -1,0 +1,56 @@
+----------------------------jaeger链路追踪------------------------
+    1.官网：
+        https://www.jaegertracing.io/
+
+    2.二进制下载：
+        https://github.com/jaegertracing/jaeger/releases/download/v1.37.0/jaeger-1.37.0-linux-amd64.tar.gz
+
+    3.说明
+        1. 需要在代码中打点接入：附4
+        2. 需要启动jaeger服务器
+            ./jaeger-all-in-one
+        3.完成
+
+    4.接入代码：
+        func StartSpan(spanName string, ctx context.Context, pbSpanContext *cbpb.SpanContext, opts ...opentracing.StartSpanOption) (opentracing.Span, context.Context) {
+        	if pbSpanContext != nil {
+        		opts = append(opts, opentracing.ChildOf(NewSpanContext(pbSpanContext)))
+        	}
+        	opts = append(opts, opentracing.Tag{Key: "host", Value: hostname})
+        	return opentracing.StartSpanFromContext(ctx, spanName, opts...)
+        }
+
+        func NewSpanContext(ctx *cbpb.SpanContext) jaeger.SpanContext {
+        	return jaeger.NewSpanContext(jaeger.TraceID{High: ctx.High, Low: ctx.Low}, jaeger.SpanID(ctx.SpanId), jaeger.SpanID(ctx.ParentId), false, nil)
+        }
+
+        func UpdateSpanContext(ctx *cbpb.SpanContext, span opentracing.Span) *cbpb.SpanContext {
+        	spanCtx, ok := span.Context().(jaeger.SpanContext)
+        	if ok {
+        		if ctx == nil {
+        			ctx = &cbpb.SpanContext{
+        				High: spanCtx.TraceID().High,
+        				Low:  spanCtx.TraceID().Low,
+        			}
+        		}
+
+        		ctx.SpanId = uint64(spanCtx.SpanID())
+        		ctx.ParentId = uint64(spanCtx.ParentID())
+        	}
+
+        	return ctx
+        }
+
+        func DecodeCtx2PB(ctx context.Context) *cbpb.SpanContext {
+        	if ctx == nil {
+        		return nil
+        	}
+
+        	parentSpan := opentracing.SpanFromContext(ctx)
+        	if parentSpan != nil {
+        		return UpdateSpanContext(nil, parentSpan)
+        	}
+
+        	return nil
+        }
+

@@ -546,3 +546,17 @@
             systemctl daemon-reload 刷新
             systemctl start etcd    启动
             systemctl enable etcd   开始
+
+  14.curl
+    详情地址：https://www.cnblogs.com/amnotgcs/p/14157442.html
+    用于测试端口，模拟http请求
+    参数：
+        -A      自己的浏览器信息
+        -w      按照后面的格式写出rt
+            -格式参数
+            time_namelookup:        DNS 解析时间,从请求开始到 DNS 解析完毕所用时间，单位为秒，如果测试的地址为IP，这里耗时即为0
+            time_connect:           client 和 server 端建立 TCP 连接的时间，连接时间，从开始到建立TCP连接完成所用时间,
+                包括前边DNS解析时间，如果需要单纯的得到连接时间，用这个 time_connect 时间减去前边 time_namelookup 时间
+            time_starttransfer:     从 client 发出请求；到 web server 响应第一个字节的时间
+            time_total:             client 发出请求；到 web server 发送回所有的相应数据的时间
+        -o      返回结果进行输出
