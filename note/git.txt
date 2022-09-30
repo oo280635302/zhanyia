@@ -116,3 +116,20 @@
     git cherry-pick --skip
     退出合并
     git cherry-pick --abort
+
+  13.gitlab ci
+    教程地址：https://docs.gitlab.com/ee/ci/examples/
+    gitlab-ci文件实例：
+        stages:
+            - build
+            - test
+            - deploy
+
+        build-job:
+            stage:build
+
+        test-job:
+            stage:test
+
+        deploy-job:
+            stage:deploy
