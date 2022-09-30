@@ -126,7 +126,19 @@
             - deploy
 
         build-job:
-            stage:build
+            stage: build # 任务名
+            image: golang:v1.18 # 提交的代码运行的镜像，代码会在该镜像里面执行命令
+            services:
+                - redis:latest  # 该job依赖的其他服务
+            before_script:      # 在script前执行的命令
+                - mv xxx app/cb
+            script:             # 执行的命令
+                - cd ..
+                - go build main.go
+            only:               # 允许master分支代码执行
+                - master
+            expect:             # 所有分支不允许执行
+                - branches
 
         test-job:
             stage:test
