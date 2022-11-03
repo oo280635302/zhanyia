@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/Knetic/govaluate"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis"
 	_ "github.com/go-sql-driver/mysql"
@@ -49,18 +48,6 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
-
-	expression, err := govaluate.NewEvaluableExpression("x-1")
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	v, err := expression.Evaluate(map[string]interface{}{"x": 0})
-	if err != nil {
-		fmt.Println(err)
-		return
-	}
-	fmt.Println(v.(float64))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

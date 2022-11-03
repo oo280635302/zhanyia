@@ -4,6 +4,7 @@ go 1.18
 
 require (
 	github.com/Knetic/govaluate v3.0.0+incompatible
+	github.com/SkyAPM/go2sky v1.5.0
 	github.com/boombuler/barcode v1.0.0
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/garyburd/redigo v1.6.0
@@ -21,7 +22,7 @@ require (
 	github.com/tsuna/gohbase v0.0.0-20211207114337-de5a52263bf4
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	go.mongodb.org/mongo-driver v1.5.1
-	google.golang.org/grpc v1.38.0
+	google.golang.org/grpc v1.40.0
 )
 
 require (
@@ -64,12 +65,13 @@ require (
 	go.opentelemetry.io/otel v1.0.1 // indirect
 	go.opentelemetry.io/otel/trace v1.0.1 // indirect
 	golang.org/x/crypto v0.0.0-20210921155107-089bfa567519 // indirect
-	golang.org/x/net v0.0.0-20210428140749-89ef3d95e781 // indirect
-	golang.org/x/sync v0.0.0-20201207232520-09787c993a3a // indirect
+	golang.org/x/net v0.0.0-20211015210444-4f30a5c0130f // indirect
+	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20211020174200-9d6173849985 // indirect
 	golang.org/x/text v0.3.7 // indirect
-	google.golang.org/genproto v0.0.0-20200806141610-86f49bd18e98 // indirect
-	google.golang.org/protobuf v1.27.1 // indirect
+	google.golang.org/genproto v0.0.0-20210624195500-8bfb893ecb84 // indirect
+	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	modernc.org/b v1.0.0 // indirect
+	skywalking.apache.org/repo/goapi v0.0.0-20220401015832-2c9eee9481eb // indirect
 )

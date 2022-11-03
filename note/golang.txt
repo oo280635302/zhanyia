@@ -3174,6 +3174,13 @@
         go tool pprof http://localhost:xxxx/debug/pprof/heap
     -查看GOROUTINE
         go tool pprof http://localhost:xxxx/debug/pprof/goroutine
+    -功能大全
+        go tool pprof http://localhost:xxxx/debug/pprof/heap        获取当前 堆信息
+        go tool pprof http://localhost:6060/debug/pprof/profile     获取当前 CPU信息
+        go tool pprof http://localhost:6060/debug/pprof/block       获取当前 Goroutine的阻塞情况
+        go tool pprof http://localhost:6060/debug/pprof/mutex       获取当前 锁的抢占情况
+        curl -o trace.out http://localhost:6060/debug/pprof/trace
+        go tool trace trace.out                                     获取当前trace
 
   51.github信息整合
       https://github.com/jaywcjlove/golang-tutorial （Go语言快速入门 ）
