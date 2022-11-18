@@ -3,13 +3,10 @@ module zhanyia
 go 1.18
 
 require (
-	github.com/Knetic/govaluate v3.0.0+incompatible
-	github.com/SkyAPM/go2sky v1.5.0
 	github.com/boombuler/barcode v1.0.0
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/garyburd/redigo v1.6.0
 	github.com/gin-gonic/gin v1.7.0
-	github.com/go-redis/redis v6.15.9+incompatible
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.5.0
 	github.com/gogo/protobuf v1.3.2
@@ -17,6 +14,7 @@ require (
 	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.12
 	github.com/qiniu/go-sdk/v7 v7.11.0
+	github.com/shopspring/decimal v1.3.1
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tsuna/gohbase v0.0.0-20211207114337-de5a52263bf4
@@ -37,6 +35,7 @@ require (
 	github.com/go-playground/validator/v10 v10.8.0 // indirect
 	github.com/go-stack/stack v1.8.0 // indirect
 	github.com/go-zookeeper/zk v1.0.2 // indirect
+	github.com/golang/mock v1.5.0 // indirect
 	github.com/golang/snappy v0.0.4 // indirect
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
@@ -73,5 +72,4 @@ require (
 	google.golang.org/protobuf v1.28.0 // indirect
 	gopkg.in/yaml.v2 v2.4.0 // indirect
 	modernc.org/b v1.0.0 // indirect
-	skywalking.apache.org/repo/goapi v0.0.0-20220401015832-2c9eee9481eb // indirect
 )

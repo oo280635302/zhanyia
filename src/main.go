@@ -6,12 +6,13 @@ import (
 	"encoding/json"
 	"fmt"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/go-redis/redis"
+	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/google/uuid"
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"github.com/shopspring/decimal"
 	"github.com/tsuna/gohbase"
 	"github.com/tsuna/gohbase/hrpc"
 	"go.mongodb.org/mongo-driver/bson"
@@ -49,6 +50,8 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
+	csRedis()
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -61,6 +64,32 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+}
+
+var (
+	// 以2022年11月14日开始这周为第一周
+	weekFlag = time.Date(2022, 11, 14, 0, 0, 0, 0, time.Local)
+)
+
+// 与周有关函数
+func NowWeek() int64 {
+	diff := time.Now().Unix() - weekFlag.Unix()
+	week := diff / (7 * 24 * 3600)
+	if diff%(7*24*3600) != 0 {
+		week += 1
+	}
+	return week
+}
+
+func NowWeekDay() int64 {
+	diff := time.Now().Unix() - weekFlag.Unix()
+	return (diff / (24 * 3600))
+}
+
+func DiffWeekByUnix(s1, s2 int64) int64 {
+	w1 := (s1 - weekFlag.Unix()) / (7 * 24 * 3600)
+	w2 := (s2 - weekFlag.Unix()) / (7 * 24 * 3600)
+	return w1 - w2
 }
 
 type IPPosition struct {
@@ -339,16 +368,71 @@ func csQiniu() {
 	fmt.Println(ret.Key, ret.Hash)
 }
 
+const PUSH_PRIVATE_MESSAGE_SCRIPT_STRING = `
+	local keyCmp = function(el1,el2) 
+		return tonumber(el1) < tonumber(el2)
+	end
+
+	local hashKey = KEYS[1]
+	local memRecordKey = KEYS[2]
+	local pid = ARGV[1]
+	local msgId = ARGV[2]
+	local msg = ARGV[3]
+	local now = tonumber(ARGV[4])
+	local max = tonumber(ARGV[5])
+
+	redis.pcall("hset",hashKey,msgId,msg)
+
+	local msgCnt = redis.pcall("hlen",hashKey)
+	if msgCnt > max then
+		local tbAllMsgId = redis.pcall("hkeys",hashKey)
+		table.sort(tbAllMsgId,keyCmp)
+		local delMsgId = {}
+		for i = 1, #tbAllMsgId - max do
+			delMsgId[i] = tbAllMsgId[i]
+		end
+		redis.pcall("hdel",hashKey,unpack(delMsgId))
+		msgCnt = redis.pcall("hlen",hashKey)
+	end
+	
+	redis.pcall("hset",memRecordKey,pid,string.format("%d:%d",msgCnt,now))
+
+	return msgId
+`
+
 func csRedis() {
+	ctx := context.TODO()
 	client := redis.NewClient(&redis.Options{
-		Addr:     "10.10.4.9:30111",
-		Password: "xiaoka520", // no password set
-		DB:       0,           // use default DB
+		Addr: "127.0.0.1:6379",
+		DB:   0, // use default DB
 	})
 
-	//fmt.Println(s,err)
-	s, _ := client.ZRevRangeWithScores("employ_rank_cnt_month_202112_3437", 0, -1).Result()
-	fmt.Println(s)
+	d := decimal.NewFromFloat(float64(math.MaxInt32 - time.Now().Unix()))
+	d = d.Mul(decimal.NewFromFloat(0.000000001))
+	d = d.Add(decimal.NewFromFloat(100))
+	fmt.Println(d.InexactFloat64(), d.IntPart())
+
+	script := `
+		local k1 = KEYS[1]
+		local v1 = ARGV[1]
+		local v2 = ARGV[2]
+		
+		redis.pcall("zadd",k1,v1,v2)
+		
+		local cnt = redis.pcall("zcard",k1)
+		
+		if cnt > tonumber(5) then
+			local mem = redis.pcall("zrange",k1)
+			return mem
+			redis.pcall("zrem",k1,mem)
+		end
+	`
+
+	val, err := redis.NewScript(script).Run(ctx, client, []string{"cs"}, 1.1345, 7).Result()
+	fmt.Println(val, err)
+
+	return
+	client.ZAdd(ctx, "csrank", &redis.Z{Score: 2, Member: "12"})
 }
 
 func csMongo() {
