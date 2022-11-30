@@ -604,3 +604,20 @@ func findClosest(words []string, word1 string, word2 string) int {
 
 	return ans
 }
+
+// 独一无二的出现次数 Unique Number of Occurrences
+func uniqueOccurrences(arr []int) bool {
+	m := make(map[int]int)
+	for _, v := range arr {
+		m[v]++
+	}
+
+	numM := make(map[int]bool)
+	for _, val := range m {
+		if numM[val] {
+			return false
+		}
+		numM[val] = true
+	}
+	return true
+}
