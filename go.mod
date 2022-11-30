@@ -3,18 +3,19 @@ module zhanyia
 go 1.18
 
 require (
+	github.com/ClickHouse/clickhouse-go v1.5.4
 	github.com/boombuler/barcode v1.0.0
 	github.com/eclipse/paho.mqtt.golang v1.3.5
 	github.com/garyburd/redigo v1.6.0
 	github.com/gin-gonic/gin v1.7.0
 	github.com/go-redis/redis/v8 v8.11.4
-	github.com/go-sql-driver/mysql v1.5.0
+	github.com/go-sql-driver/mysql v1.6.0
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.12
+	github.com/jmoiron/sqlx v1.3.5
 	github.com/qiniu/go-sdk/v7 v7.11.0
-	github.com/shopspring/decimal v1.3.1
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tsuna/gohbase v0.0.0-20211207114337-de5a52263bf4
@@ -27,6 +28,7 @@ require (
 	github.com/aws/aws-sdk-go v1.34.28 // indirect
 	github.com/beorn7/perks v1.0.1 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
+	github.com/cloudflare/golz4 v0.0.0-20150217214814-ef862a3cdc58 // indirect
 	github.com/denisenkom/go-mssqldb v0.10.0 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/gin-contrib/sse v0.1.0 // indirect

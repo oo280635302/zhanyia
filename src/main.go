@@ -12,7 +12,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
-	"github.com/shopspring/decimal"
 	"github.com/tsuna/gohbase"
 	"github.com/tsuna/gohbase/hrpc"
 	"go.mongodb.org/mongo-driver/bson"
@@ -49,8 +48,6 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
-
-	csRedis()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -402,16 +399,25 @@ const PUSH_PRIVATE_MESSAGE_SCRIPT_STRING = `
 
 func csRedis() {
 	ctx := context.TODO()
-	client := redis.NewClient(&redis.Options{
-		Addr: "127.0.0.1:6379",
-		DB:   0, // use default DB
+	client := redis.NewClusterClient(&redis.ClusterOptions{
+		Addrs: []string{
+			"192.168.0.234:7000",
+			"192.168.0.234:7001",
+			"192.168.0.234:7002",
+			"192.168.0.234:7003",
+			"192.168.0.234:7004",
+			"192.168.0.234:7005",
+		},
+		RouteRandomly: true,
 	})
 
-	d := decimal.NewFromFloat(float64(math.MaxInt32 - time.Now().Unix()))
-	d = d.Mul(decimal.NewFromFloat(0.000000001))
-	d = d.Add(decimal.NewFromFloat(100))
-	fmt.Println(d.InexactFloat64(), d.IntPart())
+	z, err := client.ZRevRangeWithScores(ctx, "cs_rank", 0, -1).Result()
+	fmt.Println("1111", z, err)
+	for _, val := range z {
+		fmt.Println(val.Member.(string), val.Score)
+	}
 
+	return
 	script := `
 		local k1 = KEYS[1]
 		local v1 = ARGV[1]
@@ -420,19 +426,24 @@ func csRedis() {
 		redis.pcall("zadd",k1,v1,v2)
 		
 		local cnt = redis.pcall("zcard",k1)
-		
+
+		local mem = 1
 		if cnt > tonumber(5) then
-			local mem = redis.pcall("zrange",k1)
-			return mem
-			redis.pcall("zrem",k1,mem)
+			mem = redis.pcall("zrange",k1,0,0)
+			redis.pcall("zrem",k1,mem[1])
 		end
+		return mem
 	`
 
-	val, err := redis.NewScript(script).Run(ctx, client, []string{"cs"}, 1.1345, 7).Result()
-	fmt.Println(val, err)
+	redisScript := redis.NewScript(script)
 
-	return
-	client.ZAdd(ctx, "csrank", &redis.Z{Score: 2, Member: "12"})
+	for i := 0; i < 100; i++ {
+		key := i
+		value := float64(i) + float64(math.MaxInt32-time.Now().Unix())*0.0000000001
+		val, err := redisScript.Run(ctx, client, []string{"cs_rank"}, value, key).Result()
+		fmt.Println(val, err)
+		time.Sleep(time.Second / 10)
+	}
 }
 
 func csMongo() {

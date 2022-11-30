@@ -1117,3 +1117,30 @@ func subArrayRanges(nums []int) int64 {
 
 	return ans
 }
+
+// 最大频率栈----------------------------------------------------------------------------------
+// 思路：数字只会一个一个增加，用频率群组栈来保存
+func ConstructorFreqStack() FreqStack {
+	return FreqStack{map[int]int{}, map[int][]int{}, 0}
+}
+
+type FreqStack struct {
+	freq    map[int]int   // 每个数字对应的出现频率
+	group   map[int][]int // 频率群组
+	maxFreq int           // 指向最大频率群组
+}
+
+func (f *FreqStack) Push(val int) {
+	f.freq[val]++
+	f.group[f.freq[val]] = append(f.group[f.freq[val]], val)
+	f.maxFreq = max(f.maxFreq, f.freq[val])
+}
+func (f *FreqStack) Pop() int {
+	res := f.group[f.maxFreq][len(f.group[f.maxFreq])-1]
+	f.freq[res]--
+	f.group[f.maxFreq] = f.group[f.maxFreq][:len(f.group[f.maxFreq])-1]
+	if len(f.group[f.maxFreq]) == 0 {
+		f.maxFreq--
+	}
+	return res
+}
