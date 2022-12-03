@@ -809,3 +809,23 @@ func generateTheString(n int) string {
 		return strings.Repeat("a", n-1) + strings.Repeat("b", 1)
 	}
 }
+
+// Second Largest Digit in a String
+func secondHighest(s string) int {
+	first := int32(-1)
+	second := int32(-1)
+	for _, n := range s {
+		if n < '0' || n > '9' {
+			continue
+		}
+		num := n - '0'
+		if num > first {
+			second = first
+			first = num
+		} else if num < first && num > second {
+			second = num
+		}
+	}
+
+	return int(second)
+}
