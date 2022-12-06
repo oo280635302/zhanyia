@@ -3369,10 +3369,10 @@
             3.从队列取出灰色对象,将其引用对象标记为灰色放入队列,自身标记为黑色。
             4.重复 3,直到灰色对象队列为空。此时白色对象即为垃圾,进行回收。
     Go-GC回收详细信息记录: 
-        -开启: 
-            1.环境变量: GODEBUG gctrace =1
-            2.GODEBUG gctrace =1 ./xxxx.exe
-            3.GODEBUG gctrace =1 go run main.go
+        -开启:
+            1.环境变量: GODEBUG=gctrace=1
+            2.GODEBUG=gctrace=1 ./xxxx.exe
+            3.GODEBUG=gctrace=1 go run main.go
 
   59.unsafe包 危险高效的内存操作
     -特征: 
