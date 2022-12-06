@@ -6,6 +6,7 @@ import (
 	"sort"
 	"strconv"
 	"strings"
+	"unicode"
 )
 
 // 字符串反转------------------------------------------------------------------------------------------------------------
@@ -828,4 +829,35 @@ func secondHighest(s string) int {
 	}
 
 	return int(second)
+}
+
+// Number of Different Integers in a String
+// 思路：双指针 找到数字开始往右边找直到找到非数字，再把左指针移动到右指针处继续找数字
+func numDifferentIntegers(word string) int {
+	m := make(map[string]bool)
+
+	left := 0
+	for left < len(word) {
+		leftIsDigit := unicode.IsDigit(rune(word[left]))
+		if !leftIsDigit {
+			left++
+			continue
+		}
+
+		cur := ""
+		right := left
+		for right < len(word) && unicode.IsDigit(rune(word[right])) {
+			if word[right] == '0' && cur == "" {
+				right++
+				continue
+			}
+			cur += string(word[right])
+			right++
+		}
+		fmt.Println(cur)
+		m[cur] = true
+		left = right
+	}
+
+	return len(m)
 }

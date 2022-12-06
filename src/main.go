@@ -28,7 +28,6 @@ import (
 	"os/signal"
 	"strconv"
 	"strings"
-	"sync"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
@@ -36,7 +35,9 @@ import (
 	"zhanyia/src/program"
 )
 
-var m sync.Map
+type AAA struct {
+	Num int32
+}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -48,6 +49,9 @@ func main() {
 	s := time.Now().UnixNano()
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+
+	str, err := strconv.Atoi("001")
+	fmt.Println(str, err)
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -63,31 +67,14 @@ func main() {
 	fmt.Println("bye bye")
 }
 
+func css(a *AAA) {
+	a.Num += 1
+}
+
 var (
 	// 以2022年11月14日开始这周为第一周
 	weekFlag = time.Date(2022, 11, 14, 0, 0, 0, 0, time.Local)
 )
-
-// 与周有关函数
-func NowWeek() int64 {
-	diff := time.Now().Unix() - weekFlag.Unix()
-	week := diff / (7 * 24 * 3600)
-	if diff%(7*24*3600) != 0 {
-		week += 1
-	}
-	return week
-}
-
-func NowWeekDay() int64 {
-	diff := time.Now().Unix() - weekFlag.Unix()
-	return (diff / (24 * 3600))
-}
-
-func DiffWeekByUnix(s1, s2 int64) int64 {
-	w1 := (s1 - weekFlag.Unix()) / (7 * 24 * 3600)
-	w2 := (s2 - weekFlag.Unix()) / (7 * 24 * 3600)
-	return w1 - w2
-}
 
 type IPPosition struct {
 	Status   string `json:"status"`   // 返回状态
