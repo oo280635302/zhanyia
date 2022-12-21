@@ -12,6 +12,7 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
+	"github.com/robfig/cron/v3"
 	"github.com/tsuna/gohbase"
 	"github.com/tsuna/gohbase/hrpc"
 	"go.mongodb.org/mongo-driver/bson"
@@ -26,6 +27,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -34,10 +36,6 @@ import (
 	"zhanyia/src/must"
 	"zhanyia/src/program"
 )
-
-type AAA struct {
-	Num int32
-}
 
 func main() {
 	rand.Seed(time.Now().UnixNano())
@@ -50,8 +48,11 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	str, err := strconv.Atoi("001")
-	fmt.Println(str, err)
+	c := cron.New(cron.WithSeconds(), cron.WithLocation(time.Local))
+	c.AddFunc(fmt.Sprintf("0/10 * * * * ?"), func() {
+		fmt.Println(time.Now(), "来了老弟")
+	})
+	c.Start()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -67,8 +68,10 @@ func main() {
 	fmt.Println("bye bye")
 }
 
-func css(a *AAA) {
-	a.Num += 1
+func css(arr []int32) {
+	sort.Slice(arr, func(i, j int) bool {
+		return arr[i] < arr[j]
+	})
 }
 
 var (

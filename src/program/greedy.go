@@ -95,3 +95,17 @@ func stoneGameIX(stones []int) bool {
 
 	return cnt1-cnt2 > 2 || cnt2-cnt1 > 2
 }
+
+// 移除石子的最大得分
+func maximumScore(a, b, c int) int {
+	sum := a + b + c
+	maxVal := max(max(a, b), c)
+	// 假设 a<=b<=c
+	// a+b <= c 匹配数量：a+b = abc和 - 最大的c
+	if sum < maxVal*2 {
+		return sum - maxVal
+		// a+b > c 匹配数量： a+b+c / 2
+	} else {
+		return sum / 2
+	}
+}
