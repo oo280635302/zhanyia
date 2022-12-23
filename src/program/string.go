@@ -861,3 +861,17 @@ func numDifferentIntegers(word string) int {
 
 	return len(m)
 }
+
+// 执行操作后的变量值
+func finalValueAfterOperations(operations []string) int {
+	res := 0
+	for _, val := range operations {
+		switch val {
+		case "++X", "X++":
+			res += 1
+		case "--X", "X--":
+			res -= 1
+		}
+	}
+	return res
+}
