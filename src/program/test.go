@@ -3,5 +3,5 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(secondHighest("sjhtz8344"))
+	fmt.Println(countHomogenous("abbcccaa"))
 }

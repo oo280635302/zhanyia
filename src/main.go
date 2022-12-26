@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/Knetic/govaluate"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
@@ -12,7 +13,6 @@ import (
 	"github.com/jinzhu/gorm"
 	"github.com/qiniu/go-sdk/v7/auth/qbox"
 	"github.com/qiniu/go-sdk/v7/storage"
-	"github.com/robfig/cron/v3"
 	"github.com/tsuna/gohbase"
 	"github.com/tsuna/gohbase/hrpc"
 	"go.mongodb.org/mongo-driver/bson"
@@ -48,11 +48,18 @@ func main() {
 	program.Ingress()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	c := cron.New(cron.WithSeconds(), cron.WithLocation(time.Local))
-	c.AddFunc(fmt.Sprintf("0/10 * * * * ?"), func() {
-		fmt.Println(time.Now(), "来了老弟")
-	})
-	c.Start()
+	expression, err := govaluate.NewEvaluableExpression("2.9")
+	if err != nil {
+		fmt.Println("123", err)
+		return
+	}
+
+	v, err := expression.Evaluate(nil)
+	if err != nil {
+		fmt.Println("234", err)
+		return
+	}
+	fmt.Println(int16(v.(float64)))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,

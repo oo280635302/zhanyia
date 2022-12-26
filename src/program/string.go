@@ -875,3 +875,23 @@ func finalValueAfterOperations(operations []string) int {
 	}
 	return res
 }
+
+// 统计同构子字符串的数目
+func countHomogenous(s string) (res int) {
+	prev := rune(s[0])
+	cnt := 0
+	for _, c := range s {
+		// 遇到相同字母就计数
+		if c == prev {
+			cnt++
+			// 遇到不同字母就根据长度 算出排列 (n*n-1...*2*1) = (n+1)*n/2
+		} else {
+			res += (cnt + 1) * cnt / 2
+			cnt = 1
+			prev = c
+		}
+	}
+	// 遇到最后的再算一次数
+	res += (cnt + 1) * cnt / 2
+	return res % (1e9 + 7)
+}
