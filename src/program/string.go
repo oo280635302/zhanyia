@@ -895,3 +895,35 @@ func countHomogenous(s string) (res int) {
 	res += (cnt + 1) * cnt / 2
 	return res % (1e9 + 7)
 }
+
+// 构造字典序最大的合并字符串
+func largestMerge(word1 string, word2 string) string {
+	ans := ""
+	for len(word1) != 0 || len(word2) != 0 {
+		l, r := int32(0), int32(0)
+		if len(word1) > 0 {
+			l = int32(word1[0])
+		}
+		if len(word2) > 0 {
+			r = int32(word2[0])
+		}
+		// 比较两个字符串的第一个字符：如果遇到大的就直接追加，遇到相等的就再比较下字典序
+		if l > r {
+			ans += string(l)
+			word1 = word1[1:]
+		} else if l < r {
+			ans += string(r)
+			word2 = word2[1:]
+		} else {
+			if word1 > word2 {
+				ans += string(l)
+				word1 = word1[1:]
+			} else {
+				ans += string(r)
+				word2 = word2[1:]
+			}
+		}
+	}
+
+	return ans
+}

@@ -109,3 +109,20 @@ func maximumScore(a, b, c int) int {
 		return sum / 2
 	}
 }
+
+// 转换字符串的最少操作次数
+func minimumMoves(s string) int {
+	ans := 0
+	l := 0
+	// 贪心 遇到X就覆盖 并跳过连续的3个
+	for l < len(s) {
+		if s[l] == 'X' {
+			l += 3
+			ans += 1
+		} else {
+			l++
+		}
+	}
+
+	return ans
+}

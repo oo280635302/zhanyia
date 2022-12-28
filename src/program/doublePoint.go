@@ -283,3 +283,28 @@ func removePalindromeSub(s string) int {
 	}
 	return 1
 }
+
+// 删除字符串两端相同字符后的最短长度
+func minimumLength(s string) int {
+	l, r := 0, len(s)-1
+
+	for l < r {
+		if s[l] != s[r] {
+			return r - l + 1
+		}
+		for l+1 < len(s) && s[l] == s[l+1] {
+			l++
+		}
+		for r-1 >= 0 && s[r] == s[r-1] {
+			r--
+		}
+		l++
+		r--
+	}
+
+	if l > r {
+		return 0
+	}
+
+	return r - l + 1
+}
