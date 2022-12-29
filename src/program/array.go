@@ -621,3 +621,33 @@ func uniqueOccurrences(arr []int) bool {
 	}
 	return true
 }
+
+// 至少在两个数组中出现的值
+func twoOutOfThree(nums1 []int, nums2 []int, nums3 []int) []int {
+	ans := []int{}
+	m := map[int]bool{}
+	m1 := map[int]bool{}
+	for _, v := range nums1 {
+		m1[v] = true
+	}
+
+	m2 := map[int]bool{}
+	for _, v := range nums2 {
+		if m1[v] {
+			m[v] = true
+		}
+		m2[v] = true
+	}
+
+	for _, v := range nums3 {
+		if m1[v] || m2[v] {
+			m[v] = true
+		}
+	}
+
+	for k := range m {
+		ans = append(ans, k)
+	}
+
+	return ans
+}
