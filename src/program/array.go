@@ -651,3 +651,114 @@ func twoOutOfThree(nums1 []int, nums2 []int, nums3 []int) []int {
 
 	return ans
 }
+
+// 统计不开心的朋友
+func unhappyFriends(n int, preferences [][]int, pairs [][]int) (ans int) {
+	order := make([][]int, n)
+	for i, preference := range preferences {
+		order[i] = make([]int, n)
+		for j, p := range preference {
+			order[i][p] = j
+		}
+	}
+	match := make([]int, n)
+	for _, p := range pairs {
+		match[p[0]] = p[1]
+		match[p[1]] = p[0]
+	}
+
+	for x, y := range match {
+		index := order[x][y]
+		for _, u := range preferences[x][:index] {
+			v := match[u]
+			if order[u][x] < order[u][v] {
+				ans++
+				break
+			}
+		}
+	}
+	return
+}
+
+// 积压订单中的订单总数
+func getNumberOfBacklogOrders(orders [][]int) int {
+	// 以后优化点: 积压订单用堆 减少插入的时间复杂度
+	buy0 := [][]int{}  //[]int{price, num}
+	sell1 := [][]int{} //[]int{price, num}
+
+	for _, order := range orders {
+		price := order[0]
+		num := order[1]
+
+		switch order[2] {
+		case 0:
+			for len(sell1) > 0 {
+				p := sell1[0]
+				if p[0] > price || num == 0 { // 销售价格大于购买价格 或者 当前购买订单没货了 停止
+					break
+				}
+				cnt := min(p[1], num)
+				p[1] -= cnt
+				num -= cnt
+
+				if p[1] == 0 {
+					sell1 = sell1[1:]
+				}
+			}
+
+			// 还剩订单就追加到 购买积压订单里面
+			if num > 0 {
+				idx := len(buy0)
+				for k, v := range buy0 {
+					if price < v[0] {
+						idx = k
+						break
+					}
+				}
+				buy0 = append(buy0, []int{})
+				copy(buy0[idx+1:], buy0[idx:])
+				buy0[idx] = []int{price, num}
+			}
+		case 1:
+			for len(buy0) > 0 {
+				p := buy0[len(buy0)-1]
+				if price > p[0] || num == 0 { // 销售价格大于购买价格 或者 当前购买订单没货了 停止
+					break
+				}
+				cnt := min(p[1], num)
+				p[1] -= cnt
+				num -= cnt
+
+				if p[1] == 0 {
+					buy0 = buy0[:len(buy0)-1]
+				}
+			}
+
+			// 还剩订单就追加到 购买积压订单里面
+			if num > 0 {
+				idx := len(sell1)
+				for k, v := range sell1 {
+					if price < v[0] {
+						idx = k
+						break
+					}
+				}
+				sell1 = append(sell1, []int{})
+				copy(sell1[idx+1:], sell1[idx:])
+				sell1[idx] = []int{price, num}
+			}
+		}
+
+	}
+
+	ans := 0
+	for _, v := range buy0 {
+		ans += v[1]
+		ans %= 1e9 + 7
+	}
+	for _, v := range sell1 {
+		ans += v[1]
+		ans %= 1e9 + 7
+	}
+	return ans
+}

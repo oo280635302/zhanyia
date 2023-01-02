@@ -18,25 +18,24 @@ func (this *ExamRoom) Seat() int {
 	student := 0
 	idx := 0
 	if len(this.s) > 0 {
-		dist := this.s[0] // 位置宽度
-		pre := -1         // 以0为起步
-		for i, v := range this.s {
-			if pre != -1 {
-				d := (v - pre) / 2 // 新增位置到周围位置的宽度
-				if d > dist {
-					dist = d
-					student = pre + d
-					idx = i
-				}
+		dist := this.s[0] // 位置宽度 , 起始宽度是左墙壁到位置的长度
+		pre := this.s[0]  // 上个位置，以0为起步
+		for i, v := range this.s[0:] {
+			d := (v - pre) / 2 // 新增位置到周围位置的宽度
+			if d > dist {
+				dist = d
+				student = pre + d
+				idx = i
 			}
-			pre = v
 		}
 		if this.n-1-this.s[len(this.s)-1] > dist {
 			student = this.n - 1
 			idx = len(this.s)
 		}
 	}
-	this.s = append(this.s, 0) // 添加学生到新位置
+
+	// 添加学生到新位置
+	this.s = append(this.s, 0)
 	copy(this.s[idx+1:], this.s[idx:])
 	this.s[idx] = student
 	return student
