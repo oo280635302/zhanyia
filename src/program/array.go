@@ -762,3 +762,31 @@ func getNumberOfBacklogOrders(orders [][]int) int {
 	}
 	return ans
 }
+
+// 检查句子中的数字是否递增
+func areNumbersAscending(s string) bool {
+	last := 0
+	for i := 0; i < len(s); i++ {
+		cur := 0
+
+		if s[i] < '0' || s[i] > '9' {
+			continue
+		}
+
+		for {
+			num := int(s[i]) - 48
+			if num < 0 || num > 9 {
+				break
+			}
+			cur = cur*10 + num
+			i++
+		}
+		//fmt.Println(last, cur)
+		if cur <= last {
+			return false
+		}
+		last = cur
+	}
+
+	return true
+}

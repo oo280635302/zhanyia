@@ -1,5 +1,7 @@
 package program
 
+import "math"
+
 // 最大化股票利润--------------------------------------------------------------------------------------------------------
 // 思路：贪心，只取上下坡利润里面上坡的点
 func maxProfitGreedy(prices []int) int {
@@ -125,4 +127,33 @@ func minimumMoves(s string) int {
 	}
 
 	return ans
+}
+
+// 有界数组中指定下标处的最大值
+func maxValue(n, index, maxSum int) int {
+	left := index          // 到左边界的距离
+	right := n - index - 1 // 到右边界的距离
+	if left > right {      // 置换左右，使左边<=右边
+		left, right = right, left
+	}
+
+	upper := ((left+1)*(left+1)-3*(left+1))/2 + left + 1 + (left + 1) + ((left+1)*(left+1)-3*(left+1))/2 + right + 1
+	if upper >= maxSum {
+		a := 1.0
+		b := -2.0
+		c := float64(left + right + 2 - maxSum)
+		return int((-b + math.Sqrt(b*b-4*a*c)) / (2 * a))
+	}
+
+	upper = (2*(right+1)-left-1)*left/2 + (right + 1) + ((right+1)*(right+1)-3*(right+1))/2 + right + 1
+	if upper >= maxSum {
+		a := 1.0 / 2
+		b := float64(left) + 1 - 3.0/2
+		c := float64(right + 1 + (-left-1)*left/2.0 - maxSum)
+		return int((-b + math.Sqrt(b*b-4*a*c)) / (2 * a))
+	} else {
+		a := float64(left + right + 1)
+		b := float64(-left*left-left-right*right-right)/2 - float64(maxSum)
+		return int(-b / a)
+	}
 }
