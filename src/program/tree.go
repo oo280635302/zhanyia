@@ -929,3 +929,28 @@ func (c *CBTInserter) Insert(val int) int {
 func (c *CBTInserter) Get_root() *TreeNode {
 	return c.root
 }
+
+// 破解保险箱 Hierholzer 算法：可以从任意一个节点开始，一次性不重复地走完所有的边且回到该节点
+func crackSafe(n int, k int) string {
+	seen := map[int]bool{}
+	ans := ""
+	highest := int(math.Pow(10, float64(n-1)))
+
+	var dfs func(int)
+	dfs = func(node int) {
+		for x := 0; x < k; x++ {
+			nei := node*10 + x
+			if !seen[nei] {
+				seen[nei] = true
+				dfs(nei % highest)
+				ans += strconv.Itoa(x)
+			}
+		}
+		fmt.Println(ans)
+	}
+	dfs(0)
+	for i := 1; i < n; i++ {
+		ans += "0"
+	}
+	return ans
+}

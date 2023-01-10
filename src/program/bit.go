@@ -201,3 +201,27 @@ func hasAlternatingBits(n int) bool {
 	a := n ^ n>>1       // 010101 ^ 001010 = 011111
 	return a&(a+1) == 0 // 011111 & 100000 == 0
 }
+
+//  统计异或值（异）在范围内的数对有多少
+func countPairs(nums []int, low int, high int) int {
+	ans := 0
+	m := map[int]bool{}
+	for i := 0; i < len(nums); i++ {
+		j := i + 1
+		for j < len(nums) {
+			cur := nums[i] ^ nums[j]
+			if m[cur] {
+				ans++
+			} else {
+				if low <= cur && cur <= high {
+					ans += 1
+					m[cur] = true
+				}
+			}
+
+			j++
+		}
+	}
+
+	return ans
+}

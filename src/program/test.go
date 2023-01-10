@@ -3,5 +3,6 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(maxValue(2, 1, 865959216))
+	fmt.Println('0')
+	fmt.Println(crackSafe(2, 4))
 }
