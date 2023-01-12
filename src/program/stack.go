@@ -1144,3 +1144,36 @@ func (f *FreqStack) Pop() int {
 	}
 	return res
 }
+
+// 替换字符串中的括号内容
+func evaluate(s string, knowledge [][]string) string {
+	m := map[string]string{}
+	for _, v := range knowledge {
+		m[v[0]] = v[1]
+	}
+
+	ans := strings.Builder{}
+	flag := false
+	cur := -1
+	for i, b := range s {
+		switch b {
+		case '(':
+			cur = i
+			flag = true
+		case ')':
+			flag = false
+			v := m[s[cur+1:i]]
+			if v == "" {
+				v = "?"
+			}
+			ans.WriteString(v)
+			cur = -1
+		default:
+			if !flag {
+				ans.WriteRune(b)
+			}
+		}
+	}
+
+	return ans.String()
+}

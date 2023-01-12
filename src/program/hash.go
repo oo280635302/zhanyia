@@ -150,3 +150,19 @@ func findCenter(edges [][]int) int {
 
 	return 0
 }
+
+// 判断一个数的数字计数是否等于数位的值
+func digitCount(num string) bool {
+	m := map[int]int{}
+	for _, b := range num {
+		m[int(b-'0')]++
+	}
+
+	for i, v := range num {
+		if m[i] != int(v-'0') {
+			return false
+		}
+	}
+
+	return true
+}

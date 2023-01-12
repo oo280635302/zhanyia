@@ -3,6 +3,5 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println('0')
-	fmt.Println(crackSafe(2, 4))
+	fmt.Println(evaluate("(name)is(age)yearsold", [][]string{{"name", "bob"}, {"age", "two"}}))
 }
