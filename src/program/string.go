@@ -927,3 +927,24 @@ func largestMerge(word1 string, word2 string) string {
 
 	return ans
 }
+
+// 重排字符形成目标字符串
+func rearrangeCharacters(s string, target string) int {
+	mt := map[rune]int{}
+	for _, b := range target {
+		mt[b]++
+	}
+
+	ms := map[rune]int{}
+	for _, b := range s {
+		ms[b]++
+	}
+
+	ans := 9999
+	for b, need := range mt {
+		num := ms[b]
+		ans = min(ans, num/need)
+	}
+
+	return ans
+}
