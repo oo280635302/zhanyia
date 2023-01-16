@@ -948,3 +948,25 @@ func rearrangeCharacters(s string, target string) int {
 
 	return ans
 }
+
+// 句子相似性 III
+func areSentencesSimilar(sentence1 string, sentence2 string) bool {
+	s1 := strings.Split(sentence1, " ")
+	s2 := strings.Split(sentence2, " ")
+
+	i, m := 0, len(s1)
+	j, n := 0, len(s2)
+
+	// 从左边开始判断句子相同的长度
+	for i < m && i < n && s1[i] == s2[i] {
+		i++
+	}
+
+	// 从右边开始判断句子相同的长度
+	for j < m-i && j < n-i && s1[m-1-j] == s2[n-1-j] {
+		j++
+	}
+
+	// 相同的长度 是否正常和 最小的句子一样 是的话说明两个句子相似
+	return i+j == n || i+j == m
+}
