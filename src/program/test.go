@@ -3,5 +3,5 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(areSentencesSimilar("My name is Haley", "My Haley"))
+	fmt.Println(countNicePairs([]int{12, 12, 12, 12}))
 }

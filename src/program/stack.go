@@ -1177,3 +1177,40 @@ func evaluate(s string, knowledge [][]string) string {
 
 	return ans.String()
 }
+
+// 统计星号
+func countAsterisks(s string) int {
+	ans := 0
+	open := 0
+	for _, v := range s {
+		if v == '|' {
+			open ^= 1
+		} else if v == '*' && open == 0 {
+			ans++
+		}
+	}
+	return ans
+}
+
+// 判断矩阵是否是一个 X 矩阵
+func checkXMatrix(grid [][]int) bool {
+	ans := true
+
+	for x, in := range grid {
+		for y, val := range in {
+			if x == y || x+y == len(grid) {
+				if val == 0 {
+					ans = false
+					break
+				}
+			} else {
+				if val != 0 {
+					ans = false
+					break
+				}
+			}
+		}
+	}
+
+	return ans
+}

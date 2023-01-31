@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/Knetic/govaluate"
 	mqtt "github.com/eclipse/paho.mqtt.golang"
 	"github.com/go-redis/redis/v8"
 	_ "github.com/go-sql-driver/mysql"
@@ -34,7 +33,6 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
-	"zhanyia/src/program"
 )
 
 func main() {
@@ -45,21 +43,10 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	s := time.Now().UnixNano()
-	program.Ingress()
+	//program.Ingress()
+
+	csRedis()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
-
-	expression, err := govaluate.NewEvaluableExpression("2.9")
-	if err != nil {
-		fmt.Println("123", err)
-		return
-	}
-
-	v, err := expression.Evaluate(nil)
-	if err != nil {
-		fmt.Println("234", err)
-		return
-	}
-	fmt.Println(int16(v.(float64)))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -396,22 +383,15 @@ const PUSH_PRIVATE_MESSAGE_SCRIPT_STRING = `
 
 func csRedis() {
 	ctx := context.TODO()
-	client := redis.NewClusterClient(&redis.ClusterOptions{
-		Addrs: []string{
-			"192.168.0.234:7000",
-			"192.168.0.234:7001",
-			"192.168.0.234:7002",
-			"192.168.0.234:7003",
-			"192.168.0.234:7004",
-			"192.168.0.234:7005",
-		},
-		RouteRandomly: true,
-	})
+	client := redis.NewClient(&redis.Options{Addr: "127.0.0.1:6379"})
 
-	z, err := client.ZRevRangeWithScores(ctx, "cs_rank", 0, -1).Result()
-	fmt.Println("1111", z, err)
-	for _, val := range z {
-		fmt.Println(val.Member.(string), val.Score)
+	for i := 0; i < 1000; i++ {
+
+		client.ZRevRangeWithScores(ctx, "ltt", 0, 99).Result()
+
+		continue
+		score := float64(i) + float64(time.Now().Unix())*0.00000000001
+		client.ZAdd(ctx, "ltt", &redis.Z{Score: score, Member: i})
 	}
 
 	return
