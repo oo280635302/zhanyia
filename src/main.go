@@ -33,6 +33,7 @@ import (
 	"time"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 )
 
 func main() {
@@ -43,9 +44,9 @@ func main() {
 	mustComponent()
 	fmt.Println("run start")
 	s := time.Now().UnixNano()
-	//program.Ingress()
+	program.Ingress()
 
-	csRedis()
+	//csRedis()
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
 	signalChan := make(chan os.Signal, 1)

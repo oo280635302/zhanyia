@@ -970,3 +970,36 @@ func areSentencesSimilar(sentence1 string, sentence2 string) bool {
 	// 相同的长度 是否正常和 最小的句子一样 是的话说明两个句子相似
 	return i+j == n || i+j == m
 }
+
+// 解密消息
+func decodeMessage(key string, message string) string {
+	m := make(map[int32]int32, 0)
+	s := 'a'
+
+	for _, val := range key {
+		if s > 'z' {
+			break
+		}
+		if val == ' ' {
+			continue
+		}
+		_, ok := m[val]
+		if ok {
+			continue
+		}
+		m[val] = s
+		s++
+	}
+
+	var ans strings.Builder
+	for _, v := range message {
+		if v == ' ' {
+			ans.WriteRune(' ')
+			continue
+		}
+		cur := m[v]
+		ans.WriteRune(cur)
+	}
+
+	return ans.String()
+}
