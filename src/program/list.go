@@ -231,3 +231,32 @@ func (this *solution) getRandom() int {
 	}
 	return ans
 }
+
+// 合并两个链表
+func mergeInBetween(list1 *ListNode, a int, b int, list2 *ListNode) *ListNode {
+	list := list1
+	var head, tail, last *ListNode
+	var cnt = 0
+	for list != nil {
+		if cnt == a {
+			head = last
+		}
+		if cnt == b {
+			tail = list.Next
+			break
+		}
+		cnt++
+		last = list
+		list = list.Next
+	}
+	head.Next = list2
+
+	for cur := list2; cur != nil; cur = cur.Next {
+		if cur.Next == nil {
+			cur.Next = tail
+			break
+		}
+	}
+
+	return list1
+}
