@@ -954,3 +954,24 @@ func crackSafe(n int, k int) string {
 	}
 	return ans
 }
+
+// 计算布尔二叉树的值
+func evaluateTree(root *TreeNode) bool {
+	if root == nil {
+		return false
+	}
+	// 叶子
+	if root.Left == nil && root.Right == nil {
+		if root.Val == 0 {
+			return false
+		} else {
+			return true
+		}
+	} else {
+		if root.Val == 2 {
+			return evaluateTree(root.Left) || evaluateTree(root.Right)
+		} else {
+			return evaluateTree(root.Left) && evaluateTree(root.Right)
+		}
+	}
+}
