@@ -6,6 +6,7 @@ import (
 	"math"
 	"sort"
 	"strconv"
+	"strings"
 )
 
 // 提莫攻击的持续时长
@@ -842,4 +843,38 @@ func countNicePairs(nums []int) (ans int) {
 		cnt[num-rev]++
 	}
 	return ans % (1e9 + 7)
+}
+
+// 警告一小时内使用相同员工卡大于等于三次的人
+func alertNames(keyName []string, keyTime []string) []string {
+	m := map[string][]int{}
+	for idx, val := range keyTime {
+		strs := strings.Split(val, ":")
+		hour, _ := strconv.Atoi(strs[0])
+		minute, _ := strconv.Atoi(strs[1])
+		ts := hour*60 + minute
+
+		curName := keyName[idx]
+		m[curName] = append(m[curName], ts)
+	}
+
+	ans := []string{}
+	for name, arr := range m {
+		sort.Slice(arr, func(i, j int) bool {
+			return arr[i] < arr[j]
+		})
+
+		for idx, val := range arr {
+			last3 := idx - 2
+			if last3 >= 0 && val-60 <= arr[last3] {
+				ans = append(ans, name)
+				break
+			}
+		}
+	}
+
+	sort.Slice(ans, func(i, j int) bool {
+		return ans[i] < ans[j]
+	})
+	return ans
 }

@@ -3,7 +3,9 @@ package program
 import (
 	"fmt"
 	"math"
+	"sort"
 	"strconv"
+	"strings"
 )
 
 // 将有序数组转换为二叉搜索树-------------------------------------------------------------------------------------------
@@ -975,3 +977,33 @@ func evaluateTree(root *TreeNode) bool {
 		}
 	}
 }
+
+// 删除子文件夹
+func removeSubfolders(folder []string) (ans []string) {
+	sort.Strings(folder)
+	fmt.Println(folder)
+	ans = append(ans, folder[0])
+	for _, f := range folder[1:] {
+		last := ans[len(ans)-1]
+		fmt.Println(f, last, f[len(last)])
+		if !strings.HasPrefix(f, last) || f[len(last)] != '/' {
+			ans = append(ans, f)
+		}
+	}
+	return
+}
+
+//func removeSubfolders(folder []string) []string {
+//	sort.Slice(folder, func(i, j int) bool {
+//		return folder[i] < folder[j]
+//	})
+//
+//	ans := []string{folder[0]}
+//	for _, v := range folder[1:] {
+//		if !strings.HasPrefix(v, ans[len(ans)-1]) {
+//			ans = append(ans, v)
+//		}
+//	}
+//
+//	return ans
+//}

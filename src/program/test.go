@@ -3,5 +3,7 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(mergeInBetween(&ListNode{Val: 0, Next: &ListNode{Val: 1, Next: &ListNode{Val: 2}}}, 1, 2, &ListNode{Val: 991, Next: &ListNode{Val: 992, Next: &ListNode{Val: 993}}}))
+	//["a","a","a","a","a","b","b","b","b","b","b"]
+	//	["23:20","11:09","23:30","23:02","15:28",]
+	fmt.Println(removeSubfolders([]string{"/a/b/c", "/a/b/ca", "/a/b/d"}))
 }

@@ -556,3 +556,36 @@ func getPermutation(n int, k int) string {
 	}
 	return ans
 }
+
+// 设计一个验证系统
+type AuthenticationManager struct {
+	LiveTime int
+	AllToken map[string]int
+}
+
+func ConstructorAuthenticationManager(timeToLive int) AuthenticationManager {
+	return AuthenticationManager{
+		LiveTime: timeToLive,
+		AllToken: map[string]int{},
+	}
+}
+
+func (this *AuthenticationManager) Generate(tokenId string, currentTime int) {
+	this.AllToken[tokenId] = currentTime + this.LiveTime
+}
+
+func (this *AuthenticationManager) Renew(tokenId string, currentTime int) {
+	if this.AllToken[tokenId] > currentTime {
+		this.AllToken[tokenId] = currentTime + this.LiveTime
+	}
+}
+
+func (this *AuthenticationManager) CountUnexpiredTokens(currentTime int) int {
+	ans := 0
+	for _, val := range this.AllToken {
+		if val > currentTime {
+			ans++
+		}
+	}
+	return ans
+}
