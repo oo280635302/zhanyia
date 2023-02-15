@@ -225,3 +225,18 @@ func countPairs(nums []int, low int, high int) int {
 
 	return ans
 }
+
+// 获取当前数最低的单位数
+func lowBit(x int) int {
+	return x & -x
+}
+
+// 统计二进制下1的个数
+func bit1Num(x int) int {
+	ans := 0
+	for x > 0 {
+		x -= lowBit(x)
+		ans++
+	}
+	return ans
+}
