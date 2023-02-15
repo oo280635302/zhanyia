@@ -195,3 +195,23 @@ func validSquare(p1 []int, p2 []int, p3 []int, p4 []int) bool {
 	}
 	return y == 2*x && counter[x] == 4 && counter[y] == 2
 }
+
+// 检查「好数组」 - 子集能组合成公约数1的数组
+func isGoodArray(nums []int) bool {
+	g := 0
+	for _, val := range nums {
+		g = gcd(g, val)
+		if g == 1 {
+			return true
+		}
+	}
+	return false
+}
+
+// 获取最大公约数
+func gcd(a, b int) int {
+	for a != 0 {
+		a, b = b%a, a // 将a削弱到0，看其余数b
+	}
+	return b
+}

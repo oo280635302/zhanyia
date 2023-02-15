@@ -308,3 +308,27 @@ func minimumLength(s string) int {
 
 	return r - l + 1
 }
+
+// 表现良好的最长时间段
+func longestWPI(hours []int) int {
+	ans := 0
+	for l, val := range hours {
+		cur := 0
+		if val > 8 {
+			cur += 1
+		} else {
+			cur -= 1
+		}
+		for r := l + 1; r < len(hours); r++ {
+			if hours[r] > 8 {
+				cur += 1
+			} else {
+				cur -= 1
+			}
+			if cur > 0 {
+				ans = max(ans, r-l+1)
+			}
+		}
+	}
+	return ans
+}

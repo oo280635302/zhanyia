@@ -1003,3 +1003,74 @@ func decodeMessage(key string, message string) string {
 
 	return ans.String()
 }
+
+// 替换子串得到平衡字符串
+func balancedString(s string) int {
+	cnt := map[byte]int{}
+	for _, c := range s {
+		cnt[byte(c)]++
+	}
+	partial := len(s) / 4
+	check := func() bool {
+		if cnt['Q'] > partial ||
+			cnt['W'] > partial ||
+			cnt['E'] > partial ||
+			cnt['R'] > partial {
+			return false
+		}
+		return true
+	}
+
+	if check() {
+		return 0
+	}
+
+	res := len(s)
+	r := 0
+	for l, c := range s {
+		for r < len(s) && !check() {
+			cnt[s[r]]--
+			r += 1
+		}
+		if !check() {
+			break
+		}
+		res = min(res, r-l)
+		cnt[byte(c)]++
+	}
+	return res
+}
+
+// 字母板上的路径
+func alphabetBoardPath(target string) string {
+	cx, cy := 0, 0
+	ans := strings.Builder{}
+	for _, c := range target {
+		nx := int(c-'a') / 5
+		ny := int(c-'a') % 5
+		if nx < cx {
+			for j := 0; j < cx-nx; j++ {
+				ans.WriteRune('U')
+			}
+		}
+		if ny < cy {
+			for j := 0; j < cy-ny; j++ {
+				ans.WriteRune('L')
+			}
+		}
+		if nx > cx {
+			for j := 0; j < nx-cx; j++ {
+				ans.WriteRune('D')
+			}
+		}
+		if ny > cy {
+			for j := 0; j < ny-cy; j++ {
+				ans.WriteRune('R')
+			}
+		}
+		ans.WriteRune('!')
+		cx = nx
+		cy = ny
+	}
+	return ans.String()
+}
