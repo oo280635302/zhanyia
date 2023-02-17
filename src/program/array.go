@@ -878,3 +878,46 @@ func alertNames(keyName []string, keyTime []string) []string {
 	})
 	return ans
 }
+
+// 数组能形成多少数对
+func numberOfPairs(nums []int) []int {
+	m := map[int]int{}
+	for _, val := range nums {
+		m[val]++
+	}
+	ans := make([]int, 2)
+	for _, v := range m {
+		num := v / 2
+		lave := v % 2
+		ans[0] += num
+		if lave == 1 {
+			ans[1]++
+		}
+	}
+
+	return ans
+}
+
+// 礼盒的最大甜蜜度
+func maximumTastiness(price []int, k int) int {
+	// 排序
+	sort.Ints(price)
+
+	suger := (price[len(price)-1]-price[0])/(k-1) + 1 // 最大可能的答案 -- eg:[1,x,9] k=3 最好情况是(9-1)/2 = 4,x=5的情况
+
+	return sort.Search(suger, func(i int) bool {
+		i++
+		// 无论什么情况，头部第一个数都是满足的
+		pre := price[0]
+		cnt := 1
+		// 从第二个数开始 满足差值>=答案i 的算一个
+		for _, v := range price[1:] {
+			if v-pre >= i {
+				pre = v
+				cnt++
+			}
+		}
+		// 如果数量>=K说明分数是满足的然后涨分数，反之减分数
+		return cnt < k
+	})
+}

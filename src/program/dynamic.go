@@ -925,3 +925,113 @@ func closestCost(baseCosts []int, toppingCosts []int, target int) int {
 
 	return ans
 }
+
+// 最大的以 1 为边界的正方形
+func largest1BorderedSquare(grid [][]int) int {
+	// 找到每个位置的上左边长
+	dpup := make([][]int, 0)   // 上边长
+	dpleft := make([][]int, 0) // 左边长
+
+	for x, arr := range grid {
+		curx := make([]int, len(arr))
+		cury := make([]int, len(arr))
+		for y, val := range arr {
+			if val == 0 {
+				continue
+			}
+			if x == 0 {
+				curx[y] = 1
+			} else {
+				curx[y] = dpup[x-1][y] + 1
+			}
+
+			if y == 0 {
+				cury[y] = 1
+			} else {
+				cury[y] = cury[y-1] + 1
+			}
+		}
+		dpup = append(dpup, curx)
+		dpleft = append(dpleft, cury)
+	}
+
+	maxside := 0
+	for y, arr := range dpup {
+		for x, val := range arr {
+			yside := val
+			xside := dpleft[y][x]
+
+			// 以上左边中最小的边长能组成正方形
+			curmaxside := min(xside, yside)
+
+			// 如果这个是的边长没之前的边长大 就不用了
+			if curmaxside <= maxside {
+				continue
+			}
+			//fmt.Printf("x:%d,y:%d,xside:%d,yside:%d,curside:%d\n", x, y, xside, yside, curmaxside)
+
+			// 以当前点为正方形右下角 找到正方形左下角和正方形右上角看是否满足
+			// 依次以最大可组成边长往里面收缩 直到边长<=已有的最大边长
+			for curside := curmaxside; curside > maxside; curside-- {
+				l := x - curside + 1
+				u := y - curside + 1
+				if dpup[y][l] >= curside && dpleft[u][x] >= curside {
+					// 满足的情况下算是找到边长了然后暂停
+					maxside = curside
+					break
+				}
+			}
+		}
+	}
+
+	return maxside * maxside
+}
+
+func maximalSquare(matrix [][]byte) int {
+	// 找到每个位置的可能边长
+	dpup := make([][]int, 0) // 边长
+
+	for x, arr := range matrix {
+		curx := make([]int, len(arr))
+		for y, val := range arr {
+			if val == '0' {
+				continue
+			}
+
+			if x == 0 {
+				curx[y] = 1
+			} else {
+				curx[y] = dpup[x-1][y] + 1
+			}
+		}
+		dpup = append(dpup, curx)
+	}
+
+	maxside := 0
+	for y, arr := range dpup {
+		for x, val := range arr {
+			curmaxside := val
+
+			// 如果这个是的边长没之前的边长大 就不用了
+			if curmaxside <= maxside {
+				continue
+			}
+
+			for curside := curmaxside; curside > maxside; curside-- {
+				flag := true
+				for i := 1; i < curside; i++ {
+					if x-i < 0 || dpup[y][x-i] < curside {
+						flag = false
+						break
+					}
+				}
+				if flag {
+					maxside = curside
+					break
+				}
+			}
+		}
+	}
+
+	return maxside * maxside
+}
