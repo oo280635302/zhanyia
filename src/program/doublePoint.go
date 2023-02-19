@@ -332,3 +332,20 @@ func longestWPI(hours []int) int {
 	}
 	return ans
 }
+
+// 找出给定方程的正整数解
+func findSolution(customFunction func(int, int) int, z int) [][]int {
+	res := make([][]int, 0)
+	// 因为单调递增的特性， 当x,y 满足==z时候 x+1搭配的y一定小于之前的y
+	for x, y := 1, 1000; x <= 1000 && y > 0; x++ {
+		// 当结果>z 逐渐减少y
+		for y > 0 && customFunction(x, y) > z {
+			y--
+		}
+		// y可能为0排除掉
+		if y > 0 && customFunction(x, y) == z {
+			res = append(res, []int{x, y})
+		}
+	}
+	return res
+}

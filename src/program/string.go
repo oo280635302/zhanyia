@@ -1074,3 +1074,19 @@ func alphabetBoardPath(target string) string {
 	}
 	return ans.String()
 }
+
+// 移除指定数字得到的最大结果
+func removeDigit(number string, digit byte) string {
+	res := ""
+
+	for idx, v := range number {
+		if byte(v) == digit {
+			cur := number[:idx] + number[idx+1:]
+			if cur > res {
+				res = cur
+			}
+		}
+	}
+
+	return res
+}

@@ -993,17 +993,25 @@ func removeSubfolders(folder []string) (ans []string) {
 	return
 }
 
-//func removeSubfolders(folder []string) []string {
-//	sort.Slice(folder, func(i, j int) bool {
-//		return folder[i] < folder[j]
-//	})
-//
-//	ans := []string{folder[0]}
-//	for _, v := range folder[1:] {
-//		if !strings.HasPrefix(v, ans[len(ans)-1]) {
-//			ans = append(ans, v)
-//		}
-//	}
-//
-//	return ans
-//}
+// 层数最深叶子节点的和
+func deepestLeavesSum(root *TreeNode) int {
+	cur := []*TreeNode{root}
+	ans := 0
+	for len(cur) > 0 {
+		tmp := []*TreeNode{}
+		tmpVal := 0
+		for _, v := range cur {
+			if v.Left != nil {
+				tmp = append(tmp, v.Left)
+			}
+			if v.Right != nil {
+				tmp = append(tmp, v.Right)
+			}
+			tmpVal += v.Val
+		}
+		cur = tmp
+		ans = tmpVal
+	}
+
+	return ans
+}

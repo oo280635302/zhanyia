@@ -1,6 +1,7 @@
 package program
 
 import (
+	"container/heap"
 	"sort"
 )
 
@@ -198,4 +199,33 @@ next:
 		return string(order)
 	}
 	return ""
+}
+
+//最大平均通过率
+type maxAverageRatioHp [][]int
+
+func (h maxAverageRatioHp) Len() int { return len(h) }
+func (h maxAverageRatioHp) Less(i, j int) bool {
+	il := float64(h[i][0]+1)/float64(h[i][1]+1) - float64(h[i][0])/float64(h[i][1])
+	jl := float64(h[j][0]+1)/float64(h[j][1]+1) - float64(h[j][0])/float64(h[j][1])
+	return il > jl
+}
+func (h maxAverageRatioHp) Swap(i, j int)      { h[i], h[j] = h[j], h[i] }
+func (maxAverageRatioHp) Push(interface{})     {}
+func (maxAverageRatioHp) Pop() (_ interface{}) { return }
+func maxAverageRatio(classes [][]int, extraStudents int) float64 {
+	h := maxAverageRatioHp(classes)
+	heap.Init(&h)
+	for ; extraStudents > 0; extraStudents-- {
+		h[0][0]++
+		h[0][1]++
+		heap.Fix(&h, 0)
+		//fmt.Println(h)
+	}
+	allRatio := float64(0)
+	for _, class := range classes {
+		allRatio += float64(class[0]) / float64(class[1])
+	}
+
+	return allRatio / float64(len(classes))
 }

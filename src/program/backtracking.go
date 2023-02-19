@@ -1,6 +1,7 @@
 package program
 
 import (
+	"sort"
 	"strconv"
 	"unicode"
 )
@@ -216,4 +217,73 @@ func strongPasswordChecker(password string) int {
 		remove -= use3 * 3
 		return (n - 20) + max(replace, 3-categories)
 	}
+}
+
+// 全排列
+func permute(nums []int) [][]int {
+	res, path := make([][]int, 0), make([]int, 0, len(nums))
+	isUse := make(map[int]bool, 0)
+
+	var dfs = func(cur int) {}
+	dfs = func(cur int) {
+		// 已使用数量 和 数组数量相等等于到底了
+		if cur == len(nums) {
+			// []int是指针类型 要深copy 不然之前的数组会改变
+			tmp := make([]int, len(path))
+			copy(tmp, path)
+			res = append(res, tmp)
+			return
+		}
+		for _, num := range nums {
+			if !isUse[num] {
+				path = append(path, num)
+				isUse[num] = true
+				dfs(cur + 1)
+				path = path[:len(path)-1]
+				isUse[num] = false
+			}
+		}
+	}
+	// 从0 开始
+	dfs(0)
+	return res
+}
+
+// 全排列 II
+func permuteUnique(nums []int) [][]int {
+	res, path := make([][]int, 0), make([]int, 0, len(nums))
+	isUse := make(map[int]bool, 0)
+	sort.Ints(nums)
+
+	var dfs = func(cur int) {}
+	dfs = func(cur int) {
+		// 已使用数量 和 数组数量相等等于到底了
+		if cur == len(nums) {
+			// []int是指针类型 要深copy 不然之前的数组会改变
+			tmp := make([]int, len(path))
+			copy(tmp, path)
+			res = append(res, tmp)
+			return
+		}
+
+		for idx, num := range nums {
+			// 跳过已经被使用的索引
+			if isUse[idx] {
+				continue
+			}
+			// 跳过 同层级（!isUse[idx-1]）当前数与前一个数相等(nums[idx] == nums[idx-1] )的情况
+			if idx > 0 && nums[idx] == nums[idx-1] && !isUse[idx-1] {
+				continue
+			}
+
+			path = append(path, num)
+			isUse[idx] = true
+			dfs(cur + 1)
+			path = path[:len(path)-1]
+			isUse[idx] = false
+		}
+	}
+	// 从0 开始
+	dfs(0)
+	return res
 }
