@@ -48,12 +48,6 @@ func main() {
 
 	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
 
-	arr := []int{1, 2, 3, 4, 5}
-	ans := sort.Search(len(arr), func(i int) bool {
-		return arr[i] >= 2
-	})
-	fmt.Println(ans)
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,

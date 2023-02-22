@@ -1,0 +1,7 @@
+version: '3.8'
+services:
+  demo:
+    image: zhanyi:1.0.0
+    #ports:
+    #  - "1111:1111"
+    command: /project/demo
