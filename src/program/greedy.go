@@ -157,3 +157,31 @@ func maxValue(n, index, maxSum int) int {
 		return int(-b / a)
 	}
 }
+
+// 灌溉花园的最少水龙头数目
+func minTaps(n int, ranges []int) int {
+	// 能被最广覆盖就能减少水龙的数量 去掉不必要的能被其余水龙头覆盖的水龙头
+	land := make([]int, n)
+	for i, v := range ranges {
+		l := max(i-v, 0)
+		r := min(i+v, n)
+		for l < r {
+			// 当前区域 最广水龙头
+			land[l] = max(land[l], r)
+			l++
+		}
+	}
+
+	ans := 0
+	cur := 0
+	for cur < n {
+		// 没被任何水龙头覆盖
+		if land[cur] == 0 {
+			return -1
+		}
+		cur = land[cur]
+		ans++
+	}
+
+	return ans
+}
