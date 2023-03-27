@@ -26,7 +26,6 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
-	"sort"
 	"strconv"
 	"strings"
 	"syscall"
@@ -60,12 +59,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func css(arr []int32) {
-	sort.Slice(arr, func(i, j int) bool {
-		return arr[i] < arr[j]
-	})
 }
 
 var (

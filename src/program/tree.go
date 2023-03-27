@@ -313,7 +313,8 @@ func recur(root *TreeNode, arr *[]int) {
 }
 
 // 解法三：morris 创建 一个连接 将树中 所有父节点的子节点里的最右节点指向父节点
-//     然后从最左节点开始进组，左进组了父进组，父进组了右进组，右进组了他指向父节点，然后父进组，又右进组,依次循环
+//
+//	然后从最左节点开始进组，左进组了父进组，父进组了右进组，右进组了他指向父节点，然后父进组，又右进组,依次循环
 func inOrderTraversal(root *TreeNode) []int {
 	res := make([]int, 0)
 	for root != nil {
@@ -657,8 +658,9 @@ func secondMinimum(n int, edges [][]int, time, change int) int {
 
 // 重构一棵树的方案数
 // 思路： 1.根节点的组成元素一定=所有元素
-//		  2.所有的子节点的元素一定是根节点的子集
-//		  3.如果某个 子节点的节点数量/元素 与 父节点的节点数量/元素完全相同 那就说明可以相互作为根节点
+//
+//	2.所有的子节点的元素一定是根节点的子集
+//	3.如果某个 子节点的节点数量/元素 与 父节点的节点数量/元素完全相同 那就说明可以相互作为根节点
 func checkWays(pairs [][]int) int {
 	adj := map[int]map[int]bool{}
 	for _, p := range pairs {
@@ -718,7 +720,7 @@ func checkWays(pairs [][]int) int {
 	return ans
 }
 
-//  N 叉树的前序遍历  中左右
+// N 叉树的前序遍历  中左右
 func preorder(root *Node) []int {
 	if root == nil {
 		return nil
@@ -745,7 +747,7 @@ type Node struct {
 	Children []*Node
 }
 
-//统计最高分的节点数目
+// 统计最高分的节点数目
 func countHighestScoreNodes(parents []int) (ans int) {
 	n := len(parents)
 	children := make([][]int, n) // 预处理：筛选出所有节点的子节点
@@ -882,7 +884,8 @@ func sumRootToLeaf(root *TreeNode) int {
 
 // 完全二叉树插入器
 // 完全二叉树： 是每一层（除最后一层外）都是完全填充（即，节点数达到最大）的，并且所有的节点都尽可能地集中在左侧。
-//			  新加入节点只会填充进最后一层从左到右开始空缺的位置，或者最后一层满了添加新的最后一层
+//
+//	新加入节点只会填充进最后一层从左到右开始空缺的位置，或者最后一层满了添加新的最后一层
 type CBTInserter struct {
 	root      *TreeNode   // 完全树本身
 	candidate []*TreeNode // 候选队列  可以用于插入新增node的node节点，其左右子节点至少一个为nil,当被插入右节点后移除
@@ -1014,4 +1017,24 @@ func deepestLeavesSum(root *TreeNode) int {
 	}
 
 	return ans
+}
+
+// 根据前序遍历、中序遍历还原数
+func reTree(pre, in []int) *TreeNode {
+	if len(pre) == 0 {
+		return nil
+	}
+
+	root := &TreeNode{Val: pre[0]}
+	idx := -1
+	for i, v := range in {
+		if v == root.Val {
+			idx = i
+			break
+		}
+	}
+
+	root.Left = reTree(pre[1:idx+1], in[:idx])
+	root.Right = reTree(pre[idx+1:], in[idx+1:])
+	return root
 }

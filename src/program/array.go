@@ -921,3 +921,74 @@ func maximumTastiness(price []int, k int) int {
 		return cnt < k
 	})
 }
+
+// 矩阵中的局部最大值
+func largestLocal(grid [][]int) [][]int {
+	ans := [][]int{}
+
+	maxInt := func(a ...int) int {
+		sort.Ints(a)
+		return a[len(a)-1]
+	}
+
+	for i, rows := range grid {
+		if i == 0 || i >= len(grid)-1 {
+			continue
+		}
+		cur := []int{}
+		for j, _ := range rows {
+
+			if j == 0 || j >= len(rows)-1 {
+				continue
+			}
+			cur = append(cur, maxInt(grid[i-1][j-1], grid[i-1][j], grid[i-1][j+1],
+				grid[i][j-1], grid[i][j], grid[i][j+1],
+				grid[i+1][j-1], grid[i+1][j], grid[i+1][j+1]))
+		}
+		ans = append(ans, cur)
+	}
+
+	return ans
+}
+
+// 合并相似的物品
+func mergeSimilarItems(items1 [][]int, items2 [][]int) [][]int {
+	ans := [][]int{}
+	for _, v := range items1 {
+		value := v[0]
+		weight := v[1]
+
+		f := true
+		for idx, av := range ans {
+			if av[0] == value {
+				ans[idx][1] += av[1]
+				f = false
+			}
+		}
+		if f {
+			ans = append(ans, []int{value, weight})
+		}
+	}
+
+	for _, v := range items2 {
+		value := v[0]
+		weight := v[1]
+
+		f := true
+		for idx, av := range ans {
+			if av[0] == value {
+				ans[idx][1] += av[1]
+				f = false
+			}
+		}
+		if f {
+			ans = append(ans, []int{value, weight})
+		}
+	}
+
+	sort.Slice(ans, func(i, j int) bool {
+		return ans[i][0] < ans[j][0]
+	})
+
+	return ans
+}
