@@ -921,3 +921,39 @@ func maximumTastiness(price []int, k int) int {
 		return cnt < k
 	})
 }
+
+// 和相等的子数组
+func findSubarrays(nums []int) bool {
+	m := make(map[int]bool, len(nums))
+	for i, val := range nums {
+		if i > 0 {
+			if m[val+nums[i-1]] {
+				return true
+			}
+			m[val+nums[i-1]] = true
+		}
+	}
+
+	return false
+}
+
+// 删除最短的子数组使剩余数组有序
+func findLengthOfShortestSubarray(arr []int) int {
+	n := len(arr)
+	right := n - 1
+	for right > 0 && arr[right-1] <= arr[right] {
+		right--
+	}
+	if right == 0 { // arr 已经是非递减数组
+		return 0
+	}
+	// 此时 arr[right-1] > arr[right]
+	ans := right // 删除 arr[:right]
+	for left := 0; left == 0 || arr[left-1] <= arr[left]; left++ {
+		for right < n && arr[right] < arr[left] {
+			right++
+		}
+		ans = min(ans, right-left-1) // 删除 arr[left+1:right]
+	}
+	return ans
+}
