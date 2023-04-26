@@ -26,6 +26,7 @@ import (
 	"net/url"
 	"os"
 	"os/signal"
+	"reflect"
 	"strconv"
 	"strings"
 	"syscall"
@@ -41,11 +42,10 @@ func main() {
 	// 创建must组件实例
 	must.Init()
 	mustComponent()
-	fmt.Println("run start")
-	s := time.Now().UnixNano()
+	fmt.Println("run starting")
 	program.Ingress()
 
-	fmt.Println("耗时：", (time.Now().UnixNano()-s)/1e6)
+	fmt.Println(fmt.Sprintf("%d%04d", 1, 1))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -60,11 +60,6 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 }
-
-var (
-	// 以2022年11月14日开始这周为第一周
-	weekFlag = time.Date(2022, 11, 14, 0, 0, 0, 0, time.Local)
-)
 
 type IPPosition struct {
 	Status   string `json:"status"`   // 返回状态
@@ -467,4 +462,51 @@ func csHBase() {
 		"info": []string{"123", "234"},
 	}))
 
+}
+
+// 反射体结构注入
+func reflectStruct() {
+	type Cs1 struct {
+		Val1 int8
+	}
+	type Cs struct {
+		Val1 int8
+		Cs   *Cs1
+	}
+
+	c := &Cs{}
+	v := reflect.ValueOf(c)
+
+	ve := v.Elem()
+	for i := 0; i < ve.NumField(); i++ {
+
+		switch ve.Field(i).Kind() {
+		case reflect.Ptr:
+			ve.Field(i).Set(reflect.New(ve.Field(i).Type().Elem()))
+		case reflect.Int8:
+			ve.Field(i).SetInt(11)
+		}
+	}
+
+	fmt.Println(c)
+}
+
+func read(c reflect.Value) {
+	switch c.Kind() {
+	case reflect.Int8:
+		c.SetInt(123)
+	case reflect.Ptr:
+		read(c.Elem())
+	case reflect.Struct:
+		for i := 0; i < c.NumField(); i++ {
+			fmt.Println("11", c.Field(i).Kind())
+			switch c.Field(i).Kind() {
+			case reflect.Ptr:
+				reflect.New(c.Field(i).Elem().Type())
+				//c.Field(i).Set())
+			default:
+				read(c.Field(i))
+			}
+		}
+	}
 }

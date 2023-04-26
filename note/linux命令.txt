@@ -560,3 +560,6 @@
             time_starttransfer:     从 client 发出请求；到 web server 响应第一个字节的时间
             time_total:             client 发出请求；到 web server 发送回所有的相应数据的时间
         -o      返回结果进行输出
+
+  15.vboxmanage
+    命令行地址：https://cloud.tencent.com/developer/article/2032003#:~:text=%E4%BF%AE%E6%94%B9%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F%20VBoxManage%20modifyvm%20%3Cuuid%7Cname%3E%20%5B%E2%80%93memory%20%3Cmemorysize%20in%20MB%3E%5D,%E2%80%93cpus%202%20%E5%B0%86%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E7%AC%AC%E4%B8%80%E5%90%AF%E5%8A%A8%E8%AE%BE%E5%A4%87%E8%AE%BE%E4%B8%BA%E7%A1%AC%E7%9B%98%20VBoxManage%20modifyvm%20centos-7-20210521%20%E2%80%93boot1%20disk
