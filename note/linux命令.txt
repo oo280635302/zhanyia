@@ -261,6 +261,7 @@
 			-df -h        显示磁盘剩余空间
 			-du -h[目录]  显示目录下文件大小
 				-h 以人性化方式显示
+             du -sh ./*
 		-进程信息
 			-ps aux  查看进程的详细状况
 				-a 显示终端上的所有进程
@@ -546,6 +547,7 @@
             systemctl daemon-reload 刷新
             systemctl start etcd    启动
             systemctl enable etcd   开始
+    - /opt/homebrew/Cellar  brew 存放下载文件的位置
 
   14.curl
     详情地址：https://www.cnblogs.com/amnotgcs/p/14157442.html
@@ -563,3 +565,6 @@
 
   15.vboxmanage
     命令行地址：https://cloud.tencent.com/developer/article/2032003#:~:text=%E4%BF%AE%E6%94%B9%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%86%85%E5%AD%98%E5%A4%A7%E5%B0%8F%20VBoxManage%20modifyvm%20%3Cuuid%7Cname%3E%20%5B%E2%80%93memory%20%3Cmemorysize%20in%20MB%3E%5D,%E2%80%93cpus%202%20%E5%B0%86%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E7%AC%AC%E4%B8%80%E5%90%AF%E5%8A%A8%E8%AE%BE%E5%A4%87%E8%AE%BE%E4%B8%BA%E7%A1%AC%E7%9B%98%20VBoxManage%20modifyvm%20centos-7-20210521%20%E2%80%93boot1%20disk
+
+  16.vim命令
+    当前项目搜索某个单词： vim /main/ ** | copen
