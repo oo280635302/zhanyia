@@ -45,10 +45,6 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
-	a := []*IPPosition{{Status: "132"}}
-	reflect2Struct(&a)
-	fmt.Println(*a[0])
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -61,36 +57,6 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
-}
-
-func reflect2Struct(param interface{}) {
-	// 解数组
-	pv := reflect.ValueOf(param)
-	if pv.Kind() == reflect.Ptr {
-		pv = pv.Elem()
-	}
-	pt := pv.Type()
-
-	newArr := reflect.MakeSlice(pt, 0, pv.Len())
-	isAddr := false
-	structTyp := pt.Elem()
-	if structTyp.Kind() == reflect.Ptr {
-		isAddr = true
-		structTyp = structTyp.Elem()
-	}
-
-	for i := 0; i < pv.Len(); i++ {
-		rv := reflect.New(structTyp).Elem()
-		fmt.Println(rv.Type().String())
-		rv.FieldByName("Status").SetString("123")
-
-		if isAddr {
-			rv = rv.Addr()
-		}
-		newArr = reflect.Append(newArr, rv)
-	}
-
-	pv.Set(newArr)
 }
 
 type IPPosition struct {

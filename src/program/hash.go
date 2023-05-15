@@ -166,3 +166,31 @@ func digitCount(num string) bool {
 
 	return true
 }
+
+// 按列翻转得到最大值等行数  -fuck crazy
+func maxEqualRowsAfterFlips(matrix [][]int) int {
+	m, n := len(matrix), len(matrix[0])
+	mp := make(map[string]int)
+	for i := 0; i < m; i++ {
+		arr := make([]byte, n)
+		for j := 0; j < n; j++ {
+			// 如果 matrix[i][0] 为 1，则对该行元素进行翻转
+			if matrix[i][j]^matrix[i][0] == 0 {
+				arr[j] = '0'
+			} else {
+				arr[j] = '1'
+			}
+		}
+		s := string(arr)
+		mp[s]++
+	}
+
+	res := 0
+
+	for _, value := range mp {
+		if value > res {
+			res = value
+		}
+	}
+	return res
+}
