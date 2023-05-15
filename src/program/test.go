@@ -5,10 +5,6 @@ import (
 )
 
 func Ingress() {
-	a := [][]int{
-		{0, 0, 1},
-		{0, 0, 0},
-		{1, 1, 1},
-	}
-	fmt.Println(maxEqualRowsAfterFlips(a))
+	a := []int{2, 2, 1, 3}
+	fmt.Println(rearrangeBarcodes(a))
 }

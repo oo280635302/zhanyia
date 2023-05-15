@@ -1,6 +1,9 @@
 package program
 
-import "math"
+import (
+	"math"
+	"sort"
+)
 
 // 最大化股票利润--------------------------------------------------------------------------------------------------------
 // 思路：贪心，只取上下坡利润里面上坡的点
@@ -184,4 +187,54 @@ func minTaps(n int, ranges []int) int {
 	}
 
 	return ans
+}
+
+// 距离相等的条形码
+func rearrangeBarcodes(barcodes []int) []int {
+	// 贪心：让最大出现频率的词间隔排布 先排偶数列再排奇数列
+	res := make([]int, len(barcodes))
+	h := map[int]int{}
+	for _, v := range barcodes {
+		h[v]++
+	}
+	arr := []int{}
+	for k := range h {
+		arr = append(arr, k)
+	}
+	sort.Slice(arr, func(i, j int) bool {
+		return h[arr[i]] > h[arr[j]]
+	})
+	ptr := 0
+	// 先排布偶列
+	for idx := range res {
+		if idx%2 == 0 {
+			for {
+				num := arr[ptr]
+				if h[num] > 0 {
+					res[idx] = num
+					h[num]--
+					break
+				} else {
+					ptr++
+				}
+			}
+		}
+	}
+	// 在排布奇列
+	for idx := range res {
+		if idx%2 == 1 {
+			for {
+				num := arr[ptr]
+				if h[num] > 0 {
+					res[idx] = num
+					h[num]--
+					break
+				} else {
+					ptr++
+				}
+			}
+		}
+	}
+
+	return res
 }
