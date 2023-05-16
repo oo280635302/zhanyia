@@ -2,6 +2,7 @@ package program
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 )
 
@@ -192,5 +193,20 @@ func maxEqualRowsAfterFlips(matrix [][]int) int {
 			res = value
 		}
 	}
+	return res
+}
+
+// 与对应负数同时存在的最大正整数
+func findMaxK(nums []int) int {
+	h := map[int]bool{}
+
+	res := -1
+	for _, v := range nums {
+		if h[-v] {
+			res = max(res, int(math.Abs(float64(v))))
+		}
+		h[v] = true
+	}
+
 	return res
 }
