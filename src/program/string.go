@@ -1100,3 +1100,8 @@ func queryString(s string, n int) bool {
 	}
 	return true
 }
+
+// 判断两个事件是否存在冲突
+func haveConflict(event1 []string, event2 []string) bool {
+	return !(event1[1] < event2[0] || event2[1] < event1[0])
+}
