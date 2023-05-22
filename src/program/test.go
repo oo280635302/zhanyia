@@ -5,6 +5,21 @@ import (
 )
 
 func Ingress() {
-	a := []int{2, 2, 1, 3}
-	fmt.Println(rearrangeBarcodes(a))
+	node := &TreeNode{
+		Val: 1,
+		Left: &TreeNode{
+			Val: 2,
+			Left: &TreeNode{
+				Val: -5,
+			},
+		},
+		Right: &TreeNode{
+			Val: -3,
+			Left: &TreeNode{
+				Val: 4,
+			},
+		},
+	}
+	res := sufficientSubset(node, -1)
+	fmt.Println(res)
 }

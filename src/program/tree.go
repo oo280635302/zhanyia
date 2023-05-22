@@ -1038,3 +1038,79 @@ func reTree(pre, in []int) *TreeNode {
 	root.Right = reTree(pre[idx+1:], in[idx+1:])
 	return root
 }
+
+// 根到叶路径上的不足节点
+//给你二叉树的根节点 root 和一个整数 limit ，请你同时删除树中所有 不足节点 ，并返回最终二叉树的根节点。
+//
+//假如通过节点 node 的每种可能的 “根-叶” 路径上值的总和全都小于给定的 limit，则该节点被称之为 不足节点 ，需要被删除。
+//
+//叶子节点，就是没有子节点的节点。
+func sufficientSubset(root *TreeNode, limit int) *TreeNode {
+	type Tbl struct {
+		prev  *Tbl      // 父节点
+		self  *TreeNode // 自己
+		count int       // 统计
+		isDel bool
+	}
+	res := root
+	q := []*Tbl{{
+		prev: nil,
+		self: root,
+	}}
+	for len(q) > 0 {
+		p := q[0]
+		q = q[1:]
+
+		last := p.prev
+		lastCount := p.count
+
+		cur := p.self
+		left := p.self.Left
+		right := p.self.Right
+
+		curVal := lastCount + p.self.Val
+
+		if left != nil || right != nil {
+			if left != nil {
+				tbl := &Tbl{
+					prev:  p,
+					self:  left,
+					count: curVal,
+				}
+				q = append(q, tbl)
+			}
+
+			if right != nil {
+				tbl := &Tbl{
+					prev:  p,
+					self:  right,
+					count: curVal,
+				}
+				q = append(q, tbl)
+			}
+			continue
+		}
+
+		// 到底了 该节点合理
+		if curVal >= limit && !p.isDel {
+			continue
+		}
+
+		// 不足节点删除掉
+		if last == nil { // 特殊 根节点
+			return nil
+		}
+		if last.self.Left == cur {
+			//fmt.Println(cur.Val)
+			last.self.Left = nil
+		}
+		if last.self.Right == cur {
+			//fmt.Println(cur.Val)
+			last.self.Right = nil
+		}
+		// 子节点被删除了，父节点需要再检查下 父节点删除到底
+		last.isDel = true
+		q = append(q, last)
+	}
+	return res
+}

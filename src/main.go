@@ -45,6 +45,22 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
+	for i := 1; i < 255; i++ {
+		request, err := http.NewRequest("GET", fmt.Sprintf("http://192.168.0.%d:8888", i), nil)
+		if err != nil {
+			//fmt.Println("new err:", err)
+			continue
+		}
+		client := &http.Client{Timeout: time.Second}
+		resp, err := client.Do(request)
+		if err != nil {
+			//fmt.Println("get err", err)
+			continue
+		}
+		resp.Body.Close()
+		fmt.Println("通了", fmt.Sprintf("http://192.168.0.%d:8888", i))
+	}
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
