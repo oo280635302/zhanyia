@@ -1,6 +1,7 @@
 package program
 
 import (
+	"fmt"
 	"math"
 	"sort"
 )
@@ -236,5 +237,37 @@ func rearrangeBarcodes(barcodes []int) []int {
 		}
 	}
 
+	return res
+}
+
+// 受标签影响的最大值
+func largestValsFromLabels(values []int, labels []int, numWanted int, useLimit int) int {
+	n := len(values)
+	idx := make([]int, n)
+	for i := 0; i < n; i++ {
+		idx[i] = i
+	}
+	sort.Slice(idx, func(i, j int) bool {
+		return values[idx[i]] > values[idx[j]]
+	})
+
+	fmt.Println(values)
+	fmt.Println(labels)
+	useLabel := make(map[int]int)
+	useValueCnt := 0
+	res := 0
+	for i := 0; i < len(idx); i++ {
+		// 已经使用完了
+		if useValueCnt >= numWanted {
+			break
+		}
+		label := labels[idx[i]]
+		if useLabel[label] >= useLimit {
+			continue
+		}
+		res += values[idx[i]]
+		useValueCnt++
+		useLabel[label]++
+	}
 	return res
 }
