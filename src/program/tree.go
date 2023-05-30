@@ -1114,3 +1114,31 @@ func sufficientSubset(root *TreeNode, limit int) *TreeNode {
 	}
 	return res
 }
+
+// 删点成林
+func delNodes(root *TreeNode, to_delete []int) []*TreeNode {
+	toDeleteSet := make(map[int]bool)
+	for _, val := range to_delete {
+		toDeleteSet[val] = true
+	}
+	var roots []*TreeNode
+	dfs(root, true, toDeleteSet, &roots)
+	return roots
+}
+
+func dfs(node *TreeNode, isRoot bool, toDeleteSet map[int]bool, roots *[]*TreeNode) *TreeNode {
+	if node == nil {
+		return nil
+	}
+	deleted := toDeleteSet[node.Val]
+	node.Left = dfs(node.Left, deleted, toDeleteSet, roots)
+	node.Right = dfs(node.Right, deleted, toDeleteSet, roots)
+	if deleted {
+		return nil
+	} else {
+		if isRoot {
+			*roots = append(*roots, node)
+		}
+		return node
+	}
+}

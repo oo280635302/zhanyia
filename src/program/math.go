@@ -251,3 +251,19 @@ func addNegabinary(arr1 []int, arr2 []int) (ans []int) {
 	}
 	return ans
 }
+
+// 可被三整除的偶数的平均值
+func averageValue(nums []int) int {
+	res := 0
+	cnt := 0
+	for _, v := range nums {
+		if v%6 == 0 {
+			res += v
+			cnt++
+		}
+	}
+	if cnt == 0 {
+		return res
+	}
+	return res / cnt
+}
