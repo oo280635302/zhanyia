@@ -1053,3 +1053,25 @@ func help(nums []int, firstLen int, secondLen int) int {
 func maxSumTwoNoOverlap(nums []int, firstLen int, secondLen int) int {
 	return max(help(nums, firstLen, secondLen), help(nums, secondLen, firstLen))
 }
+
+// 对数组执行操作
+func applyOperations(nums []int) []int {
+	res := make([]int, 0, len(nums))
+	for i := 0; i < len(nums); i++ {
+		cur := nums[i]
+		if cur == 0 {
+			continue
+		}
+		if i+1 < len(nums) && cur == nums[i+1] {
+			cur *= 2
+			i++
+		}
+		res = append(res, cur)
+	}
+
+	n := len(nums) - len(res)
+	for i := 0; i < n; i++ {
+		res = append(res, 0)
+	}
+	return res
+}
