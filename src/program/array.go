@@ -1075,3 +1075,16 @@ func applyOperations(nums []int) []int {
 	}
 	return res
 }
+
+// 数组中不等三元组的数目
+func unequalTriplets(nums []int) int {
+	count := map[int]int{}
+	for _, x := range nums {
+		count[x]++
+	}
+	res, n, t := 0, len(nums), 0
+	for _, v := range count {
+		res, t = res+t*v*(n-t-v), t+v
+	}
+	return res
+}

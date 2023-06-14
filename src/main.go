@@ -29,6 +29,7 @@ import (
 	"reflect"
 	"strconv"
 	"strings"
+	"sync"
 	"syscall"
 	"time"
 	"zhanyia/src/common"
@@ -44,6 +45,7 @@ func main() {
 	mustComponent()
 	fmt.Println("run starting")
 	program.Ingress()
+	cs()
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -59,6 +61,15 @@ func main() {
 	fmt.Println("bye bye")
 }
 
+func cs() {
+	ip := &IPPosition{}
+	tmp := *ip
+	nip := &tmp
+	nip.Lock.Lock()
+	defer nip.Lock.Unlock()
+	fmt.Println(nip)
+}
+
 type IPPosition struct {
 	Status   string `json:"status"`   // 返回状态
 	Info     string `json:"info"`     // 错误原因
@@ -66,6 +77,7 @@ type IPPosition struct {
 	Province string `json:"province"` // 省
 	City     string `json:"city"`     // 城市
 	AdCode   string `json:"adcode"`   // adcode编码
+	Lock     sync.RWMutex
 }
 
 func GetPositionByIP(ip string) *IPPosition {
