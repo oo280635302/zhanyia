@@ -29,22 +29,29 @@ func List100(l list.List) {
 }
 
 func BenchmarkArr(b *testing.B) {
-	l := []int{}
-	for i := 0; i < 1000; i++ {
-		l = append(l, i)
-	}
-
-	for i := 0; i < 1; i++ {
-		Arr100(l)
+	arr := []int{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}
+	m := map[int]bool{5: true, 7: true}
+	for i := 0; i < b.N; i++ {
+		FindForMap(arr, m)
 	}
 }
 
-func Arr100(arr []int) {
-	for i := 0; i < 1000; i++ {
-		if i == 5 {
-			arr = append(arr[:i], arr[i+1:]...)
-			break
+func FindForMap(arr []int, m map[int]bool) bool {
+	for _, v := range arr {
+		if m[v] {
+			return true
 		}
 	}
-	arr = append(arr, 5)
+	return false
+}
+
+func FindForArr(arr, arr1 []int) bool {
+	for _, v := range arr {
+		for _, v2 := range arr1 {
+			if v == v2 {
+				return true
+			}
+		}
+	}
+	return false
 }

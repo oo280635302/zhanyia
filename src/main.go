@@ -27,6 +27,7 @@ import (
 	"os"
 	"os/signal"
 	"reflect"
+	"sort"
 	"strconv"
 	"strings"
 	"sync"
@@ -45,7 +46,14 @@ func main() {
 	mustComponent()
 	fmt.Println("run starting")
 	program.Ingress()
-	cs()
+
+	arr := []int{}
+	for i := 0; i < 20; i++ {
+		arr = append(arr, i)
+	}
+	go foreach(&arr)
+	time.Sleep(time.Millisecond * 5)
+	arr = arr[:10]
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -59,15 +67,72 @@ func main() {
 
 	// 重定向回控制台
 	fmt.Println("bye bye")
+	time.Sleep(time.Second)
+	fmt.Println("112233")
 }
 
-func cs() {
-	ip := &IPPosition{}
-	tmp := *ip
-	nip := &tmp
-	nip.Lock.Lock()
-	defer nip.Lock.Unlock()
-	fmt.Println(nip)
+func foreach(arr *[]int) {
+	for _, v := range *arr {
+		fmt.Println(v)
+		time.Sleep(time.Millisecond * 500)
+	}
+}
+
+// 求解直角三角形的边长
+func solveTriangle(side, angle float64) (float64, float64) {
+	// 将角度转换为弧度
+	radian := angle * math.Pi / 180
+
+	// 计算对边和邻边的长度
+	opposite := side * math.Sin(radian)
+	adjacent := side * math.Cos(radian)
+
+	return opposite, adjacent
+}
+
+// 计算两个坐标点之间的夹角度数（以度数为单位）
+func calculateAngle(srcX, srcY, targetX, targetY float64) float64 {
+	// 计算向量之间的夹角
+	dx := targetX - srcX
+	dy := targetY - srcY
+	radian := math.Atan2(dy, dx)
+	angle := radian * 180 / math.Pi
+
+	// 将角度转换为0到360度的范围
+	if angle < 0 {
+		angle += 360
+	}
+
+	return angle
+}
+
+type League struct {
+	Area   int
+	Locale int
+}
+
+func LeagueSort(arr []League, area, locale int) []League {
+	sort.Slice(arr, func(i, j int) bool {
+		// 比较优先级
+		if arr[i].Area == area && arr[i].Locale == locale {
+			return true
+		}
+		if arr[j].Area == area && arr[j].Locale == locale {
+			return false
+		}
+		if arr[i].Area == area {
+			return true
+		}
+		if arr[j].Area == area {
+			return false
+		}
+		if arr[i].Locale == locale {
+			return true
+		}
+		return false
+	})
+
+	return arr
 }
 
 type IPPosition struct {
@@ -253,8 +318,8 @@ func csGorm() {
 }
 
 func csMysql() {
-	db, err := sql.Open("mysql", "xiaoka:Xiaoka520@tcp(rm-2ze0624x75gk25025fo.mysql.rds.aliyuncs.com:3306)/?charset=utf8&parseTime=true&loc=Local")
-	//db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
+	//db, err := sql.Open("mysql", "xiaoka:Xiaoka520@tcp(rm-2ze0624x75gk25025fo.mysql.rds.aliyuncs.com:3306)/?charset=utf8&parseTime=true&loc=Local")
+	db, err := sql.Open("mysql", "root:123@tcp(localhost:3306)/?charset=utf8mb4")
 	if err != nil {
 		panic(err)
 	}
@@ -262,17 +327,17 @@ func csMysql() {
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
 
-	rows, err := db.Query("select  `id` from `employ_center`.`employ_infos` where `id` in (123)")
+	r, err := db.Exec("update cs.cs set rid = 10085 where rid = 10086")
 	if err != nil {
-		fmt.Println("1", err)
+		fmt.Println("1111", err)
+		return
 	}
-	defer rows.Close()
-	for rows.Next() {
-		id := 0
-		rows.Scan(&id)
-		fmt.Println("对咯~", id)
+	cnt, err := r.RowsAffected()
+	if err != nil || cnt == 0 {
+		fmt.Println("2222", err, cnt)
+		return
 	}
-	fmt.Println("对咯22222~")
+	fmt.Println(33333)
 }
 
 func csHttp() {
