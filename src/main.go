@@ -47,14 +47,6 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
-	arr := []int{}
-	for i := 0; i < 20; i++ {
-		arr = append(arr, i)
-	}
-	go foreach(&arr)
-	time.Sleep(time.Millisecond * 5)
-	arr = arr[:10]
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -69,13 +61,6 @@ func main() {
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
 	fmt.Println("112233")
-}
-
-func foreach(arr *[]int) {
-	for _, v := range *arr {
-		fmt.Println(v)
-		time.Sleep(time.Millisecond * 500)
-	}
 }
 
 // 求解直角三角形的边长
