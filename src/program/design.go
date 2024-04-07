@@ -200,3 +200,50 @@ func (b *Bank) Withdraw(account int, money int64) bool {
 	b.Accounts[account-1] -= money
 	return true
 }
+
+// 王位继承顺序 ---函数设计：
+type Throne struct {
+	Val      string
+	IsDead   bool
+	Children []*Throne
+}
+
+type ThroneInheritance struct {
+	M    map[string]*Throne
+	Node *Throne
+}
+
+func ConstructorThrone(kingName string) ThroneInheritance {
+	th := ThroneInheritance{M: map[string]*Throne{}}
+	th.Node = &Throne{Val: kingName}
+	th.M[kingName] = th.Node
+	return th
+}
+
+func (this *ThroneInheritance) Birth(parentName string, childName string) {
+	node := &Throne{Val: childName}
+
+	th := this.M[parentName]
+	th.Children = append(th.Children, node)
+	this.M[childName] = node
+}
+
+func (this *ThroneInheritance) Death(name string) {
+	th := this.M[name]
+	th.IsDead = true
+}
+
+func (this *ThroneInheritance) GetInheritanceOrder() (res []string) {
+	dp := []*Throne{this.Node}
+	for len(dp) > 0 {
+		p := dp[0]
+		dp = dp[1:]
+
+		if !p.IsDead {
+			res = append(res, p.Val)
+		}
+
+		dp = append(p.Children, dp...)
+	}
+	return
+}

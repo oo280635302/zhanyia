@@ -18,6 +18,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/mongo/options"
 	"go.mongodb.org/mongo-driver/mongo/readpref"
+	"io"
 	"io/ioutil"
 	"math"
 	"math/rand"
@@ -60,7 +61,6 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
-	fmt.Println("112233")
 }
 
 // 求解直角三角形的边长
@@ -148,7 +148,7 @@ func GetPositionByIP(ip string) *IPPosition {
 	}
 	defer resp.Body.Close()
 
-	body, err := ioutil.ReadAll(resp.Body)
+	body, err := io.ReadAll(resp.Body)
 	if err != nil || len(body) == 0 {
 		return nil
 	}

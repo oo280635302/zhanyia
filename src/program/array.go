@@ -1088,3 +1088,24 @@ func unequalTriplets(nums []int) int {
 	}
 	return res
 }
+
+// 检查相同字母间的距离
+func checkDistances(s string, distance []int) bool {
+	m := map[byte]int{}
+
+	for i := 0; i < len(s); i++ {
+		mua := s[i]
+		index, ok := m[mua]
+		if ok {
+			diff := distance[mua-'a']
+			if diff == i-index-1 {
+				continue
+			} else {
+				return false
+			}
+		} else {
+			m[mua] = i
+		}
+	}
+	return true
+}

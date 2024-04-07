@@ -3,5 +3,11 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(applyOperations([]int{1, 2, 2, 1, 1, 0}))
+	x := ConstructorThrone("king")
+	x.Birth("king", "1")
+	x.Birth("king", "2")
+	x.Birth("king", "3")
+	x.Birth("king", "4")
+	x.Birth("2", "5")
+	fmt.Println(x.GetInheritanceOrder())
 }

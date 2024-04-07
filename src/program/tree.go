@@ -1040,11 +1040,11 @@ func reTree(pre, in []int) *TreeNode {
 }
 
 // 根到叶路径上的不足节点
-//给你二叉树的根节点 root 和一个整数 limit ，请你同时删除树中所有 不足节点 ，并返回最终二叉树的根节点。
+// 给你二叉树的根节点 root 和一个整数 limit ，请你同时删除树中所有 不足节点 ，并返回最终二叉树的根节点。
 //
-//假如通过节点 node 的每种可能的 “根-叶” 路径上值的总和全都小于给定的 limit，则该节点被称之为 不足节点 ，需要被删除。
+// 假如通过节点 node 的每种可能的 “根-叶” 路径上值的总和全都小于给定的 limit，则该节点被称之为 不足节点 ，需要被删除。
 //
-//叶子节点，就是没有子节点的节点。
+// 叶子节点，就是没有子节点的节点。
 func sufficientSubset(root *TreeNode, limit int) *TreeNode {
 	type Tbl struct {
 		prev  *Tbl      // 父节点
@@ -1141,4 +1141,62 @@ func dfs(node *TreeNode, isRoot bool, toDeleteSet map[int]bool, roots *[]*TreeNo
 		}
 		return node
 	}
+}
+
+// 获取节点为n的真二叉树的可能性
+func allPossibleFBT(n int) []*TreeNode {
+	if n%2 == 0 {
+		return []*TreeNode{}
+	}
+
+	dp := make([][]*TreeNode, n+1)
+	dp[1] = []*TreeNode{&TreeNode{Val: 0}}
+	for i := 3; i <= n; i += 2 {
+		for j := 1; j < i; j += 2 {
+
+			// 思路： 从下往上凑，先凑出来下支点的模型往上 然后上层拼凑
+			for _, leftSubtree := range dp[j] {
+				for _, rightSubtree := range dp[i-1-j] {
+					root := &TreeNode{Val: 0, Left: leftSubtree, Right: rightSubtree}
+					dp[i] = append(dp[i], root)
+				}
+			}
+
+		}
+	}
+	return dp[n]
+}
+
+func DeepCopyTreeNode(node *TreeNode) *TreeNode {
+	if node == nil {
+		return nil
+	}
+
+	newNode := &TreeNode{}
+	newNode.Val = node.Val
+	newNode.Left = DeepCopyTreeNode(node.Left)
+	newNode.Right = DeepCopyTreeNode(node.Right)
+	return newNode
+}
+
+// 找出克隆二叉树中的相同节点
+func getTargetCopy(node *TreeNode, target int) *TreeNode {
+	dp := []*TreeNode{node}
+
+	for len(dp) > 0 {
+		p := dp[0]
+		dp = dp[1:]
+
+		if p.Val == target {
+			return p
+		}
+
+		if p.Left != nil {
+			dp = append(dp, p.Left)
+		}
+		if p.Right != nil {
+			dp = append(dp, p.Right)
+		}
+	}
+	return nil
 }
