@@ -247,3 +247,26 @@ func (this *ThroneInheritance) GetInheritanceOrder() (res []string) {
 	}
 	return
 }
+
+// 最近的请求次数
+type RecentCounter struct {
+	History []int
+}
+
+func ConstructorRe() RecentCounter {
+	return RecentCounter{}
+}
+
+func (this *RecentCounter) Ping(t int) (res int) {
+	for i := len(this.History) - 1; i >= 0; i-- {
+		if t-this.History[i] > 3000 {
+			break
+		} else {
+			res++
+		}
+	}
+
+	res++
+	this.History = append(this.History, t)
+	return
+}

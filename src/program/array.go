@@ -1109,3 +1109,30 @@ func checkDistances(s string, distance []int) bool {
 	}
 	return true
 }
+
+// 2009使数组连续的最少操作数 1 2 3 5 6
+func minOperations(nums []int) int {
+	n := len(nums)
+	// 去重
+	cnt := make(map[int]bool)
+	for _, num := range nums {
+		cnt[num] = true
+	}
+	sortedUniqueNums := []int{}
+	for num, _ := range cnt {
+		sortedUniqueNums = append(sortedUniqueNums, num)
+	}
+	// 排序
+	sort.Ints(sortedUniqueNums)
+	res := n
+	j := 0
+	for i, left := range sortedUniqueNums {
+		right := left + n - 1
+		// 找到 固定左指针 右指针满足在left+n-1的数值内 并且不超过n的范围就为相同
+		for j < len(sortedUniqueNums) && sortedUniqueNums[j] <= right {
+			res = min(res, n-(j-i+1))
+			j++
+		}
+	}
+	return res
+}
