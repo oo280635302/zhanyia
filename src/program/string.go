@@ -1131,3 +1131,73 @@ func oddString(words []string) string {
 	}
 	return words[0]
 }
+
+// 最小青蛙数量
+func minNumberOfFrogs(croakOfFrogs string) int {
+	if len(croakOfFrogs)%5 != 0 {
+		return -1
+	}
+
+	maxFlogs := 0
+	curFlogs := []string{}
+	for i := 0; i < len(croakOfFrogs); i++ {
+		switch croakOfFrogs[i] {
+		case 'c':
+			curFlogs = append(curFlogs, string('c'))
+		case 'r':
+			found := false
+			for k, v := range curFlogs {
+				if v == "c" {
+					curFlogs[k] = "cr"
+					found = true
+					break
+				}
+			}
+			if !found {
+				return -1
+			}
+		case 'o':
+			found := false
+			for k, v := range curFlogs {
+				if v == "cr" {
+					curFlogs[k] = "cro"
+					found = true
+					break
+				}
+			}
+			if !found {
+				return -1
+			}
+		case 'a':
+			found := false
+			for k, v := range curFlogs {
+				if v == "cro" {
+					curFlogs[k] = "croa"
+					found = true
+					break
+				}
+			}
+			if !found {
+				return -1
+			}
+		case 'k':
+			found := false
+			for k, v := range curFlogs {
+				if v == "croa" {
+					curFlogs = append(curFlogs[:k], curFlogs[k+1:]...)
+					found = true
+					break
+				}
+			}
+			if !found {
+				return -1
+			}
+		}
+
+		maxFlogs = max(maxFlogs, len(curFlogs))
+	}
+	if len(curFlogs) > 0 {
+		return -1
+	}
+	return maxFlogs
+}
