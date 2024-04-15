@@ -21,7 +21,6 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
-	"math/rand"
 	"net/http"
 	_ "net/http/pprof"
 	"net/url"
@@ -40,8 +39,6 @@ import (
 )
 
 func main() {
-	rand.Seed(time.Now().UnixNano())
-
 	// 创建must组件实例
 	must.Init()
 	mustComponent()

@@ -270,3 +270,49 @@ func (this *RecentCounter) Ping(t int) (res int) {
 	this.History = append(this.History, t)
 	return
 }
+
+// 哈希映射表
+type MyHashMap struct {
+	Arr [8][]struct {
+		Key   int
+		Value int
+	}
+}
+
+func ConstructorMyHashMap() MyHashMap {
+	return MyHashMap{}
+}
+
+func (this *MyHashMap) Put(key int, value int) {
+	index := key % 8
+	for i := 0; i < len(this.Arr[index]); i++ {
+		if this.Arr[index][i].Key == key {
+			this.Arr[index][i].Value = value
+			return
+		}
+	}
+	this.Arr[index] = append(this.Arr[index], struct {
+		Key   int
+		Value int
+	}{Key: key, Value: value})
+}
+
+func (this *MyHashMap) Get(key int) int {
+	index := key % 8
+	for i := 0; i < len(this.Arr[index]); i++ {
+		if this.Arr[index][i].Key == key {
+			return this.Arr[index][i].Value
+		}
+	}
+	return -1
+}
+
+func (this *MyHashMap) Remove(key int) {
+	index := key % 8
+	for i := 0; i < len(this.Arr[index]); i++ {
+		if this.Arr[index][i].Key == key {
+			this.Arr[index] = append(this.Arr[index][:i], this.Arr[index][i+1:]...)
+			return
+		}
+	}
+}

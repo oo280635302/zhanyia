@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"math"
 	"sort"
+	"strings"
 )
 
 // 最大化股票利润--------------------------------------------------------------------------------------------------------
@@ -270,4 +271,17 @@ func largestValsFromLabels(values []int, labels []int, numWanted int, useLimit i
 		useLabel[label]++
 	}
 	return res
+}
+
+// 修改后的最大二进制字符串 00->10 10->01
+func maximumBinaryString(binary string) string {
+	// 前几位的1不用换位置 找到0开始点
+	i := strings.Index(binary, "0")
+	if i < 0 {
+		return binary
+	}
+	// 0之后的1越多，可以提前的1就越少,0开始的后面在只有两个0就一定能通过换位凑出来10，
+	cnt1 := strings.Count(binary[i:], "1")
+	// 0 0 1->1 0 1
+	return strings.Repeat("1", len(binary)-1-cnt1) + "0" + strings.Repeat("1", cnt1)
 }
