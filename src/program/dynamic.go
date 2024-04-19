@@ -1125,3 +1125,37 @@ func minPushBox(grid [][]byte) int {
 	}
 	return -1
 }
+
+// 1883. 准时抵达会议现场的最小跳过休息次数
+func minSkips(dist []int, speed int, hoursBefore int) int {
+	// 可忽略误差
+	const EPS = 1e-7
+
+	n := len(dist)
+	f := make([][]float64, n+1)
+	for i := range f {
+		f[i] = make([]float64, n+1)
+		for j := range f[i] {
+			f[i][j] = math.Inf(1)
+		}
+	}
+	// 动态规划
+	f[0][0] = 0.0
+	for i := 1; i <= n; i++ {
+		for j := 0; j <= i; j++ {
+			if j != i {
+				f[i][j] = math.Min(f[i][j], math.Ceil(f[i-1][j]+float64(dist[i-1])/float64(speed)-EPS))
+			}
+			if j != 0 {
+				f[i][j] = math.Min(f[i][j], f[i-1][j-1]+float64(dist[i-1])/float64(speed))
+			}
+		}
+	}
+
+	for j := 0; j <= n; j++ {
+		if f[n][j] < float64(hoursBefore)+EPS {
+			return j
+		}
+	}
+	return -1
+}

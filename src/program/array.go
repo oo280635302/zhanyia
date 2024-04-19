@@ -1136,3 +1136,44 @@ func minOperations(nums []int) int {
 	}
 	return res
 }
+
+// 从双倍数组中还原原数组
+func findOriginalArray(changed []int) []int {
+	if len(changed)%2 == 1 {
+		return nil
+	}
+
+	m := map[int]int{}
+	for i := 0; i < len(changed); i++ {
+		m[changed[i]]++
+	}
+	res := []int{}
+
+	sort.Ints(changed)
+	for i := 0; i < len(changed); i++ {
+		num := changed[i]
+		// 说明当前数字已经被抵消掉了
+		if m[num] == 0 {
+			continue
+		}
+		// 先看当前数的双倍数是否存在
+		if m[num*2] > 0 {
+			res = append(res, num)
+			m[num]--
+			m[num*2]--
+			continue
+		}
+		hasSingle := num%2 == 1
+		if hasSingle {
+			return nil
+		}
+		if m[num/2] > 0 {
+			res = append(res, num/2)
+			m[num]--
+			m[num/2]--
+			continue
+		}
+		return nil
+	}
+	return res
+}

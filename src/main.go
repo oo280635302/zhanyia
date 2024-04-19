@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -25,6 +26,7 @@ import (
 	_ "net/http/pprof"
 	"net/url"
 	"os"
+	"os/exec"
 	"os/signal"
 	"reflect"
 	"sort"
@@ -45,6 +47,8 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
+	fmt.Println(math.Inf(1))
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -58,6 +62,18 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
+}
+
+func getGitCommitHash() (string, error) {
+	// 执行git命令获取最后一次提交的哈希
+	cmd := exec.Command("git", "rev-parse", "HEAD")
+	var out bytes.Buffer
+	cmd.Stdout = &out
+	err := cmd.Run()
+	if err != nil {
+		return "", err
+	}
+	return out.String(), nil
 }
 
 // 求解直角三角形的边长

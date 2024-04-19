@@ -285,3 +285,47 @@ func maximumBinaryString(binary string) string {
 	// 0 0 1->1 0 1
 	return strings.Repeat("1", len(binary)-1-cnt1) + "0" + strings.Repeat("1", cnt1)
 }
+
+// 尽量减少恶意软件的传播
+func minMalwareSpread(graph [][]int, initial []int) int {
+	n := len(graph)
+	ids := make([]int, n)
+	idToSize := make(map[int]int)
+	id := 0
+	for i := range ids {
+		if ids[i] == 0 {
+			id++
+			ids[i] = id
+			size := 1
+			q := []int{i}
+			for len(q) > 0 {
+				u := q[0]
+				q = q[1:]
+				for v := range graph[u] {
+					if ids[v] == 0 && graph[u][v] == 1 {
+						size++
+						q = append(q, v)
+						ids[v] = id
+					}
+				}
+			}
+			idToSize[id] = size
+		}
+	}
+	idToInitials := make(map[int]int)
+	for _, u := range initial {
+		idToInitials[ids[u]]++
+	}
+	ans := n + 1
+	ansRemoved := 0
+	for _, u := range initial {
+		removed := 0
+		if idToInitials[ids[u]] == 1 {
+			removed = idToSize[ids[u]]
+		}
+		if removed > ansRemoved || (removed == ansRemoved && u < ans) {
+			ans, ansRemoved = u, removed
+		}
+	}
+	return ans
+}
