@@ -1200,3 +1200,81 @@ func getTargetCopy(node *TreeNode, target int) *TreeNode {
 	}
 	return nil
 }
+
+// 感染二叉树的时间
+func amountOfTime(root *TreeNode, start int) int {
+	type X struct {
+		Parent *TreeNode
+		Self   *TreeNode
+	}
+	dp := []*TreeNode{root}
+	relation := map[int]*X{root.Val: {Parent: nil, Self: root}}
+	for len(dp) > 0 {
+		p := dp[0]
+		dp = dp[1:]
+
+		if p.Left != nil {
+			relation[p.Left.Val] = &X{Parent: p, Self: p.Left}
+			dp = append(dp, p.Left)
+		}
+
+		if p.Right != nil {
+			relation[p.Right.Val] = &X{Parent: p, Self: p.Right}
+			dp = append(dp, p.Right)
+		}
+	}
+
+	amountM := map[int]bool{}
+	amountM[start] = true
+
+	res := 0
+	dpX := []*X{relation[start]}
+	for len(dpX) > 0 {
+		cur := []*X{}
+		for _, v := range dpX {
+			if v.Parent != nil && !amountM[v.Parent.Val] {
+				cur = append(cur, relation[v.Parent.Val])
+				amountM[v.Parent.Val] = true
+			}
+
+			if v.Self.Left != nil && !amountM[v.Self.Left.Val] {
+				cur = append(cur, relation[v.Self.Left.Val])
+				amountM[v.Self.Left.Val] = true
+			}
+
+			if v.Self.Right != nil && !amountM[v.Self.Right.Val] {
+				cur = append(cur, relation[v.Self.Right.Val])
+				amountM[v.Self.Right.Val] = true
+			}
+		}
+		if len(cur) > 0 {
+			res++
+		}
+		dpX = cur
+	}
+	return res
+}
+
+// LCR 056. 两数之和 IV - 输入二叉搜索树
+func findTarget056(root *TreeNode, k int) bool {
+	dp := []*TreeNode{root}
+	m := map[int]bool{}
+	for len(dp) > 0 {
+		p := dp[0]
+		dp = dp[1:]
+
+		if m[k-p.Val] {
+			return true
+		} else {
+			m[p.Val] = true
+		}
+		if p.Left != nil {
+			dp = append(dp, p.Left)
+		}
+
+		if p.Right != nil {
+			dp = append(dp, p.Right)
+		}
+	}
+	return false
+}
