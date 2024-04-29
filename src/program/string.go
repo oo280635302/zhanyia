@@ -1201,3 +1201,24 @@ func minNumberOfFrogs(croakOfFrogs string) int {
 	}
 	return maxFlogs
 }
+
+func baseNeg2(n int) string {
+	if n == 0 {
+		return "0"
+	}
+
+	result := ""
+	for n != 0 {
+		remainder := n % -2
+		n = n / -2
+
+		// 当余数为-1时：需要向前提前一个进制-当前进制余数转换为1即： -1 转换为二进制为 11
+		if remainder < 0 {
+			remainder += 2
+			n += 1
+		}
+		result = fmt.Sprint(remainder) + result
+	}
+
+	return result
+}
