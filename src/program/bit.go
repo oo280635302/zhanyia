@@ -202,7 +202,7 @@ func hasAlternatingBits(n int) bool {
 	return a&(a+1) == 0 // 011111 & 100000 == 0
 }
 
-//  统计异或值（异）在范围内的数对有多少
+// 统计异或值（异）在范围内的数对有多少
 func countPairs(nums []int, low int, high int) int {
 	ans := 0
 	m := map[int]bool{}

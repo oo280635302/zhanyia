@@ -47,10 +47,6 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
-	fmt.Println(1 / -2)
-
-	fmt.Println("结束", time.Now())
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,

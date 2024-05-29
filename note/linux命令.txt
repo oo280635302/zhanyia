@@ -568,3 +568,6 @@
 
   16.vim命令
     当前项目搜索某个单词： vim /main/ ** | copen
+
+  17.dmesg
+    查看程序kill原因
