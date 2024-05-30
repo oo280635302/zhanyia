@@ -122,7 +122,7 @@ func networkBecomesIdle(edges [][]int, patience []int) (ans int) {
 	return
 }
 
-//  两数之和 IV - 输入 BST
+// 两数之和 IV - 输入 BST
 func findTarget(root *TreeNode, k int) bool {
 	m := make(map[int]bool)
 
@@ -147,4 +147,55 @@ func findTarget(root *TreeNode, k int) bool {
 	}
 
 	return false
+}
+
+// LCP 41. 黑白翻转棋
+func flipChess(chessboard []string) (ans int) {
+	m, n := len(chessboard), len(chessboard[0])
+	bfs := func(i, j int) int {
+		q := [][2]int{{i, j}}
+		g := make([][]byte, m)
+		for idx := range g {
+			g[idx] = make([]byte, n)
+			copy(g[idx], chessboard[idx])
+		}
+		g[i][j] = 'X'
+		cnt := 0
+		for len(q) > 0 {
+			p := q[0]
+			q = q[1:]
+			i, j = p[0], p[1]
+			for a := -1; a <= 1; a++ {
+				for b := -1; b <= 1; b++ {
+					if a == 0 && b == 0 {
+						continue
+					}
+					x, y := i+a, j+b
+					for x >= 0 && x < m && y >= 0 && y < n && g[x][y] == 'O' {
+						x, y = x+a, y+b
+					}
+					if x >= 0 && x < m && y >= 0 && y < n && g[x][y] == 'X' {
+						x -= a
+						y -= b
+						cnt += max(abs(x-i), abs(y-j))
+						for x != i || y != j {
+							g[x][y] = 'X'
+							q = append(q, [2]int{x, y})
+							x -= a
+							y -= b
+						}
+					}
+				}
+			}
+		}
+		return cnt
+	}
+	for i, row := range chessboard {
+		for j, c := range row {
+			if c == '.' {
+				ans = max(ans, bfs(i, j))
+			}
+		}
+	}
+	return
 }
