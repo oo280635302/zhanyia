@@ -1177,3 +1177,24 @@ func findOriginalArray(changed []int) []int {
 	}
 	return res
 }
+
+// 分享糖果2
+func distributeCandies(candies int, num_people int) []int {
+	res := make([]int, num_people)
+
+	num := 0
+	for candies > 0 {
+		idx := num_people % num
+		cur := num + 1
+		if candies > cur {
+			candies -= cur
+		} else {
+			cur = candies
+			candies = 0
+		}
+		res[idx] += cur
+		num++
+	}
+
+	return res
+}
