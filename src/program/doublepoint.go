@@ -349,3 +349,26 @@ func findSolution(customFunction func(int, int) int, z int) [][]int {
 	}
 	return res
 }
+
+// 881. 救生艇
+func numRescueBoats(people []int, limit int) int {
+	sort.Ints(people)
+	i := 0
+	j := len(people) - 1
+	res := 0
+	for i <= j {
+		if i == j {
+			res++
+			break
+		}
+		if people[i]+people[j] > limit {
+			j--
+			res++
+		} else {
+			res++
+			i++
+			j--
+		}
+	}
+	return res
+}

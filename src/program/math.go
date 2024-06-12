@@ -267,3 +267,13 @@ func averageValue(nums []int) int {
 	}
 	return res / cnt
 }
+
+// 2806.取整购买后的账号余额
+func accountBalanceAfterPurchase(purchaseAmount int) int {
+	base := purchaseAmount / 10
+	lave := purchaseAmount % 10
+	if lave >= 5 {
+		base++
+	}
+	return 100 - base*10
+}

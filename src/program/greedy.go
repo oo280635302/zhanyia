@@ -329,3 +329,38 @@ func minMalwareSpread(graph [][]int, initial []int) int {
 	}
 	return ans
 }
+
+// 戳气球
+func maxCoins(nums []int) int {
+	num := []int{1}
+	num = append(num, nums...)
+	num = append(num, 1)
+
+	rec := make([][]int, len(num))
+	for i := 0; i < len(rec); i++ {
+		rec[i] = make([]int, len(num))
+		for j := 0; j < len(rec[i]); j++ {
+			rec[i][j] = -1
+		}
+	}
+
+	return maxCoinsRec(0, len(num)-1, num, rec)
+}
+
+func maxCoinsRec(left, right int, num []int, rec [][]int) int {
+	// left-right之间至少隔一个数
+	if left >= right-1 {
+		return 0
+	}
+	if rec[left][right] != -1 {
+		return rec[left][right]
+	}
+
+	for i := left + 1; i < right; i++ {
+		cnt := num[left] * num[i] * num[right]        // 组合本身
+		cnt += maxCoinsRec(left, i, num, rec)         // 组合左边的数的合集
+		cnt += maxCoinsRec(i, right, num, rec)        // 组合右边数的合集
+		rec[left][right] = max(rec[left][right], cnt) // 找到最大的组合
+	}
+	return rec[left][right]
+}

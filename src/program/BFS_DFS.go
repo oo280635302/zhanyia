@@ -199,3 +199,51 @@ func flipChess(chessboard []string) (ans int) {
 	}
 	return
 }
+
+// 甲板上的战舰
+func countBattleships(board [][]byte) int {
+	lenX := len(board)
+	lenY := len(board[0])
+	res := 0
+	for i := 0; i < len(board); i++ {
+		for j := 0; j < len(board[i]); j++ {
+			// 遇到X递归染红所有相邻X
+			if board[i][j] == 'X' {
+				dpX := []int{i}
+				dpY := []int{j}
+
+				for len(dpX) > 0 {
+					px := dpX[0]
+					py := dpY[0]
+					dpX = dpX[1:]
+					dpY = dpY[1:]
+
+					board[px][py] = 'O'
+
+					if px-1 >= 0 && board[px-1][py] == 'X' {
+						dpX = append(dpX, px-1)
+						dpY = append(dpY, py)
+					}
+
+					if px+1 < lenX && board[px+1][py] == 'X' {
+						dpX = append(dpX, px+1)
+						dpY = append(dpY, py)
+					}
+
+					if py-1 >= 0 && board[px][py-1] == 'X' {
+						dpX = append(dpX, px)
+						dpY = append(dpY, py-1)
+					}
+
+					if py+1 < lenY && board[px][py+1] == 'X' {
+						dpX = append(dpX, px)
+						dpY = append(dpY, py+1)
+					}
+				}
+
+				res += 1
+			}
+		}
+	}
+	return res
+}
