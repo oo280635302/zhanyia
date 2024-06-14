@@ -47,8 +47,6 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
-	fmt.Println(1 << 32)
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,

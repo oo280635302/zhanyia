@@ -1173,3 +1173,19 @@ func combinationSum4(nums []int, target int) int {
 	}
 	return dp[target]
 }
+
+// 2786. 访问数组中的位置使分数最大
+func maxScore(nums []int, x int) int64 {
+	res := nums[0]
+	last := []int{math.MinInt32, math.MinInt32}
+	last[nums[0]%2] = int(nums[0])
+
+	for i := 1; i < len(nums); i++ {
+		lave := nums[i] % 2
+		cur := max(last[lave]+nums[i], last[1-lave]-x+nums[i])
+		res = max(res, cur)
+		last[lave] = cur
+	}
+
+	return int64(res)
+}

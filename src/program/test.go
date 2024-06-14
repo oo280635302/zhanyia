@@ -3,5 +3,5 @@ package program
 import "fmt"
 
 func Ingress() {
-	fmt.Println(flipChess([]string{".X.", ".O.", "XO."}))
+	fmt.Println(maxOperations([]int{1, 9, 7, 3, 9, 1, 2, 8}))
 }

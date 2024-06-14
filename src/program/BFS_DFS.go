@@ -247,3 +247,57 @@ func countBattleships(board [][]byte) int {
 	}
 	return res
 }
+
+// 3040. 相同分数的最大操作数目 II
+func maxOperations2(nums []int) int {
+	if len(nums) <= 1 {
+		return 0
+	}
+	return maxOperationsCur(0, len(nums)-1, -1, nums)
+}
+
+func maxOperationsCur(left, right int, target int, nums []int) int {
+	if left < 0 || left >= len(nums) {
+		return 0
+	}
+	if right < 0 || right >= len(nums) {
+		return 0
+	}
+	if left >= right {
+		return 0
+	}
+
+	// 左
+	lcnt, rcnt, lrcnt := 0, 0, 0
+	l := nums[left] + nums[left+1]
+	if l == target || target == -1 {
+		lcnt = maxOperationsCur(left+2, right, l, nums) + 1
+	}
+
+	// 右
+	r := nums[right-1] + nums[right]
+	if r == target || target == -1 {
+		rcnt = maxOperationsCur(left, right-2, r, nums) + 1
+	}
+
+	// 左右
+	lr := nums[left] + nums[right]
+	if lr == target || target == -1 {
+		lrcnt = maxOperationsCur(left+1, right-1, lr, nums) + 1
+	}
+	return max(max(lcnt, rcnt), lrcnt)
+}
+
+// 3038. 相同分数的最大操作数目 I
+func maxOperations(nums []int) int {
+	res := 0
+	base := nums[0] + nums[1]
+	for i := 0; i < len(nums); i += 2 {
+		if i+1 < len(nums) && nums[i]+nums[i+1] == base {
+			res++
+		} else {
+			break
+		}
+	}
+	return res
+}
