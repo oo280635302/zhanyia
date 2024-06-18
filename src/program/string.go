@@ -1222,3 +1222,35 @@ func baseNeg2(n int) string {
 
 	return result
 }
+
+// 2288.价格减免
+func discountPrices(sentence string, discount int) string {
+	words := strings.Split(sentence, " ")
+	var res strings.Builder
+
+	for i := 0; i < len(words); i++ {
+		cur := words[i]
+
+		if len(cur) >= 2 && cur[0] == '$' {
+			num, err := strconv.Atoi(cur[1:])
+			if err == nil {
+				num = num * (100 - discount)
+				str := strconv.Itoa(num)
+				if len(str) >= 3 {
+					cur = "$" + str[:len(str)-2] + "." + str[len(str)-2:]
+				} else if len(str) == 2 {
+					cur = "$0." + str
+				} else {
+					cur = "$0.0" + str
+				}
+			}
+		}
+
+		res.WriteString(cur)
+		if i != len(words)-1 {
+			res.WriteString(" ")
+		}
+	}
+
+	return res.String()
+}

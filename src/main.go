@@ -47,6 +47,10 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
+	time.Local, _ = time.LoadLocation("ETC/GMT+8")
+	fmt.Println(time.Local.String())
+	fmt.Println(time.Now())
+
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
