@@ -429,9 +429,8 @@
      LOCK=SHARED：共享锁：Online DDL操作期间堵塞写入，不影响读取
      LOCK=EXCLUSIVE：排它锁：Online DDL操作期间不允许对锁表进行任何操作
   
-  
-  
-  
+  31.my.cnf
+    skip-name-resolve 跳过连接ip的dns解析 （如果mysql连接dns过慢会导致client连接mysql变慢，使用这个参数能增加连接速度）
   
   
   
