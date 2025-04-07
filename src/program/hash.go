@@ -210,3 +210,44 @@ func findMaxK(nums []int) int {
 
 	return res
 }
+
+// 对角线上不同值的数量差
+func differenceOfDistinctValues(grid [][]int) [][]int {
+	xlen, ylen := len(grid[0]), len(grid)
+	res := make([][]int, len(grid))
+	for i := 0; i < len(res); i++ {
+		res[i] = make([]int, len(grid[0]))
+	}
+
+	leftTopM := map[int]bool{}
+	rightBottomM := map[int]bool{}
+
+	for i := 0; i < len(grid); i++ {
+		for j := 0; j < len(grid[0]); j++ {
+			for x, y := j-1, i-1; x >= 0 && y >= 0; {
+				leftTopM[grid[y][x]] = true
+				x--
+				y--
+			}
+
+			for x, y := j+1, i+1; x < xlen && y < ylen; {
+				rightBottomM[grid[y][x]] = true
+				x++
+				y++
+			}
+
+			if i == 1 && j == 1 {
+				fmt.Println(1)
+			}
+
+			res[i][j] = len(leftTopM) - len(rightBottomM)
+			if res[i][j] < 0 {
+				res[i][j] = -res[i][j]
+			}
+			clear(leftTopM)
+			clear(rightBottomM)
+		}
+	}
+
+	return res
+}

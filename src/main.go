@@ -6,26 +6,10 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	mqtt "github.com/eclipse/paho.mqtt.golang"
-	"github.com/go-redis/redis/v8"
-	_ "github.com/go-sql-driver/mysql"
-	"github.com/google/uuid"
-	"github.com/jinzhu/gorm"
-	"github.com/qiniu/go-sdk/v7/auth/qbox"
-	"github.com/qiniu/go-sdk/v7/storage"
-	"github.com/shirou/gopsutil/process"
-	"github.com/tsuna/gohbase"
-	"github.com/tsuna/gohbase/hrpc"
-	"go.mongodb.org/mongo-driver/bson"
-	"go.mongodb.org/mongo-driver/mongo"
-	"go.mongodb.org/mongo-driver/mongo/options"
-	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"io"
 	"io/ioutil"
-	"log"
 	"math"
 	"net/http"
-	_ "net/http/pprof"
 	"net/url"
 	"os"
 	"os/exec"
@@ -37,34 +21,32 @@ import (
 	"sync"
 	"syscall"
 	"time"
+
+	mqtt "github.com/eclipse/paho.mqtt.golang"
+	"github.com/go-redis/redis/v8"
+	_ "github.com/go-sql-driver/mysql"
+	"github.com/google/uuid"
+	"github.com/jinzhu/gorm"
+	"github.com/qiniu/go-sdk/v7/auth/qbox"
+	"github.com/qiniu/go-sdk/v7/storage"
+	"github.com/tsuna/gohbase"
+	"github.com/tsuna/gohbase/hrpc"
+	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/mongo/options"
+	"go.mongodb.org/mongo-driver/mongo/readpref"
 	"zhanyia/src/common"
 	"zhanyia/src/must"
+	"zhanyia/src/program"
 )
-
-var room map[int64]int64
 
 func main() {
 	// 创建must组件实例
-	//must.Init()
-	//mustComponent()
 	fmt.Println("run starting")
-	//program.Ingress()
+	program.Ingress()
 
-	initRoom()
-
-	pid := os.Getpid()
-	p, err := process.NewProcess(int32(pid))
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	go func() {
-		for {
-			memInfo, _ := p.MemoryInfo()
-			fmt.Printf("内存占用: %.2f MB\n", float64(memInfo.RSS)/1024/1024)
-			time.Sleep(time.Second * 5)
-		}
-	}()
+	a := "/home/ubuntu/titan/bak handleAutoQuest FinishCreateKill"
+	fmt.Println(strings.Trim(a, ","))
 
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
@@ -79,14 +61,6 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
-}
-
-func initRoom() {
-	room = make(map[int64]int64)
-
-	for i := 0; i < 10000; i++ {
-		room[int64(i)] = int64(i)
-	}
 }
 
 func getGitCommitHash() (string, error) {

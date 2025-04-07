@@ -277,3 +277,40 @@ func accountBalanceAfterPurchase(purchaseAmount int) int {
 	}
 	return 100 - base*10
 }
+
+// 范围获取坐标点
+func GetNearPos(x, y, disRange, radius float32) (points [][2]float32) {
+	for i := disRange; i <= radius; i++ {
+		points = append(points, getRectangleOutline(x, y, i, i)...)
+	}
+	return points
+}
+
+func getRectangleOutline(x0, y0, width, height float32) [][2]float32 {
+	if width == 0 || height == 0 {
+		return [][2]float32{{0, 0}}
+	}
+
+	points := make([][2]float32, 0)
+	// Top edge (y = y0 + height)
+	for x := x0 - width; x <= x0+width; x++ {
+		points = append(points, [2]float32{x, y0 + height})
+	}
+
+	// Bottom edge (y = y0 - height)
+	for x := x0 - width; x <= x0+width; x++ {
+		points = append(points, [2]float32{x, y0 - height})
+	}
+
+	// Left edge (x = x0 - width, excluding corners)
+	for y := y0 - height + 1; y < y0+height; y++ {
+		points = append(points, [2]float32{x0 - width, y})
+	}
+
+	// Right edge (x = x0 + width, excluding corners)
+	for y := y0 - height + 1; y < y0+height; y++ {
+		points = append(points, [2]float32{x0 + width, y})
+	}
+
+	return points
+}
