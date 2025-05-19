@@ -1,7 +1,6 @@
 package main
 
 import (
-	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -12,7 +11,6 @@ import (
 	"net/http"
 	"net/url"
 	"os"
-	"os/exec"
 	"os/signal"
 	"reflect"
 	"sort"
@@ -45,9 +43,6 @@ func main() {
 	fmt.Println("run starting")
 	program.Ingress()
 
-	a := "/home/ubuntu/titan/bak handleAutoQuest FinishCreateKill"
-	fmt.Println(strings.Trim(a, ","))
-
 	signalChan := make(chan os.Signal, 1)
 	signal.Notify(signalChan,
 		syscall.SIGINT,
@@ -61,18 +56,6 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
-}
-
-func getGitCommitHash() (string, error) {
-	// 执行git命令获取最后一次提交的哈希
-	cmd := exec.Command("git", "rev-parse", "HEAD")
-	var out bytes.Buffer
-	cmd.Stdout = &out
-	err := cmd.Run()
-	if err != nil {
-		return "", err
-	}
-	return out.String(), nil
 }
 
 // 求解直角三角形的边长
@@ -324,17 +307,37 @@ func csMysql() {
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
 
-	r, err := db.Exec("update cs.cs set rid = 10085 where rid = 10086")
+	tx, err := db.Begin()
 	if err != nil {
 		fmt.Println("1111", err)
 		return
 	}
-	cnt, err := r.RowsAffected()
-	if err != nil || cnt == 0 {
-		fmt.Println("2222", err, cnt)
+
+	var admin2 uint8
+	err = tx.QueryRow("SELECT Admin FROM ucenter.game WHERE Openudid='547aac2cc93a2bd659de3371ff35a918' AND Sid='1' ORDER BY LastLogin DESC LIMIT 1 FOR UPDATE;").Scan(&admin2)
+	if err != nil {
+		tx.Rollback()
+		fmt.Println("444", err)
 		return
 	}
-	fmt.Println(33333)
+
+	var admin uint8
+	err = tx.QueryRow("SELECT Admin FROM ucenter.game WHERE Uid='319' AND Sid='1' ORDER BY LastLogin DESC LIMIT 1 FOR UPDATE;").Scan(&admin)
+	if err != nil {
+		tx.Rollback()
+		fmt.Println("222", err)
+		return
+	}
+
+	_, err = tx.Exec("UPDATE ucenter.game SET  Aid = '123' WHERE Aid= '0' And Openudid = 'b738656118395cafb5858226b11ba9cc';")
+	if err != nil {
+		tx.Rollback()
+		fmt.Println("333", err)
+		return
+	}
+
+	fmt.Println("成功")
+	tx.Rollback()
 }
 
 func csHttp() {

@@ -201,7 +201,7 @@ next:
 	return ""
 }
 
-//最大平均通过率
+// 最大平均通过率
 type maxAverageRatioHp [][]int
 
 func (h maxAverageRatioHp) Len() int { return len(h) }
@@ -228,4 +228,23 @@ func maxAverageRatio(classes [][]int, extraStudents int) float64 {
 	}
 
 	return allRatio / float64(len(classes))
+}
+
+// 三角形类型 equilateral  isosceles  scalene
+func triangleType(nums []int) string {
+	if nums[0] == nums[1] && nums[1] == nums[2] {
+		return "equilateral"
+	}
+
+	sort.Ints(nums)
+
+	if nums[0]+nums[1] <= nums[2] {
+		return "none"
+	}
+
+	if nums[0] == nums[1] || nums[1] == nums[2] {
+		return "isosceles"
+	}
+
+	return "scalene"
 }

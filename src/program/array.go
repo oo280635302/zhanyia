@@ -1198,3 +1198,22 @@ func distributeCandies(candies int, num_people int) []int {
 
 	return res
 }
+
+// 1491. 去掉最低工资和最高工资后的工资平均值
+func average(salary []int) float64 {
+	minNum := math.MaxInt64
+	maxNum := math.MinInt64
+
+	var total int
+	for i := 0; i < len(salary); i++ {
+		maxNum = max(salary[i], maxNum)
+		minNum = min(salary[i], minNum)
+
+		total += salary[i]
+	}
+
+	total -= maxNum
+	total -= minNum
+
+	return float64(total) / float64(len(salary)-2)
+}
