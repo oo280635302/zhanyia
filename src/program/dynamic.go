@@ -1242,3 +1242,8 @@ func reverseGetWordsInLongestSubsequence(arr []string) {
 		arr[i], arr[j] = arr[j], arr[i]
 	}
 }
+
+type pos struct {
+	X int32
+	Y int32
+}
