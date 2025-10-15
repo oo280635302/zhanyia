@@ -1254,3 +1254,40 @@ func discountPrices(sentence string, discount int) string {
 
 	return res.String()
 }
+
+// 3136. 有效单词
+func isValidWord(word string) bool {
+	if len(word) < 3 {
+		return false
+	}
+
+	m1 := map[byte]struct{}{'a': {}, 'e': {}, 'i': {}, 'o': {}, 'u': {}}
+
+	var a, b bool
+
+	for i := 0; i < len(word); i++ {
+		if word[i] >= '0' && word[i] <= '9' {
+			continue
+		}
+		if word[i] >= 'a' && word[i] <= 'z' {
+			if _, ok := m1[word[i]]; ok {
+				a = true
+			} else {
+				b = true
+			}
+			continue
+		}
+		if word[i] >= 'A' && word[i] <= 'Z' {
+			cur := word[i] - 'A' + 'a'
+			if _, ok := m1[cur]; ok {
+				a = true
+			} else {
+				b = true
+			}
+			continue
+		}
+		return false
+	}
+
+	return a && b
+}

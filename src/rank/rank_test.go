@@ -9,7 +9,7 @@ import (
 func BenchmarkDoAllRankSort(b *testing.B) {
 	newRankInfo := &Rank{Type: 1, RankList: NewSkipList()}
 
-	for i := 0; i < 10000; i++ {
+	for i := 0; i < 100; i++ {
 		newRankInfo.SetScore(int64(i), 0, 100+int64(i), StRoleHeader{}, StLeagueHeader{}, time.Now())
 	}
 

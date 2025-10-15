@@ -62,7 +62,7 @@ func (s *Stack) MoveLocal(local int) {
 func (s *Stack) StackToString() string {
 	var reply string
 	for i := len(s.Arr) - 1; i >= 0; i-- {
-		reply += string(s.Arr[i] + 48)
+		reply += string(byte(s.Arr[i] + 48))
 	}
 	return reply
 }

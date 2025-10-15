@@ -1,6 +1,8 @@
 module zhanyia
 
-go 1.21
+go 1.24.0
+
+toolchain go1.24.5
 
 require (
 	github.com/boombuler/barcode v1.0.0
@@ -9,18 +11,17 @@ require (
 	github.com/gin-gonic/gin v1.7.0
 	github.com/go-redis/redis/v8 v8.11.4
 	github.com/go-sql-driver/mysql v1.6.0
-	github.com/goccy/go-json v0.10.5
 	github.com/gogo/protobuf v1.3.2
 	github.com/golang/protobuf v1.5.2
 	github.com/google/uuid v1.1.2
 	github.com/jinzhu/gorm v1.9.12
-	github.com/json-iterator/go v1.1.12
 	github.com/qiniu/go-sdk/v7 v7.11.0
 	github.com/skip2/go-qrcode v0.0.0-20191027152451-9434209cb086
 	github.com/streadway/amqp v0.0.0-20200108173154-1c71cc93ed71
 	github.com/tsuna/gohbase v0.0.0-20211207114337-de5a52263bf4
 	github.com/tuotoo/qrcode v0.0.0-20190222102259-ac9c44189bf2
 	go.mongodb.org/mongo-driver v1.5.1
+	golang.org/x/time v0.13.0
 	google.golang.org/grpc v1.40.0
 )
 
@@ -42,6 +43,7 @@ require (
 	github.com/gorilla/websocket v1.4.2 // indirect
 	github.com/jinzhu/inflection v1.0.0 // indirect
 	github.com/jmespath/go-jmespath v0.4.0 // indirect
+	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/compress v1.9.5 // indirect
 	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/leodido/go-urn v1.2.1 // indirect

@@ -1,12 +1,9 @@
 package common
 
 import (
-	"fmt"
-	"github.com/golang/protobuf/proto"
 	"os"
 	"reflect"
 	"regexp"
-	"strconv"
 	"strings"
 	"sync"
 	"time"
@@ -178,32 +175,6 @@ func getAllTimeStamp(sYear, sMonth, sDay, eYear, eMonth, eDay int, uint Unit) []
 		arr = append(arr, oneData)
 	}
 	return arr
-}
-
-func UnmarshalPb2Url(message proto.Message) {
-	vm := reflect.ValueOf(message).Elem()
-	str := ""
-	for i := 0; i < vm.NumField(); i++ {
-		refField := vm.Type().Field(i)
-
-		jsonTagRev := refField.Tag.Get("json")
-		jsonTagArr := strings.Split(jsonTagRev, ",")
-		jsonTag := jsonTagArr[0]
-		if jsonTag == "-" {
-			continue
-		}
-		kd := vm.FieldByName(refField.Name).Kind()
-
-		switch kd {
-		case reflect.Int64, reflect.Int32, reflect.Int16, reflect.Uint8, reflect.Uint16, reflect.Uint32, reflect.Uint64:
-			str += fmt.Sprintf("%v=%s&", jsonTag, strconv.Itoa(int(kd)))
-		case reflect.String:
-			str += fmt.Sprintf("%v=%s&", jsonTag, string(kd))
-		case reflect.Bool:
-			str += fmt.Sprintf("%v=%s&", jsonTag, kd)
-		}
-	}
-	fmt.Println(str)
 }
 
 type call struct {

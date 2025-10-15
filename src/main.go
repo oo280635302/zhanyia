@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -8,6 +9,7 @@ import (
 	"io"
 	"io/ioutil"
 	"math"
+	"math/bits"
 	"net/http"
 	"net/url"
 	"os"
@@ -56,6 +58,151 @@ func main() {
 	// 重定向回控制台
 	fmt.Println("bye bye")
 	time.Sleep(time.Second)
+}
+
+func BeginningOfDayByTime(t time.Time) time.Time {
+	return t.Truncate(time.Hour).Add(-time.Duration(t.Hour()) * time.Hour)
+}
+
+type StagePointMatchState struct {
+	StartTime      time.Time                `nignore:"true"`
+	LastRoundTime  time.Time                `nignore:"true"`
+	ExecutedRounds int                      `nignore:"true"`
+	MatchHistory   map[int64]map[int64]bool `nignore:"true"` // 玩家对战记录，避免重复
+}
+
+// CustomTitle 自定义的Title函数，行为和strings.Title一致
+// 将字符串中每个单词的首字母转换为大写，其他字母保持不变
+func CustomTitle(s string) string {
+	if s == "" {
+		return s
+	}
+
+	runes := []rune(s)
+	result := make([]rune, len(runes))
+
+	// 标记是否在单词的开始位置
+	wordStart := true
+
+	for i, r := range runes {
+		if isLetter(r) {
+			if wordStart {
+				// 单词开始，转换为大写
+				result[i] = toUpper(r)
+				wordStart = false
+			} else {
+				// 单词中间，保持原样
+				result[i] = r
+			}
+		} else {
+			// 非字母字符，保持原样，并标记下一个字母为单词开始
+			result[i] = r
+			wordStart = true
+		}
+	}
+
+	return string(result)
+}
+
+// isLetter 判断字符是否为字母
+func isLetter(r rune) bool {
+	return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') ||
+		(r >= 0x00C0 && r <= 0x00D6) || (r >= 0x00D8 && r <= 0x00F6) ||
+		(r >= 0x00F8 && r <= 0x02AF) || (r >= 0x1D00 && r <= 0x1D7F) ||
+		(r >= 0x1D80 && r <= 0x1DBF)
+}
+
+// toUpper 将字符转换为大写
+func toUpper(r rune) rune {
+	if r >= 'a' && r <= 'z' {
+		return r - 'a' + 'A'
+	}
+	// 对于其他语言的字符，可以使用unicode包，但为了简单起见这里只处理ASCII
+	return r
+}
+
+func Escape(txt string) string {
+	var (
+		esc string
+		buf bytes.Buffer
+	)
+	last := 0
+	for ii, bb := range txt {
+		switch bb {
+		case 0:
+			esc = `\0`
+		case '\n':
+			esc = `\n`
+		case '\r':
+			esc = `\r`
+		case '\\':
+			esc = `\\`
+		case '\'':
+			esc = `\'`
+		case '"':
+			esc = `\"`
+		case '\032':
+			esc = `\Z`
+		default:
+			continue
+		}
+		io.WriteString(&buf, txt[last:ii])
+		io.WriteString(&buf, esc)
+		last = ii + 1
+	}
+	io.WriteString(&buf, txt[last:])
+	return buf.String()
+}
+
+func Intersect[T comparable](slice1, slice2 []T) []T {
+	m := make(map[T]int)
+	nn := []T{}
+
+	for _, v := range slice1 {
+		m[v]++
+	}
+
+	for _, v := range slice2 {
+		times := m[v]
+		if times > 0 {
+			nn = append(nn, v)
+		}
+	}
+
+	return nn
+}
+
+func Difference[T comparable](slice1, slice2 []T) []T {
+	m := make(map[T]int)
+	nn := []T{}
+	inter := Intersect(slice1, slice2)
+
+	for _, v := range inter {
+		m[v]++
+	}
+
+	for _, value := range slice1 {
+		times := m[value]
+		if times == 0 {
+			nn = append(nn, value)
+		}
+	}
+
+	return nn
+}
+
+func GetDirtyTechList(num uint64) []int32 {
+	if num == 0 {
+		return []int32{}
+	}
+
+	res := make([]int32, 0, bits.OnesCount64(num))
+
+	for m := num; m != 0; m &= (m - 1) {
+		pos := bits.TrailingZeros64(m)
+		res = append(res, int32(pos+1))
+	}
+	return res
 }
 
 // 求解直角三角形的边长
@@ -307,37 +454,8 @@ func csMysql() {
 	db.SetMaxOpenConns(50)
 	db.SetMaxIdleConns(20)
 
-	tx, err := db.Begin()
-	if err != nil {
-		fmt.Println("1111", err)
-		return
-	}
-
-	var admin2 uint8
-	err = tx.QueryRow("SELECT Admin FROM ucenter.game WHERE Openudid='547aac2cc93a2bd659de3371ff35a918' AND Sid='1' ORDER BY LastLogin DESC LIMIT 1 FOR UPDATE;").Scan(&admin2)
-	if err != nil {
-		tx.Rollback()
-		fmt.Println("444", err)
-		return
-	}
-
-	var admin uint8
-	err = tx.QueryRow("SELECT Admin FROM ucenter.game WHERE Uid='319' AND Sid='1' ORDER BY LastLogin DESC LIMIT 1 FOR UPDATE;").Scan(&admin)
-	if err != nil {
-		tx.Rollback()
-		fmt.Println("222", err)
-		return
-	}
-
-	_, err = tx.Exec("UPDATE ucenter.game SET  Aid = '123' WHERE Aid= '0' And Openudid = 'b738656118395cafb5858226b11ba9cc';")
-	if err != nil {
-		tx.Rollback()
-		fmt.Println("333", err)
-		return
-	}
-
-	fmt.Println("成功")
-	tx.Rollback()
+	_, err = db.Exec("insert into `titan_gameserver`.`autoquest` set `QuestList` = CAST(? AS JSON)", "[{\"A\":123}]")
+	fmt.Println(err)
 }
 
 func csHttp() {
